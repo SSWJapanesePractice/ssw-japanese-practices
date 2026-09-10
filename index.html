@@ -3,180 +3,452 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="SSW Japanese Practice — practical Japanese lessons, vocabulary, kanji, listening, quizzes and mock tests for SSW workers.">
 <title>SSW Japanese Practice</title>
-<meta name="description" content="Learn practical Japanese and prepare for work in Japan with SSW Japanese Practice.">
 <style>
-:root{--navy:#071a33;--blue:#1769e0;--sky:#eaf3ff;--ink:#10233f;--muted:#66758a;--white:#fff;--line:#e3eaf3;--gold:#f5b83d;--green:#19a974;--shadow:0 14px 40px rgba(18,49,88,.10)}
-*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#12395d;
+  --navy2:#0b2945;
+  --red:#d62828;
+  --red2:#b91f1f;
+  --gold:#d6a11e;
+  --ink:#17212b;
+  --muted:#667085;
+  --bg:#f7f9fc;
+  --card:#ffffff;
+  --line:#e5e9ef;
+  --soft:#edf4fa;
+  --shadow:0 10px 32px rgba(18,57,93,.08);
+  --radius:20px;
+}
+*{box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--ink);background:#fff;line-height:1.6}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Arial,Helvetica,sans-serif;line-height:1.6}
 a{text-decoration:none;color:inherit}
-button{font:inherit;cursor:pointer}
-.container{width:min(1160px,92%);margin:auto}
-header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
-.nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:24px}
-.logo{display:flex;align-items:center;gap:11px;font-weight:850;font-size:20px}
-.logo-mark{width:39px;height:39px;border-radius:12px;background:linear-gradient(135deg,#1769e0,#5aa4ff);display:grid;place-items:center;color:#fff;font-size:20px;box-shadow:0 8px 20px rgba(23,105,224,.25)}
-nav{display:flex;gap:24px;align-items:center}
-nav a{font-size:14px;font-weight:650;color:#44546a}
-nav a:hover{color:var(--blue)}
-.btn{display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:12px;padding:12px 18px;font-weight:750;transition:.2s}
-.btn-primary{background:var(--blue);color:#fff;box-shadow:0 9px 22px rgba(23,105,224,.23)}
-.btn-primary:hover{transform:translateY(-2px)}
-.btn-light{background:#fff;color:var(--blue);border:1px solid #dce7f5}
-.hero{background:linear-gradient(135deg,#f5f9ff 0%,#e8f2ff 58%,#dcecff 100%);overflow:hidden}
-.hero-grid{min-height:620px;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:40px}
-.badge{display:inline-flex;padding:7px 11px;border-radius:999px;background:#dceaff;color:#1769e0;font-size:12px;font-weight:800;letter-spacing:.4px}
-h1{font-size:clamp(42px,5vw,70px);line-height:1.06;letter-spacing:-2.5px;margin:18px 0}
-.hero p{font-size:18px;color:#52647b;max-width:590px}
-.hero-actions{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
-.stats{display:flex;gap:30px;margin-top:38px}
-.stat strong{display:block;font-size:24px}.stat span{font-size:12px;color:var(--muted)}
-.hero-art{position:relative;height:480px;border-radius:30px;background:linear-gradient(160deg,#d8ebff,#fff);box-shadow:var(--shadow);overflow:hidden}
-.sun{position:absolute;width:190px;height:190px;border-radius:50%;background:#ffd978;right:70px;top:48px;opacity:.8}
-.mountain{position:absolute;bottom:-50px;width:0;height:0;border-left:210px solid transparent;border-right:210px solid transparent;border-bottom:330px solid #fff}
-.m1{left:20px}.m2{right:-40px;border-bottom-color:#c9def4}
-.mt{position:absolute;left:50%;transform:translateX(-50%);bottom:70px;width:330px;height:140px;background:#dfeeff;border-radius:50% 50% 0 0/80% 80% 0 0}
-.jp-card{position:absolute;left:34px;top:35px;background:#fff;padding:16px 19px;border-radius:17px;box-shadow:0 12px 30px rgba(18,49,88,.12);font-size:25px;font-weight:850}
-.jp-card small{display:block;font-size:10px;color:#748298;font-weight:700;margin-top:3px}
-section{padding:88px 0}
-.section-head{text-align:center;max-width:680px;margin:0 auto 42px}
-.section-head h2{font-size:38px;line-height:1.15;margin-bottom:10px}
-.section-head p{color:var(--muted)}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
-.card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:var(--shadow);transition:.2s}
-.card:hover{transform:translateY(-4px)}
-.icon{width:52px;height:52px;border-radius:15px;background:var(--sky);display:grid;place-items:center;font-size:25px;margin-bottom:20px}
-.card h3{font-size:21px;margin-bottom:7px}.card p{color:var(--muted);font-size:14px;margin-bottom:18px}
-.link{color:var(--blue);font-weight:800;font-size:14px}
-.practice{background:#f7faff}
-.practice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
-.practice-item{padding:20px;border-radius:17px;background:#fff;border:1px solid var(--line);display:flex;align-items:center;gap:14px}
-.practice-item .icon{margin:0;width:45px;height:45px;flex:none}
-.practice-item h3{font-size:16px}.practice-item p{font-size:12px;color:var(--muted)}
-.cta{padding:0 0 88px}.cta-box{background:var(--navy);color:#fff;border-radius:28px;padding:52px;display:flex;justify-content:space-between;align-items:center;gap:30px;overflow:hidden}
-.cta-box h2{font-size:36px;line-height:1.15;margin-bottom:8px}.cta-box p{color:#b9c7da;max-width:610px}
-footer{background:#061426;color:#c4cfdd;padding:55px 0 28px}
-.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:35px}.footer-title{color:#fff;font-weight:800;margin-bottom:14px}.footer-col a{display:block;font-size:13px;margin:8px 0;color:#9eacc0}.footer-brand p{font-size:13px;max-width:330px;margin-top:12px;color:#9eacc0}
-.copyright{border-top:1px solid #1c2b3e;margin-top:35px;padding-top:20px;font-size:12px;color:#8190a3}
-.page{display:none}.page.active{display:block}
-.back{display:inline-block;margin-bottom:25px;color:var(--blue);font-weight:800}
-.lesson-hero{background:linear-gradient(135deg,#f5f9ff,#e5f0ff);padding:65px 0}
-.lesson-hero h1{font-size:48px;letter-spacing:-1.5px;margin:10px 0}.lesson-content{padding:60px 0}.lesson-box{max-width:850px;margin:auto;background:#fff;border:1px solid var(--line);border-radius:22px;padding:30px;box-shadow:var(--shadow)}.lesson-box h2{margin:25px 0 10px}.lesson-box ul{padding-left:22px;color:#53647a}.word{display:flex;justify-content:space-between;align-items:center;padding:15px;border:1px solid var(--line);border-radius:13px;margin:10px 0}.word b{font-size:19px}.speak{border:0;background:var(--sky);border-radius:9px;padding:8px 12px;color:var(--blue);font-weight:800}
-@media(max-width:850px){nav{display:none}.hero-grid{grid-template-columns:1fr;padding:55px 0}.hero-art{height:360px}.cards,.practice-grid{grid-template-columns:1fr 1fr}.footer-grid{grid-template-columns:1fr 1fr}.cta-box{padding:35px;display:block}.cta-box .btn{margin-top:22px}}
-@media(max-width:560px){section{padding:62px 0}.cards,.practice-grid{grid-template-columns:1fr}.stats{gap:18px}.stat strong{font-size:20px}h1{letter-spacing:-1.5px}.hero-art{height:300px}.cta-box h2{font-size:29px}.footer-grid{grid-template-columns:1fr}.lesson-hero h1{font-size:38px}}
+button,input{font:inherit}
+.container{width:min(1180px,92%);margin:auto}
+
+/* HEADER */
+header{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.header-inner{min-height:78px;display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{width:46px;height:46px;border-radius:14px;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:23px;font-weight:900;box-shadow:0 7px 18px rgba(18,57,93,.2)}
+.brand-title{font-size:19px;font-weight:900;color:var(--navy);line-height:1.1}
+.brand-jp{font-size:11px;color:var(--muted);margin-top:4px}
+nav{display:flex;align-items:center;gap:4px}
+nav a{padding:10px 12px;border-radius:10px;font-size:14px;font-weight:800;color:#344054}
+nav a:hover{background:var(--soft);color:var(--navy)}
+.nav-cta{background:var(--red)!important;color:#fff!important;padding:11px 16px!important}
+.menu{display:none;border:0;background:var(--navy);color:#fff;width:44px;height:44px;border-radius:11px;cursor:pointer;font-size:21px}
+
+/* HERO */
+.hero{background:
+ radial-gradient(circle at 92% 18%,rgba(214,40,40,.11),transparent 27%),
+ radial-gradient(circle at 8% 90%,rgba(214,161,30,.12),transparent 25%),
+ linear-gradient(135deg,#f2f7fb,#fff);
+ border-bottom:1px solid var(--line);padding:76px 0 68px}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:55px;align-items:center}
+.badge{display:inline-flex;align-items:center;gap:7px;padding:7px 13px;border-radius:30px;background:#eaf2f9;color:var(--navy);font-size:12px;font-weight:900;letter-spacing:.3px}
+h1{font-size:clamp(40px,5.5vw,66px);line-height:1.03;letter-spacing:-2px;color:var(--navy);margin:18px 0 8px}
+.hero-jp{font-size:clamp(20px,3vw,29px);font-weight:800;color:#344054}
+.tagline{color:var(--red);font-weight:900;margin-top:6px}
+.hero p{max-width:670px;color:var(--muted);font-size:17px;margin:19px 0 27px}
+.actions{display:flex;flex-wrap:wrap;gap:11px}
+.btn{display:inline-flex;align-items:center;justify-content:center;border:2px solid transparent;border-radius:12px;padding:12px 19px;font-size:14px;font-weight:900;cursor:pointer;transition:.2s}
+.primary{background:var(--red);color:#fff}
+.primary:hover{background:var(--red2);transform:translateY(-2px)}
+.secondary{background:#fff;color:var(--navy);border-color:var(--line)}
+.secondary:hover{border-color:var(--navy)}
+.hero-panel{background:var(--navy);color:#fff;border-radius:28px;padding:31px;box-shadow:0 22px 50px rgba(11,41,69,.22);position:relative;overflow:hidden}
+.hero-panel:after{content:"";position:absolute;width:180px;height:180px;border:1px solid rgba(255,255,255,.1);border-radius:50%;right:-70px;top:-60px}
+.panel-icon{font-size:47px}
+.hero-panel h3{font-size:23px;margin:9px 0 7px}
+.hero-panel p{color:#d7e3ed;font-size:14px;margin:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px;padding-top:18px;border-top:1px solid rgba(255,255,255,.16)}
+.stats strong{display:block;font-size:22px}.stats span{font-size:11px;color:#c4d2de}
+
+/* SEARCH */
+.search-wrap{margin-top:-25px;position:relative;z-index:5}
+.search{background:#fff;border:1px solid var(--line);box-shadow:var(--shadow);padding:7px;border-radius:16px;display:flex}
+.search input{flex:1;border:0;outline:0;padding:14px 15px;min-width:0;font-size:15px}
+.search button{border:0;background:var(--navy);color:#fff;border-radius:11px;padding:0 22px;font-weight:900;cursor:pointer}
+
+/* SECTIONS */
+.section{padding:72px 0 12px}
+.heading{text-align:center;margin-bottom:32px}
+.eyebrow{font-size:11px;letter-spacing:1.7px;text-transform:uppercase;color:var(--red);font-weight:950}
+.heading h2{font-size:32px;color:var(--navy);margin:5px 0}
+.heading p{max-width:680px;margin:auto;color:var(--muted)}
+
+/* FIELD FILTER */
+.field-toolbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px}
+.field-count{font-size:13px;color:var(--muted);font-weight:800}
+.filter{display:flex;gap:7px;flex-wrap:wrap}
+.filter button{border:1px solid var(--line);background:#fff;color:#344054;border-radius:20px;padding:7px 12px;font-size:12px;font-weight:800;cursor:pointer}
+.filter button.active,.filter button:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+.fields{display:grid;grid-template-columns:repeat(3,1fr);gap:17px}
+.field-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:22px;box-shadow:0 3px 16px rgba(16,24,40,.035);transition:.25s;display:flex;flex-direction:column;min-height:230px}
+.field-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);border-color:#ccd6e0}
+.field-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.icon{width:51px;height:51px;border-radius:15px;background:#eff5f9;display:grid;place-items:center;font-size:26px}
+.number{font-size:10px;color:#98a2b3;font-weight:900;letter-spacing:1px}
+.field-card h3{margin:13px 0 2px;color:var(--navy);font-size:18px}
+.jp{color:var(--red);font-weight:800;font-size:13px}
+.field-card p{color:var(--muted);font-size:13px;margin:8px 0 14px}
+.card-link{margin-top:auto;color:var(--red);font-size:13px;font-weight:950}
+
+/* FOUNDATION */
+.foundation{display:grid;grid-template-columns:repeat(4,1fr);gap:17px}
+.learn-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;text-align:center;box-shadow:0 3px 16px rgba(16,24,40,.035)}
+.learn-card .icon{margin:auto}
+.learn-card h3{font-size:17px;color:var(--navy);margin:13px 0 3px}
+.learn-card .jp{margin-bottom:7px}
+
+/* PRACTICE */
+.practice-zone{background:#edf3f8;margin-top:62px;padding:68px 0}
+.practice-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:15px}
+.practice-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 14px;text-align:center;transition:.2s}
+.practice-card:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.practice-card .icon{margin:auto}
+.practice-card h3{font-size:15px;color:var(--navy);margin:11px 0 5px}
+
+/* FEATURE */
+.feature{padding:65px 0 15px}
+.feature-box{background:linear-gradient(135deg,var(--navy),#24577f);color:#fff;border-radius:25px;padding:39px;display:flex;align-items:center;justify-content:space-between;gap:28px;box-shadow:var(--shadow)}
+.feature-box h2{font-size:28px;margin:0 0 7px}
+.feature-box p{margin:0;color:#dbe7f0}
+.feature-box .btn{background:#fff;color:var(--navy);flex-shrink:0}
+
+/* WHY */
+.why{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.why-item{background:#fff;border:1px solid var(--line);border-radius:16px;padding:21px}
+.why-item strong{color:var(--navy)}
+.why-item p{font-size:13px;color:var(--muted);margin:5px 0 0}
+
+/* FOOTER */
+footer{margin-top:70px;background:var(--navy2);color:#fff;padding:48px 0 24px}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:40px}
+footer h3{margin:0 0 10px}
+footer p,footer a{color:#c4d1dd;font-size:13px}
+.footer-links{display:flex;flex-direction:column;gap:7px}
+.footer-links a:hover{color:#fff}
+.copy{border-top:1px solid rgba(255,255,255,.12);margin-top:32px;padding-top:18px;text-align:center;color:#91a5b6;font-size:12px}
+
+/* MODAL / LESSON VIEW */
+.modal{display:none;position:fixed;inset:0;background:rgba(8,25,42,.66);z-index:2000;padding:20px;overflow:auto}
+.modal.show{display:flex;align-items:center;justify-content:center}
+.modal-box{background:#fff;width:min(900px,100%);max-height:92vh;overflow:auto;border-radius:24px;box-shadow:0 25px 80px rgba(0,0,0,.25)}
+.modal-head{padding:25px 27px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:15px}
+.modal-head h2{margin:0;color:var(--navy)}
+.close{border:0;background:#f0f3f6;width:38px;height:38px;border-radius:10px;cursor:pointer;font-size:20px}
+.modal-body{padding:25px 27px 30px}
+.detail-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+.detail-card{border:1px solid var(--line);border-radius:15px;padding:17px;background:#fafbfd}
+.detail-card b{display:block;color:var(--navy);margin-bottom:4px}
+.detail-card span{font-size:12px;color:var(--muted)}
+.lessons{display:grid;gap:10px;margin-top:20px}
+.lesson{border:1px solid var(--line);border-radius:14px;padding:15px 17px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.lesson strong{color:var(--navy)}
+.lesson small{display:block;color:var(--muted)}
+.lesson button{border:0;background:var(--soft);color:var(--navy);font-weight:900;border-radius:9px;padding:8px 11px;cursor:pointer}
+.notice{background:#fff8e7;border:1px solid #f0d88d;border-radius:13px;padding:12px 14px;color:#735800;font-size:13px;margin-top:18px}
+
+/* MOBILE */
+@media(max-width:1000px){
+  .hero-grid{grid-template-columns:1fr}
+  .fields{grid-template-columns:repeat(2,1fr)}
+  .foundation{grid-template-columns:repeat(2,1fr)}
+  .practice-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:760px){
+  .header-inner{min-height:70px}
+  .menu{display:block}
+  nav{display:none;position:absolute;left:0;right:0;top:70px;background:#fff;border-bottom:1px solid var(--line);padding:10px 4%;box-shadow:var(--shadow);flex-direction:column;align-items:stretch}
+  nav.open{display:flex}
+  nav a{padding:12px}
+  .hero{padding:52px 0}
+  h1{font-size:43px}
+  .fields{grid-template-columns:1fr}
+  .foundation{grid-template-columns:1fr 1fr}
+  .practice-grid{grid-template-columns:1fr 1fr}
+  .feature-box{flex-direction:column;align-items:flex-start;padding:28px}
+  .why{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .detail-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .brand-title{font-size:16px}.brand-jp{font-size:9px}.logo{width:41px;height:41px}
+  h1{font-size:35px}
+  .hero p{font-size:15px}
+  .actions{flex-direction:column}.actions .btn{width:100%}
+  .search button{padding:0 13px}
+  .foundation,.practice-grid{grid-template-columns:1fr}
+  .heading h2{font-size:27px}
+  .feature-box h2{font-size:23px}
+}
 </style>
 </head>
 <body>
 
 <header>
-<div class="container nav">
-<a class="logo" href="#home" onclick="showPage('home')"><span class="logo-mark">日</span>SSW Japanese Practice</a>
-<nav>
-<a href="#home" onclick="showPage('home')">Home</a>
-<a href="#courses" onclick="showPage('home');scrollToId('courses')">Courses</a>
-<a href="#practice" onclick="showPage('home');scrollToId('practice')">Practice</a>
-<a href="#tests" onclick="showPage('tests')">Tests</a>
-<a href="#vocabulary" onclick="showPage('vocabulary')">Vocabulary</a>
-<a href="#resources" onclick="showPage('resources')">Resources</a>
-</nav>
-<a class="btn btn-primary" href="#courses" onclick="showPage('home');scrollToId('courses')">Start Learning</a>
-</div>
+  <div class="container header-inner">
+    <a class="brand" href="#home">
+      <div class="logo">日</div>
+      <div>
+        <div class="brand-title">SSW Japanese Practice</div>
+        <div class="brand-jp">日本で働くための日本語</div>
+      </div>
+    </a>
+    <button class="menu" onclick="toggleMenu()" aria-label="Open menu">☰</button>
+    <nav id="nav">
+      <a href="#home">Home</a>
+      <a href="#fields">SSW Fields</a>
+      <a href="#foundation">Japanese</a>
+      <a href="#practice">Practice</a>
+      <a href="#about">About</a>
+      <a class="nav-cta" href="#fields">Start Learning</a>
+    </nav>
+  </div>
 </header>
 
-<main id="home" class="page active">
+<main id="home">
 <section class="hero">
-<div class="container hero-grid">
-<div>
-<span class="badge">SSW JAPANESE • PRACTICAL LEARNING</span>
-<h1>Learn Japanese.<br><span style="color:#1769e0">Build Your Future</span> in Japan.</h1>
-<p>Practical Japanese practice for students preparing to work in Japan. Learn, listen, practice and test your skills step by step.</p>
-<div class="hero-actions"><a class="btn btn-primary" href="#courses" onclick="scrollToId('courses')">Explore Courses →</a><a class="btn btn-light" href="#practice" onclick="scrollToId('practice')">Practice Japanese</a></div>
-<div class="stats"><div class="stat"><strong>3+</strong><span>Core Courses</span></div><div class="stat"><strong>6</strong><span>Practice Areas</span></div><div class="stat"><strong>100%</strong><span>Learning Focused</span></div></div>
-</div>
-<div class="hero-art"><div class="sun"></div><div class="jp-card">日本語<small>Learn Japanese</small></div><div class="mountain m1"></div><div class="mountain m2"></div><div class="mt"></div></div>
-</div>
+  <div class="container hero-grid">
+    <div>
+      <span class="badge">🇯🇵 SSW JAPANESE LEARNING PLATFORM</span>
+      <h1>Learn Japanese.<br>Build Your Future in Japan.</h1>
+      <div class="hero-jp">日本で働くための日本語</div>
+      <div class="tagline">Learn • Listen • Practice • Test</div>
+      <p>Free practical Japanese for people preparing to work in Japan. Learn workplace vocabulary, Kanji, grammar, listening, speaking and field-specific Japanese in one place.</p>
+      <div class="actions">
+        <a class="btn primary" href="#fields">🚀 START LEARNING</a>
+        <a class="btn secondary" href="#practice">📝 QUICK PRACTICE</a>
+      </div>
+    </div>
+    <div class="hero-panel">
+      <div class="panel-icon">🎓</div>
+      <h3>Japanese for Real Workplaces</h3>
+      <p>Choose your SSW field and build the Japanese you need for daily work and communication in Japan.</p>
+      <div class="stats">
+        <div><strong>19</strong><span>SSW Fields</span></div>
+        <div><strong>6+</strong><span>Learning Areas</span></div>
+        <div><strong>24/7</strong><span>Practice</span></div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section id="courses">
-<div class="container">
-<div class="section-head"><h2>Choose Your Learning Path</h2><p>Start with the Japanese course that matches your goal and build useful skills for life and work in Japan.</p></div>
-<div class="cards">
-<article class="card"><div class="icon">🌾</div><h3>Agriculture Japanese</h3><p>Practical Japanese vocabulary and expressions for agricultural work in Japan.</p><a class="link" href="#agriculture" onclick="showPage('agriculture')">View Course →</a></article>
-<article class="card"><div class="icon">🤝</div><h3>Kaigo Japanese</h3><p>Learn useful Japanese for care work, communication and everyday workplace situations.</p><a class="link" href="#kaigo" onclick="showPage('kaigo')">View Course →</a></article>
-<article class="card"><div class="icon">📘</div><h3>JLPT N4</h3><p>Strengthen your grammar, vocabulary, kanji, reading and listening for N4 level.</p><a class="link" href="#jlpt-n4" onclick="showPage('jlpt-n4')">View Course →</a></article>
+<div class="search-wrap">
+  <div class="container">
+    <form class="search" onsubmit="searchFields(event)">
+      <input id="searchInput" type="search" placeholder="Search SSW field, Japanese, vocabulary...">
+      <button>SEARCH</button>
+    </form>
+  </div>
 </div>
-</div>
+
+<section class="section" id="fields">
+  <div class="container">
+    <div class="heading">
+      <div class="eyebrow">Choose Your Career Field</div>
+      <h2>SSW Japanese by Field</h2>
+      <p>Select your work field and study Japanese for real workplace situations.</p>
+    </div>
+
+    <div class="field-toolbar">
+      <div class="field-count" id="fieldCount">19 SSW fields</div>
+      <div class="filter">
+        <button class="active" onclick="filterFields('all',this)">All</button>
+        <button onclick="filterFields('service',this)">Service</button>
+        <button onclick="filterFields('industry',this)">Industry</button>
+        <button onclick="filterFields('primary',this)">Primary</button>
+        <button onclick="filterFields('transport',this)">Transport</button>
+      </div>
+    </div>
+
+    <div class="fields" id="fieldGrid"></div>
+  </div>
 </section>
 
-<section id="practice" class="practice">
-<div class="container">
-<div class="section-head"><h2>Practice Every Skill</h2><p>Build confidence through focused practice in the areas that matter most.</p></div>
-<div class="practice-grid">
-<a class="practice-item" href="#listening" onclick="showPage('listening')"><span class="icon">🎧</span><div><h3>Listening</h3><p>Train your ears with practical Japanese.</p></div></a>
-<a class="practice-item" href="#speaking" onclick="showPage('speaking')"><span class="icon">🗣️</span><div><h3>Speaking</h3><p>Practice useful daily expressions.</p></div></a>
-<a class="practice-item" href="#vocabulary" onclick="showPage('vocabulary')"><span class="icon">🔤</span><div><h3>Vocabulary</h3><p>Learn words by topic.</p></div></a>
-<a class="practice-item" href="#kanji" onclick="showPage('kanji')"><span class="icon">漢</span><div><h3>Kanji</h3><p>Build your kanji foundation.</p></div></a>
-<a class="practice-item" href="#grammar" onclick="showPage('grammar')"><span class="icon">📝</span><div><h3>Grammar</h3><p>Understand useful sentence patterns.</p></div></a>
-<a class="practice-item" href="#tests" onclick="showPage('tests')"><span class="icon">✓</span><div><h3>Mock Tests</h3><p>Check your knowledge and progress.</p></div></a>
-</div>
-</div>
+<section class="section" id="foundation">
+  <div class="container">
+    <div class="heading">
+      <div class="eyebrow">Japanese Foundation</div>
+      <h2>Build Your Japanese</h2>
+      <p>Start with the core Japanese skills needed for work and everyday life.</p>
+    </div>
+    <div class="foundation">
+      <a class="learn-card" href="#practice"><div class="icon">🔤</div><h3>Hiragana & Katakana</h3><div class="jp">ひらがな・カタカナ</div><span class="card-link">Learn →</span></a>
+      <a class="learn-card" href="#practice"><div class="icon">📖</div><h3>Vocabulary</h3><div class="jp">語彙</div><span class="card-link">Learn →</span></a>
+      <a class="learn-card" href="#practice"><div class="icon">🈶</div><h3>Kanji</h3><div class="jp">漢字</div><span class="card-link">Learn →</span></a>
+      <a class="learn-card" href="#practice"><div class="icon">📕</div><h3>Grammar</h3><div class="jp">文法</div><span class="card-link">Learn →</span></a>
+    </div>
+  </div>
 </section>
 
-<section id="resources">
-<div class="container">
-<div class="section-head"><h2>Learn With a Clear Goal</h2><p>Our platform is designed around practical Japanese, steady practice and preparation for your next step toward Japan.</p></div>
-<div class="cards">
-<div class="card"><div class="icon">🎯</div><h3>Practical Japanese</h3><p>Focus on expressions and vocabulary you can actually use.</p></div>
-<div class="card"><div class="icon">📈</div><h3>Step by Step</h3><p>Move from basics to stronger skills through structured practice.</p></div>
-<div class="card"><div class="icon">🇯🇵</div><h3>Japan Ready</h3><p>Prepare for communication in real study and workplace situations.</p></div>
-</div>
-</div>
+<section class="practice-zone" id="practice">
+  <div class="container">
+    <div class="heading">
+      <div class="eyebrow">Practice Zone</div>
+      <h2>Learn by Doing</h2>
+      <p>Practice the skills that turn Japanese knowledge into workplace communication.</p>
+    </div>
+    <div class="practice-grid">
+      <a class="practice-card" href="#" onclick="practiceMessage('Listening');return false"><div class="icon">🎧</div><h3>Listening</h3><span class="card-link">Practice →</span></a>
+      <a class="practice-card" href="#" onclick="practiceMessage('Speaking');return false"><div class="icon">🗣️</div><h3>Speaking</h3><span class="card-link">Practice →</span></a>
+      <a class="practice-card" href="#" onclick="practiceMessage('Quick Quiz');return false"><div class="icon">📝</div><h3>Quick Quiz</h3><span class="card-link">Start →</span></a>
+      <a class="practice-card" href="#" onclick="practiceMessage('Mock Test');return false"><div class="icon">🧪</div><h3>Mock Test</h3><span class="card-link">Start →</span></a>
+      <a class="practice-card" href="#" onclick="practiceMessage('Review');return false"><div class="icon">🔄</div><h3>Review</h3><span class="card-link">Review →</span></a>
+    </div>
+  </div>
 </section>
 
-<div class="cta"><div class="container"><div class="cta-box"><div><h2>Your journey to Japan starts with Japanese.</h2><p>Start learning today and build the language skills you need for your future in Japan.</p></div><a class="btn btn-primary" href="#courses" onclick="scrollToId('courses')">Start Learning →</a></div></div></div>
+<section class="feature">
+  <div class="container">
+    <div class="feature-box">
+      <div>
+        <div class="eyebrow" style="color:#f5c84b">⭐ FEATURED STARTER</div>
+        <h2>Greetings & Basic Workplace Communication</h2>
+        <p>あいさつ・基本的な職場の日本語</p>
+      </div>
+      <button class="btn" onclick="openStarter()">START LESSON →</button>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="container">
+    <div class="heading">
+      <div class="eyebrow">Why SSW Japanese Practice</div>
+      <h2>Learn. Practice. Improve.</h2>
+    </div>
+    <div class="why">
+      <div class="why-item"><strong>✓ Practical Workplace Japanese</strong><p>Focus on expressions used in real workplace situations.</p></div>
+      <div class="why-item"><strong>✓ Field-Specific Learning</strong><p>Choose an SSW field and study Japanese relevant to that work.</p></div>
+      <div class="why-item"><strong>✓ Furigana Support</strong><p>Japanese readings can help beginners read Kanji.</p></div>
+      <div class="why-item"><strong>✓ Listening & Speaking</strong><p>Build confidence with spoken Japanese practice.</p></div>
+      <div class="why-item"><strong>✓ Interactive Practice</strong><p>Quizzes and mock tests help you review what you learn.</p></div>
+      <div class="why-item"><strong>✓ Beginner Friendly</strong><p>Clear sections make the learning path simple and organized.</p></div>
+    </div>
+  </div>
+</section>
 </main>
 
-<!-- Simple single-file content pages -->
-<div id="agriculture" class="page"><div class="lesson-hero"><div class="container"><a class="back" href="#home" onclick="showPage('home')">← Back to Home</a><span class="badge">COURSE</span><h1>🌾 Agriculture Japanese</h1><p>Practical Japanese for agricultural work and daily workplace communication.</p></div></div><div class="lesson-content"><div class="container"><div class="lesson-box"><h2>What you'll learn</h2><ul><li>Farm and workplace vocabulary</li><li>Tools, crops, weather and daily tasks</li><li>Useful instructions and polite expressions</li><li>Practice conversations for work situations</li></ul><h2>Course structure</h2><div class="word"><b>Lesson 1 — Basic Farm Words</b><span>Coming next</span></div><div class="word"><b>Lesson 2 — Tools & Equipment</b><span>Coming next</span></div><div class="word"><b>Lesson 3 — Daily Work Expressions</b><span>Coming next</span></div></div></div></div></div>
-
-<div id="kaigo" class="page"><div class="lesson-hero"><div class="container"><a class="back" href="#home" onclick="showPage('home')">← Back to Home</a><span class="badge">COURSE</span><h1>🤝 Kaigo Japanese</h1><p>Useful Japanese for care work, communication and everyday situations.</p></div></div><div class="lesson-content"><div class="container"><div class="lesson-box"><h2>What you'll learn</h2><ul><li>Caregiving vocabulary</li><li>Body, health and daily-life expressions</li><li>Polite communication with users and coworkers</li><li>Workplace conversations and instructions</li></ul><h2>Course structure</h2><div class="word"><b>Lesson 1 — Basic Kaigo Words</b><span>Coming next</span></div><div class="word"><b>Lesson 2 — Daily Care Expressions</b><span>Coming next</span></div><div class="word"><b>Lesson 3 — Workplace Communication</b><span>Coming next</span></div></div></div></div></div>
-
-<div id="jlpt-n4" class="page"><div class="lesson-hero"><div class="container"><a class="back" href="#home" onclick="showPage('home')">← Back to Home</a><span class="badge">COURSE</span><h1>📘 JLPT N4</h1><p>Build the grammar, vocabulary, kanji, reading and listening skills needed for N4.</p></div></div><div class="lesson-content"><div class="container"><div class="lesson-box"><h2>Learning areas</h2><ul><li>Grammar patterns</li><li>Vocabulary and kanji</li><li>Reading practice</li><li>Listening practice</li><li>Mock tests</li></ul><h2>Next lessons</h2><div class="word"><b>N4 Grammar Foundation</b><span>Coming next</span></div><div class="word"><b>N4 Vocabulary Builder</b><span>Coming next</span></div><div class="word"><b>N4 Kanji Practice</b><span>Coming next</span></div></div></div></div></div>
-
-<div id="listening" class="page"><div class="lesson-hero"><div class="container"><a class="back" href="#home" onclick="showPage('home')">← Back to Home</a><span class="badge">PRACTICE</span><h1>🎧 Listening Practice</h1><p>Train your Japanese listening skills with short, practical conversations.</p></div></div><div class="lesson-content"><div class="container"><div class="lesson-box"><h2>Practice coming soon</h2><p>Audio lessons, transcripts, comprehension questions and replay controls will be added here.</p></div></div></div></div>
-
-<div id="speaking" class="page"><div class="lesson-hero"><div class="container"><a class="back" href="#home" onclick="showPage('home')">← Back to Home</a><span class="badge">PRACTICE</span><h1>🗣️ Speaking Practice</h1><p>Practice Japanese expressions for everyday and workplace conversations.</p></div></div><div class="lesson-content"><div class="container"><div class="lesson-box"><h2>Useful expressions</h2><div class="word"><div><b>おはようございます</b><br><small>Ohayou gozaimasu — Good morning</small></div><button class="speak" onclick="speakText('おはようございます')">🔊 Listen</button></div><div class="word"><div><b>ありがとうございます</b><br><small>Arigatou gozaimasu — Thank you</small></div><button class="speak" onclick="speakText('ありがとうございます')">🔊 Listen</button></div></div></div></div></div>
-
-<div id="vocabulary" class="page"><div class="lesson-hero"><div class="container"><a class="back" href="#home" onclick="showPage('home')">← Back to Home</a><span class="badge">PRACTICE</span><h1>🔤 Vocabulary</h1><p>Learn useful Japanese words by topic and review them regularly.</p></div></div><div class="lesson-content"><div class="container"><div class="lesson-box"><h2>Starter words</h2><div class="word"><div><b>仕事</b><br><small>しごと — shigoto — Work</small></div><button class="speak" onclick="speakText('しごと')">🔊</button></div><div class="word"><div><b>日本</b><br><small>にほん — nihon — Japan</small></div><button class="speak" onclick="speakText('にほん')">🔊</button></div><div class="word"><div><b>勉強</b><br><small>べんきょう — benkyou — Study</small></div><button class="speak" onclick="speakText('べんきょう')">🔊</button></div></div></div></div></div>
-
-<div id="kanji" class="page"><div class="lesson-hero"><div class="container"><a class="back" href="#home" onclick="showPage('home')">← Back to Home</a><span class="badge">PRACTICE</span><h1>漢 Kanji Practice</h1><p>Build recognition of useful kanji step by step.</p></div></div><div class="lesson-content"><div class="container"><div class="lesson-box"><h2>Starter Kanji</h2><div class="word"><div><b>日</b><br><small>にち / ひ — day, sun</small></div><button class="speak" onclick="speakText('にち')">🔊</button></div><div class="word"><div><b>人</b><br><small>ひと / じん — person</small></div><button class="speak" onclick="speakText('ひと')">🔊</button></div><div class="word"><div><b>山</b><br><small>やま — mountain</small></div><button class="speak" onclick="speakText('やま')">🔊</button></div></div></div></div></div>
-
-<div id="grammar" class="page"><div class="lesson-hero"><div class="container"><a class="back" href="#home" onclick="showPage('home')">← Back to Home</a><span class="badge">PRACTICE</span><h1>📝 Grammar</h1><p>Understand useful Japanese sentence patterns with simple examples.</p></div></div><div class="lesson-content"><div class="container"><div class="lesson-box"><h2>Starter pattern</h2><div class="word"><div><b>〜です</b><br><small>Used to make a polite statement.</small></div><span>Example: わたしは学生です。</span></div><div class="word"><div><b>〜ます</b><br><small>Polite verb ending.</small></div><span>Example: 勉強します。</span></div></div></div></div></div>
-
-<div id="tests" class="page"><div class="lesson-hero"><div class="container"><a class="back" href="#home" onclick="showPage('home')">← Back to Home</a><span class="badge">TESTS</span><h1>✓ Mock Tests</h1><p>Test yourself and identify areas that need more practice.</p></div></div><div class="lesson-content"><div class="container"><div class="lesson-box"><h2>Mock Test Center</h2><p>Full quizzes and exam-style practice will be added here. The system can later include scoring, explanations, timers and progress tracking.</p><button class="btn btn-primary" style="margin-top:20px" onclick="alert('Mock tests are being prepared.')">Start Demo Test</button></div></div></div></div>
-
 <footer>
-<div class="container footer-grid"><div class="footer-brand"><div class="logo"><span class="logo-mark">日</span>SSW Japanese Practice</div><p>Learn practical Japanese. Prepare for your future in Japan.</p></div><div class="footer-col"><div class="footer-title">Learn</div><a href="#courses" onclick="showPage('home');scrollToId('courses')">Courses</a><a href="#practice" onclick="showPage('home');scrollToId('practice')">Practice</a><a href="#tests" onclick="showPage('tests')">Mock Tests</a></div><div class="footer-col"><div class="footer-title">Practice</div><a href="#listening" onclick="showPage('listening')">Listening</a><a href="#speaking" onclick="showPage('speaking')">Speaking</a><a href="#vocabulary" onclick="showPage('vocabulary')">Vocabulary</a></div><div class="footer-col"><div class="footer-title">Courses</div><a href="#agriculture" onclick="showPage('agriculture')">Agriculture</a><a href="#kaigo" onclick="showPage('kaigo')">Kaigo</a><a href="#jlpt-n4" onclick="showPage('jlpt-n4')">JLPT N4</a></div></div>
-<div class="container copyright">© 2026 SSW Japanese Practice. Built for Japanese learning and SSW preparation.</div>
+  <div class="container">
+    <div class="footer-grid">
+      <div><h3>SSW Japanese Practice</h3><p>日本で働くための日本語</p><p>Practical Japanese learning for people preparing to work and live in Japan.</p></div>
+      <div><h3>Learn</h3><div class="footer-links"><a href="#fields">19 SSW Fields</a><a href="#foundation">Vocabulary</a><a href="#foundation">Kanji</a><a href="#foundation">Grammar</a></div></div>
+      <div><h3>Practice</h3><div class="footer-links"><a href="#practice">Listening</a><a href="#practice">Speaking</a><a href="#practice">Quizzes</a><a href="#practice">Mock Tests</a></div></div>
+    </div>
+    <div class="copy">© <span id="year"></span> SSW Japanese Practice. All Rights Reserved.</div>
+  </div>
 </footer>
 
+<div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div><div class="eyebrow">SSW Japanese Course</div><h2 id="modalTitle">Field</h2><div class="jp" id="modalJP"></div></div>
+      <button class="close" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <p id="modalDesc" style="color:#667085;margin-top:0"></p>
+      <div class="detail-grid">
+        <div class="detail-card"><b>📖 Vocabulary</b><span>Field words, tools, people and common workplace terms.</span></div>
+        <div class="detail-card"><b>📕 Grammar & Phrases</b><span>Useful patterns for instructions, requests and communication.</span></div>
+        <div class="detail-card"><b>🎧 Listening</b><span>Workplace dialogues and listening practice.</span></div>
+        <div class="detail-card"><b>🗣️ Speaking</b><span>Repeat and practice practical workplace sentences.</span></div>
+        <div class="detail-card"><b>🈶 Kanji</b><span>Important Kanji with readings and meanings.</span></div>
+        <div class="detail-card"><b>🧪 Mock Test</b><span>Field-focused questions for revision.</span></div>
+      </div>
+      <h3 style="color:var(--navy);margin-bottom:8px">Course Lessons</h3>
+      <div class="lessons">
+        <div class="lesson"><div><strong>Lesson 1 — Basic Field Vocabulary</strong><small>Essential words for the workplace.</small></div><button onclick="lessonComing()">Open</button></div>
+        <div class="lesson"><div><strong>Lesson 2 — Workplace Expressions</strong><small>Useful phrases for everyday communication.</small></div><button onclick="lessonComing()">Open</button></div>
+        <div class="lesson"><div><strong>Lesson 3 — Safety & Instructions</strong><small>Understand common workplace instructions.</small></div><button onclick="lessonComing()">Open</button></div>
+        <div class="lesson"><div><strong>Lesson 4 — Listening & Conversation</strong><small>Practice realistic workplace conversations.</small></div><button onclick="lessonComing()">Open</button></div>
+      </div>
+      <div class="notice">This is the new platform structure. The next content build will replace these starter lesson placeholders with real Japanese lessons, vocabulary, audio, quizzes and tests.</div>
+    </div>
+  </div>
+</div>
+
 <script>
-function showPage(id){
- document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
- const p=document.getElementById(id);
- if(p)p.classList.add('active');
- window.scrollTo({top:0,behavior:'smooth'});
+const fields = [
+ {n:1,name:"Nursing Care",jp:"介護",icon:"👵",cat:"service",desc:"Care communication, assistance, daily routines and workplace Japanese."},
+ {n:2,name:"Building Cleaning",jp:"ビルクリーニング",icon:"🧹",cat:"service",desc:"Cleaning tools, rooms, procedures, instructions and safety."},
+ {n:3,name:"Construction",jp:"建設",icon:"🏗️",cat:"industry",desc:"Tools, materials, site instructions and construction safety Japanese."},
+ {n:4,name:"Industrial Product Manufacturing",jp:"工業製品製造業",icon:"🏭",cat:"industry",desc:"Factory vocabulary, machines, quality control and safety."},
+ {n:5,name:"Shipbuilding & Marine Equipment",jp:"造船・舶用工業",icon:"🚢",cat:"industry",desc:"Shipyard tools, equipment, work instructions and safety."},
+ {n:6,name:"Automobile Repair & Maintenance",jp:"自動車整備",icon:"🔧",cat:"industry",desc:"Vehicle parts, tools, maintenance procedures and workshop Japanese."},
+ {n:7,name:"Aviation",jp:"航空",icon:"✈️",cat:"transport",desc:"Airport operations, passenger service, equipment and safety."},
+ {n:8,name:"Accommodation",jp:"宿泊",icon:"🏨",cat:"service",desc:"Hotel reception, guest service, housekeeping and hospitality Japanese."},
+ {n:9,name:"Automobile Transportation",jp:"自動車運送業",icon:"🚚",cat:"transport",desc:"Driving, delivery, passengers, routes and transport workplace Japanese."},
+ {n:10,name:"Railway",jp:"鉄道",icon:"🚆",cat:"transport",desc:"Railway operations, station communication, equipment and safety."},
+ {n:11,name:"Agriculture",jp:"農業",icon:"🌾",cat:"primary",desc:"Farm work, crops, tools, instructions and agricultural safety."},
+ {n:12,name:"Fishery & Aquaculture",jp:"漁業・養殖業",icon:"🐟",cat:"primary",desc:"Fishing, aquaculture, equipment, weather and safety vocabulary."},
+ {n:13,name:"Food & Beverage Manufacturing",jp:"飲食料品製造業",icon:"🥫",cat:"industry",desc:"Food production, hygiene, machines, packaging and quality control."},
+ {n:14,name:"Food Service",jp:"外食業",icon:"🍱",cat:"service",desc:"Restaurant, kitchen, customer service, hygiene and workplace Japanese."},
+ {n:15,name:"Forestry",jp:"林業",icon:"🌲",cat:"primary",desc:"Forest work, tools, trees, instructions and occupational safety."},
+ {n:16,name:"Wood Industry",jp:"木材産業",icon:"🪵",cat:"industry",desc:"Wood processing, machinery, materials, measurements and safety."},
+ {n:17,name:"Resource Recycling",jp:"資源循環",icon:"♻️",cat:"industry",desc:"Sorting, recycling processes, equipment and safety communication."},
+ {n:18,name:"Linen Services",jp:"リネンサプライ",icon:"🧺",cat:"service",desc:"Laundry, linen handling, cleaning processes and workplace phrases."},
+ {n:19,name:"Logistics Warehouse",jp:"物流倉庫",icon:"📦",cat:"transport",desc:"Warehouse vocabulary, picking, packing, loading and safety."}
+];
+
+const grid=document.getElementById("fieldGrid");
+const count=document.getElementById("fieldCount");
+document.getElementById("year").textContent=new Date().getFullYear();
+
+function render(list){
+  grid.innerHTML=list.map(f=>`
+    <article class="field-card">
+      <div class="field-top"><div class="icon">${f.icon}</div><div class="number">SSW FIELD ${String(f.n).padStart(2,"0")}</div></div>
+      <h3>${f.name}</h3><div class="jp">${f.jp}</div>
+      <p>${f.desc}</p>
+      <a href="#" class="card-link" onclick="openField(${f.n});return false">Learn Japanese →</a>
+    </article>`).join("");
+  count.textContent=`${list.length} SSW field${list.length===1?"":"s"}`;
 }
-function scrollToId(id){
- setTimeout(()=>document.getElementById(id)?.scrollIntoView({behavior:'smooth'}),50);
+render(fields);
+
+function filterFields(cat,btn){
+  document.querySelectorAll(".filter button").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+  render(cat==="all"?fields:fields.filter(f=>f.cat===cat));
 }
-function speakText(text){
- if('speechSynthesis' in window){
-  const u=new SpeechSynthesisUtterance(text);u.lang='ja-JP';speechSynthesis.cancel();speechSynthesis.speak(u);
- }else alert('Your browser does not support Japanese speech.');
+function searchFields(e){
+  e.preventDefault();
+  const q=document.getElementById("searchInput").value.trim().toLowerCase();
+  if(!q){render(fields);return}
+  render(fields.filter(f=>(f.name+" "+f.jp+" "+f.desc).toLowerCase().includes(q)));
+  document.getElementById("fields").scrollIntoView({behavior:"smooth"});
 }
-window.addEventListener('hashchange',()=>{const id=location.hash.slice(1);if(document.getElementById(id)?.classList.contains('page'))showPage(id)});
+function openField(n){
+  const f=fields.find(x=>x.n===n);
+  document.getElementById("modalTitle").textContent=f.name;
+  document.getElementById("modalJP").textContent=f.jp;
+  document.getElementById("modalDesc").textContent=f.desc;
+  document.getElementById("modal").classList.add("show");
+  document.body.style.overflow="hidden";
+}
+function closeModal(){
+  document.getElementById("modal").classList.remove("show");
+  document.body.style.overflow="";
+}
+function lessonComing(){alert("Lesson content is being prepared for the next build. The course structure is ready.");}
+function openStarter(){
+  document.getElementById("modalTitle").textContent="Greetings & Basic Workplace Communication";
+  document.getElementById("modalJP").textContent="あいさつ・基本的な職場の日本語";
+  document.getElementById("modalDesc").textContent="Start with greetings, simple workplace phrases and polite communication.";
+  document.getElementById("modal").classList.add("show");
+  document.body.style.overflow="hidden";
+}
+function practiceMessage(name){
+  alert(name+" section is ready in the platform structure. We will add the real lessons, audio and questions next.");
+}
+function toggleMenu(){document.getElementById("nav").classList.toggle("open")}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
 </script>
 </body>
 </html>
