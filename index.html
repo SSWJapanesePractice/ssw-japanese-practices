@@ -425,6 +425,10 @@ function searchFields(e){
   document.getElementById("fields").scrollIntoView({behavior:"smooth"});
 }
 function openField(n){
+  if(n===11){
+    window.location.href="agriculture.html";
+    return;
+  }
   const f=fields.find(x=>x.n===n);
   document.getElementById("modalTitle").textContent=f.name;
   document.getElementById("modalJP").textContent=f.jp;
