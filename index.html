@@ -425,12 +425,8 @@ function searchFields(e){
   document.getElementById("fields").scrollIntoView({behavior:"smooth"});
 }
 function openField(n){
-  if(n===11){
-    window.location.href="agriculture.html";
-    return;
-  }
-  if(n===13){
-    window.location.href="food-manufacturing.html";
+  if(n===9){
+    window.location.href="truck-driving.html";
     return;
   }
   const f=fields.find(x=>x.n===n);
