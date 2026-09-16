@@ -429,6 +429,10 @@ function openField(n){
     window.location.href="agriculture.html";
     return;
   }
+  if(n===13){
+    window.location.href="food-manufacturing.html";
+    return;
+  }
   const f=fields.find(x=>x.n===n);
   document.getElementById("modalTitle").textContent=f.name;
   document.getElementById("modalJP").textContent=f.jp;
