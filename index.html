@@ -477,10 +477,18 @@ function searchFields(e){
   document.getElementById("fields").scrollIntoView({behavior:"smooth"});
 }
 function openField(n){
-  if(n===9){
-    window.location.href="truck-driving.html";
+  const lessonPages = {
+    2: "building-cleaning-ready.html",
+    4: "food-manufacturing.html",
+    9: "truck-driving.html",
+    11: "agriculture.html"
+  };
+
+  if(lessonPages[n]){
+    window.location.href = lessonPages[n];
     return;
   }
+
   const f=fields.find(x=>x.n===n);
   document.getElementById("modalTitle").textContent=f.name;
   document.getElementById("modalJP").textContent=f.jp;
