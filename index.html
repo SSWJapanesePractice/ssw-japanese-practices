@@ -278,7 +278,7 @@ footer p,footer a{color:#c4d1dd;font-size:13px}
       <p>Start with the core Japanese skills needed for work and everyday life.</p>
     </div>
     <div class="foundation">
-      <a class="learn-card" href="#practice"><div class="icon">🔤</div><h3>Hiragana & Katakana</h3><div class="jp">ひらがな・カタカナ</div><span class="card-link">Learn →</span></a>
+      <a class="learn-card" href="#" onclick="openKanaLessons();return false"><div class="icon">🔤</div><h3>Hiragana & Katakana</h3><div class="jp">ひらがな・カタカナ</div><span class="card-link">Learn →</span></a>
       <a class="learn-card" href="#practice"><div class="icon">📖</div><h3>Vocabulary</h3><div class="jp">語彙</div><span class="card-link">Learn →</span></a>
       <a class="learn-card" href="#practice"><div class="icon">🈶</div><h3>Kanji</h3><div class="jp">漢字</div><span class="card-link">Learn →</span></a>
       <a class="learn-card" href="#practice"><div class="icon">📕</div><h3>Grammar</h3><div class="jp">文法</div><span class="card-link">Learn →</span></a>
@@ -344,6 +344,58 @@ footer p,footer a{color:#c4d1dd;font-size:13px}
     <div class="copy">© <span id="year"></span> SSW Japanese Practice. All Rights Reserved.</div>
   </div>
 </footer>
+
+
+<div class="modal" id="kanaModal" onclick="if(event.target===this)closeKanaLessons()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <div class="eyebrow">Japanese Foundation</div>
+        <h2>Hiragana & Katakana</h2>
+        <div class="jp">ひらがな・カタカナ</div>
+      </div>
+      <button class="close" onclick="closeKanaLessons()">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="color:#667085;margin-top:0">
+        Start from Hiragana, then continue through the complete Katakana course.
+      </p>
+
+      <h3 style="color:var(--navy);margin-bottom:8px">Hiragana — ひらがな</h3>
+      <div class="lessons">
+        <div class="lesson"><div><strong>Lesson 01 — あいうえお</strong><small>Hiragana basics, reading, writing and practice.</small></div><a class="btn primary" href="hiragana-lesson-01.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 02 — かきくけこ</strong><small>Hiragana group か・き・く・け・こ.</small></div><a class="btn primary" href="hiragana-lesson-02.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 03 — さしすせそ</strong><small>Hiragana group さ・し・す・せ・そ.</small></div><a class="btn primary" href="hiragana-lesson-03.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 04 — たちつてと</strong><small>Hiragana group た・ち・つ・て・と.</small></div><a class="btn primary" href="hiragana-lesson-04.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 05 — なにぬねの</strong><small>Hiragana group な・に・ぬ・ね・の.</small></div><a class="btn primary" href="hiragana-lesson-05.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 06 — はひふへほ</strong><small>Hiragana group は・ひ・ふ・へ・ほ.</small></div><a class="btn primary" href="hiragana-lesson-06.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 07 — まみむめも / やゆよ / らりるれろ / わをん</strong><small>Continue the main Hiragana groups and reading practice.</small></div><a class="btn primary" href="hiragana-lesson-07.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 08 — Hiragana Complete</strong><small>Handakuten, small ゃ・ゅ・ょ, small っ and long vowels.</small></div><a class="btn primary" href="hiragana-lesson-08.html">Open</a></div>
+      </div>
+
+      <h3 style="color:var(--navy);margin:28px 0 8px">Katakana — カタカナ</h3>
+      <div class="lessons">
+        <div class="lesson"><div><strong>Lesson 09 — ア・イ・ウ・エ・オ</strong><small>Katakana vowel sounds and practice.</small></div><a class="btn primary" href="katakana-lesson-9.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 10 — カ・キ・ク・ケ・コ</strong><small>Katakana group カ・キ・ク・ケ・コ.</small></div><a class="btn primary" href="katakana-lesson-10.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 11 — サ・シ・ス・セ・ソ</strong><small>Katakana group サ・シ・ス・セ・ソ.</small></div><a class="btn primary" href="katakana-lesson-11.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 12 — タ・チ・ツ・テ・ト</strong><small>Katakana group タ・チ・ツ・テ・ト.</small></div><a class="btn primary" href="katakana-lesson-12.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 13 — ナ・ニ・ヌ・ネ・ノ</strong><small>Katakana group ナ・ニ・ヌ・ネ・ノ.</small></div><a class="btn primary" href="katakana-lesson-13.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 14 — ハ・ヒ・フ・ヘ・ホ</strong><small>Katakana group ハ・ヒ・フ・ヘ・ホ.</small></div><a class="btn primary" href="katakana-lesson-14.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 15 — マ・ミ・ム・メ・モ</strong><small>Katakana group マ・ミ・ム・メ・モ.</small></div><a class="btn primary" href="katakana-lesson-15.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 16 — ヤ・ユ・ヨ</strong><small>Katakana group ヤ・ユ・ヨ.</small></div><a class="btn primary" href="katakana-lesson-16.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 16B — ラ・リ・ル・レ・ロ</strong><small>Katakana ラ行 practice.</small></div><a class="btn primary" href="katakana-lesson-16b.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 16C — ワ・ヲ・ン</strong><small>Katakana ワ・ヲ・ン practice.</small></div><a class="btn primary" href="katakana-lesson-16c.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 16D — Dakuten & Handakuten</strong><small>Katakana voiced and semi-voiced sounds.</small></div><a class="btn primary" href="katakana-lesson-16d.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 16E — Youon</strong><small>Katakana combinations with small ャ・ュ・ョ.</small></div><a class="btn primary" href="katakana-lesson-16e.html">Open</a></div>
+        <div class="lesson"><div><strong>Lesson 16F — Extended Katakana</strong><small>Extended sounds used in foreign/loan words.</small></div><a class="btn primary" href="katakana-lesson-16f.html">Open</a></div>
+      </div>
+
+      <div class="notice">
+        21 foundation lessons are connected here: 8 Hiragana lessons + 13 Katakana lessons.
+      </div>
+    </div>
+  </div>
+</div>
 
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()">
   <div class="modal-box">
@@ -440,6 +492,16 @@ function closeModal(){
   document.getElementById("modal").classList.remove("show");
   document.body.style.overflow="";
 }
+
+function openKanaLessons(){
+  document.getElementById("kanaModal").classList.add("show");
+  document.body.style.overflow="hidden";
+}
+function closeKanaLessons(){
+  document.getElementById("kanaModal").classList.remove("show");
+  document.body.style.overflow="";
+}
+
 function lessonComing(){alert("Lesson content is being prepared for the next build. The course structure is ready.");}
 function openStarter(){
   document.getElementById("modalTitle").textContent="Greetings & Basic Workplace Communication";
@@ -452,7 +514,7 @@ function practiceMessage(name){
   alert(name+" section is ready in the platform structure. We will add the real lessons, audio and questions next.");
 }
 function toggleMenu(){document.getElementById("nav").classList.toggle("open")}
-document.addEventListener("keydown",e=>{if(e.key==="Escape")closeModal()});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeKanaLessons()}});
 </script>
 </body>
 </html>
