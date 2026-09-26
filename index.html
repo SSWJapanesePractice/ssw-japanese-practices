@@ -448,6 +448,13 @@ const fields = [
  {n:19,name:"Logistics Warehouse",jp:"物流倉庫",icon:"📦",cat:"transport",desc:"Warehouse vocabulary, picking, packing, loading and safety."}
 ];
 
+const lessonPages = {
+  2: "./building-cleaning-ready.html",
+  4: "./food-manufacturing.html",
+  9: "./truck-driving.html",
+  11: "./agriculture.html"
+};
+
 const grid=document.getElementById("fieldGrid");
 const count=document.getElementById("fieldCount");
 document.getElementById("year").textContent=new Date().getFullYear();
@@ -458,7 +465,9 @@ function render(list){
       <div class="field-top"><div class="icon">${f.icon}</div><div class="number">SSW FIELD ${String(f.n).padStart(2,"0")}</div></div>
       <h3>${f.name}</h3><div class="jp">${f.jp}</div>
       <p>${f.desc}</p>
-      <a href="#" class="card-link" onclick="openField(${f.n});return false">Learn Japanese →</a>
+      ${lessonPages[f.n]
+        ? `<a href="${lessonPages[f.n]}" class="card-link">Learn Japanese →</a>`
+        : `<a href="#" class="card-link" onclick="openField(${f.n});return false">Learn Japanese →</a>`}
     </article>`).join("");
   count.textContent=`${list.length} SSW field${list.length===1?"":"s"}`;
 }
@@ -477,15 +486,8 @@ function searchFields(e){
   document.getElementById("fields").scrollIntoView({behavior:"smooth"});
 }
 function openField(n){
-  const lessonPages = {
-    2: "building-cleaning-ready.html",
-    4: "food-manufacturing.html",
-    9: "truck-driving.html",
-    11: "agriculture.html"
-  };
-
   if(lessonPages[n]){
-    window.location.href = lessonPages[n];
+    window.location.assign(lessonPages[n]);
     return;
   }
 
