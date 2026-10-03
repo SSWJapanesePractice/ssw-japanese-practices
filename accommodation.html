@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accommodation SSW — Japanese with Raza Sensei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#6B1E3C; --navy-dark:#4A1228; --navy-light:#9C4E6B;
+  --steel:#7A7268; --rust:#C9A227; --rust-dark:#9C7A1C;
+  --ink:#2B1D22; --muted:#6B5D63; --border:#E6DCDF; --paper:#FAF6F4; --card:#FFFFFF;
+  --good:#1F7A4D; --bad:#B3261E; --radius:14px; --shadow:0 2px 10px rgba(107,30,60,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); line-height:1.55;}
+.jp{font-family:'Noto Sans JP','Inter',sans-serif;}
+ruby rt{font-size:0.55em; color:var(--muted);}
+
+#app{display:flex; min-height:100vh;}
+#sidebar{width:290px; flex-shrink:0; background:var(--navy-dark); color:#fff; height:100vh; position:sticky; top:0; overflow-y:auto; padding-bottom:30px;}
+.brand{display:flex; align-items:center; gap:10px; padding:20px 18px 16px 18px; border-bottom:1px solid rgba(255,255,255,0.12); cursor:pointer;}
+.brand .logo{width:40px;height:40px;border-radius:10px;background:var(--rust); display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.brand-text{font-weight:800;font-size:13.5px;line-height:1.25;}
+.brand-text small{display:block;font-weight:500;font-size:11px;color:#A8C2D6;}
+#toc{padding:10px 8px 0 8px;}
+.toc-link{display:flex; align-items:center; gap:8px; padding:10px 12px; margin:3px 2px; font-size:12.5px; color:#C9DBE9; border-radius:9px; cursor:pointer;}
+.toc-icon{font-size:15px;}
+.toc-link:hover{background:rgba(255,255,255,0.08); color:#fff;}
+.toc-link.active{background:var(--rust); color:#fff; font-weight:700;}
+#sidebar-footer{padding:16px 18px; font-size:10.5px; color:#87A2B8; border-top:1px solid rgba(255,255,255,0.1); margin-top:14px;}
+
+#menu-toggle{display:none; position:fixed; top:14px; left:14px; z-index:50; width:42px;height:42px;border-radius:10px;background:var(--navy-dark);color:#fff; border:none; font-size:18px; box-shadow:var(--shadow); cursor:pointer;}
+
+#main{flex:1; min-width:0;}
+#topbar{position:sticky; top:0; z-index:20; background:var(--card); border-bottom:1px solid var(--border); padding:14px 32px; display:flex; align-items:center; justify-content:space-between;}
+#mobile-title{font-weight:800; font-size:14px; color:var(--navy-dark);}
+#progress-wrap{display:flex; align-items:center; gap:10px; font-size:12px; color:var(--muted);}
+#progress-track{width:130px; height:7px; background:var(--border); border-radius:5px; overflow:hidden;}
+#progress-fill{height:100%; background:linear-gradient(90deg,var(--rust),var(--navy-light)); width:0%; transition:width .3s;}
+
+#content{max-width:880px; margin:0 auto; padding:0 32px 100px 32px;}
+
+.home-hero{background:linear-gradient(135deg,var(--navy) 0%, var(--navy-dark) 100%); color:#fff; border-radius:20px; padding:44px 38px; margin:32px 0 28px 0; position:relative; overflow:hidden;}
+.home-hero::after{content:"🏨"; position:absolute; right:24px; bottom:-16px; font-size:130px; opacity:0.15; transform:rotate(-8deg);}
+.home-hero h2{margin:0 0 10px 0; font-size:23px; font-weight:800;}
+.home-hero p{margin:0; color:#D3E2ED; max-width:560px; font-size:14.5px;}
+.home-stats{display:flex; gap:14px; margin-top:24px; flex-wrap:wrap;}
+.home-stat{background:rgba(255,255,255,0.1); border-radius:12px; padding:12px 18px; min-width:100px;}
+.home-stat b{display:block; font-size:22px;}
+.home-stat span{font-size:11px; color:#BBD3E4;}
+.chapter-cards{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px;}
+@media(max-width:700px){.chapter-cards{grid-template-columns:1fr;}}
+.chapter-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; cursor:pointer; box-shadow:var(--shadow); border-top:4px solid var(--rust); transition:transform .15s;}
+.chapter-card:hover{transform:translateY(-2px);}
+.card-icon{font-size:26px;}
+.chapter-card h3{margin:8px 0 4px 0; font-size:14.5px;}
+.chapter-card p{margin:0; font-size:12px; color:var(--muted);}
+.footer-credit{text-align:center; color:var(--muted); font-size:12px; margin:40px 0 10px 0;}
+
+.chapter-section{padding-top:8px;}
+.chapter-banner{background:var(--navy-dark); color:#fff; border-radius:16px; padding:24px 26px; margin:28px 0 20px 0; border-left:6px solid var(--rust);}
+.chapter-banner-eyebrow{font-size:11px; letter-spacing:.05em; color:var(--rust); font-weight:700; text-transform:uppercase;}
+.chapter-banner-title{margin:6px 0 0 0; display:flex; flex-direction:column; gap:2px;}
+.chapter-banner-title .jp{font-size:19px; font-weight:800;}
+.chapter-banner-title .en{font-size:12.5px; color:#BFD6E6; font-weight:500;}
+
+.sec{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:22px 24px; margin-bottom:18px; box-shadow:var(--shadow);}
+.sec-title{display:flex; flex-direction:column; gap:2px; margin-bottom:14px; padding-bottom:12px; border-bottom:2px solid #EAEEF2;}
+.sec-title .jp{font-weight:800; font-size:15.5px; color:var(--navy-dark);}
+.sec-title .en{font-size:12px; color:var(--muted); font-weight:600;}
+
+.para{margin-bottom:14px;}
+.para .jp{font-size:15px; display:flex; align-items:flex-start; gap:8px; margin:0 0 4px 0;}
+.para .en{font-size:13px; color:var(--muted); margin:0; padding-left:34px;}
+
+.spk{flex-shrink:0; border:none; background:var(--rust); color:#fff; border-radius:50%; width:26px;height:26px; font-size:12px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.2); margin-top:1px;}
+.spk:hover{background:var(--rust-dark);}
+.spk:active{transform:scale(0.92);}
+
+.steps{margin:10px 0 16px 0; padding:14px 16px; background:#EEF3F7; border-radius:12px;}
+.step{margin-bottom:9px;}
+.step:last-child{margin-bottom:0;}
+.step-jp{font-size:14px;}
+.step-en{font-size:12px; color:var(--muted); margin-top:1px;}
+
+.icon-card{background:#EEF3F7; border:1px dashed var(--border); border-radius:12px; padding:20px; text-align:center; margin:16px 0;}
+.icon-visual{font-size:50px; line-height:1; margin-bottom:10px; letter-spacing:4px;}
+.icon-caption{display:flex; flex-direction:column; gap:2px;}
+.icon-caption .jp{font-size:12.5px; font-weight:600; color:var(--navy-dark);}
+.icon-caption .en{font-size:11px; color:var(--muted);}
+
+.q-block{background:#EEF3F7; border-radius:12px; padding:16px 18px; margin:14px 0; border:1px solid var(--border);}
+.q-jp{font-size:14.5px; font-weight:700; margin:0 0 2px 0;}
+.q-en{font-size:12px; color:var(--muted); margin:0 0 12px 0;}
+.opt{padding:10px 14px; border-radius:9px; border:1.5px solid var(--border); margin-bottom:7px; cursor:pointer; background:#fff; display:flex; flex-direction:column; gap:1px;}
+.opt:hover{border-color:var(--navy-light);}
+.opt .jp{font-size:13.5px;}
+.opt .en{font-size:11.5px; color:var(--muted);}
+.q-block.answered .opt{cursor:default; pointer-events:none;}
+.q-block.answered .opt.correct{background:#E7F5EC; border-color:var(--good);}
+.q-block.answered .opt.wrong{background:#FBEAE9; border-color:var(--bad);}
+.explain{display:none; margin-top:10px; padding:10px 12px; background:#fff; border-left:3px solid var(--navy); border-radius:6px; font-size:12.5px;}
+.q-block.answered .explain{display:block;}
+.explain .jp{font-weight:600; margin-bottom:3px;}
+.explain .en{color:var(--muted);}
+.section-score-inline{background:var(--navy); color:#fff; padding:2px 9px; border-radius:20px; font-size:11px !important;}
+
+@media(max-width:980px){
+  #sidebar{position:fixed; left:-310px; top:0; z-index:40; transition:left .2s; width:270px; box-shadow:4px 0 20px rgba(0,0,0,0.3);}
+  #sidebar.open{left:0;}
+  #menu-toggle{display:flex; align-items:center; justify-content:center;}
+  #content{padding:0 16px 100px 16px;}
+  #topbar{padding:14px 16px 14px 64px;}
+  .home-hero{padding:30px 22px;}
+}
+</style>
+</head>
+<body>
+<button id="menu-toggle">☰</button>
+<div id="app">
+  <aside id="sidebar">
+    <div class="brand"><div class="logo">🛎️</div><div class="brand-text">Accommodation<br>SSW<small>Japanese with Raza Sensei</small></div></div>
+    <div id="toc">
+    <div class="toc-link" data-target="ch01"><span class="toc-icon">🏨</span>第1章　宿泊分野の仕事</div>
+    <div class="toc-link" data-target="ch02"><span class="toc-icon">🛎</span>第2章　フロント業務：チェックインとチェックアウト</div>
+    <div class="toc-link" data-target="ch03"><span class="toc-icon">📅</span>第3章　予約管理</div>
+    <div class="toc-link" data-target="ch04"><span class="toc-icon">💳</span>第4章　会計・精算</div>
+    <div class="toc-link" data-target="ch05"><span class="toc-icon">🗺</span>第5章　接客業務：館内案内とお問い合わせ対応</div>
+    <div class="toc-link" data-target="ch06"><span class="toc-icon">🍽</span>第6章　レストランサービス</div>
+    <div class="toc-link" data-target="ch07"><span class="toc-icon">🛏</span>第7章　客室清掃とベッドメイキングの基礎</div>
+    <div class="toc-link" data-target="ch08"><span class="toc-icon">🙇</span>第8章　接客所作とおもてなしの心</div>
+    <div class="toc-link" data-target="ch09"><span class="toc-icon">🚨</span>第9章　安全・防災の基礎</div>
+    <div class="toc-link" data-target="ch10"><span class="toc-icon">📣</span>第10章　企画・広報</div>
+    <div class="toc-link" data-target="ch11"><span class="toc-icon">💬</span>第11章　報連相とコンプライアンス、判断練習</div>
+    </div>
+    <div id="sidebar-footer">特定技能「宿泊分野」<br>Bilingual Study Guide · Ruby Furigana · Audio<br><br>Original study material — not affiliated with or reproducing any official test-prep publisher's text.</div>
+  </aside>
+  <main id="main">
+    <div id="topbar">
+      <div id="mobile-title">Accommodation SSW</div>
+      <div id="progress-wrap"><div id="progress-track"><div id="progress-fill"></div></div><span id="progress-text">0 / 11 read</span></div>
+    </div>
+    <div id="content">
+      <div id="view-home">
+        <div class="home-hero">
+          <h2>特定技能「宿泊分野」<br>Accommodation — SSW Exam Prep</h2>
+          <p>An original bilingual study guide covering this field's core work — front desk check-in/check-out, reservations, billing, guest services, restaurant service, room cleaning, hospitality manners (omotenashi), safety &amp; disaster prevention, and planning &amp; PR — with furigana and tap-to-listen audio.</p>
+          <p style="margin-top:18px;"><a href="./accommodation-practice.html" style="display:inline-block;background:#C9A227;color:#4A1228;padding:11px 18px;border-radius:10px;text-decoration:none;font-weight:800;">📇 Vocabulary &amp; Quiz Practice →</a></p>
+          <div class="home-stats">
+            <div class="home-stat"><b>11</b><span>Chapters</span></div>
+            <div class="home-stat"><b>🔊</b><span>Audio</span></div>
+            <div class="home-stat" id="home-progress-stat"><b>0%</b><span>Completed</span></div>
+          </div>
+        </div>
+        <div class="chapter-cards" id="chapter-cards">
+<div class="chapter-card" data-target="ch01"><div class="card-icon">🏨🧳</div><h3>第1章　宿泊分野の仕事</h3><p>What Accommodation Field Work Involves</p></div>
+<div class="chapter-card" data-target="ch02"><div class="card-icon">🛎️📋</div><h3>第2章　フロント業務：チェックインとチェックアウト</h3><p>Front Desk: Check-in and Check-out</p></div>
+<div class="chapter-card" data-target="ch03"><div class="card-icon">📅🗓️</div><h3>第3章　予約管理</h3><p>Reservations Management</p></div>
+<div class="chapter-card" data-target="ch04"><div class="card-icon">💳🧾</div><h3>第4章　会計・精算</h3><p>Billing and Settlement</p></div>
+<div class="chapter-card" data-target="ch05"><div class="card-icon">🗺️🙋</div><h3>第5章　接客業務：館内案内とお問い合わせ対応</h3><p>Guest Services: In-House Guidance and Inquiries</p></div>
+<div class="chapter-card" data-target="ch06"><div class="card-icon">🍽️🍴</div><h3>第6章　レストランサービス</h3><p>Restaurant Service</p></div>
+<div class="chapter-card" data-target="ch07"><div class="card-icon">🛏️🧹</div><h3>第7章　客室清掃とベッドメイキングの基礎</h3><p>Room Cleaning and Bed-Making Basics</p></div>
+<div class="chapter-card" data-target="ch08"><div class="card-icon">🙇👔</div><h3>第8章　接客所作とおもてなしの心</h3><p>Hospitality Manners and Etiquette</p></div>
+<div class="chapter-card" data-target="ch09"><div class="card-icon">🚨🧯</div><h3>第9章　安全・防災の基礎</h3><p>Safety and Disaster Prevention Basics</p></div>
+<div class="chapter-card" data-target="ch10"><div class="card-icon">📣📱</div><h3>第10章　企画・広報</h3><p>Planning and Public Relations</p></div>
+<div class="chapter-card" data-target="ch11"><div class="card-icon">💬🤝</div><h3>第11章　報連相とコンプライアンス、判断練習</h3><p>Workplace Communication, Compliance, and Judgment Practice</p></div>
+        </div>
+        <p class="footer-credit">Japanese with Raza Sensei · SSW Accommodation System · Original bilingual study guide, icons &amp; text independently authored</p>
+      </div>
+      <div id="view-content" style="display:none;">
+<section class="chapter-section" id="ch01" data-chapter="ch01">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第1章　宿泊分野の仕事</span><span class="en">What Accommodation Field Work Involves</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="宿泊分野の特定技能は、ホテルや旅館で働き、宿泊客に快適な滞在を提供する仕事です。">🔊</button><ruby>宿泊分野<rt>しゅくはくぶんや</rt></ruby>の<ruby>特定技能<rt>とくていぎのう</rt></ruby>は、ホテルや<ruby>旅館<rt>りょかん</rt></ruby>で<ruby>働<rt>はたら</rt></ruby>き、<ruby>宿泊客<rt>しゅくはくきゃく</rt></ruby>に<ruby>快適<rt>かいてき</rt></ruby>な<ruby>滞在<rt>たいざい</rt></ruby>を<ruby>提供<rt>ていきょう</rt></ruby>する<ruby>仕事<rt>しごと</rt></ruby>です。</p>
+    <p class="en">The Accommodation SSW field involves working at hotels and Japanese-style inns (ryokan) to provide guests with a comfortable stay.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="業務は大きく四つに分けられます。フロント業務、企画・広報、接客業務、そしてレストランサービスです。">🔊</button><ruby>業務<rt>ぎょうむ</rt></ruby>は<ruby>大<rt>おお</rt></ruby>きく<ruby>四<rt>よっ</rt></ruby>つに<ruby>分<rt>わ</rt></ruby>けられます。<ruby>フロント業務<rt>ふろんとぎょうむ</rt></ruby>、<ruby>企画<rt>きかく</rt></ruby>・<ruby>広報<rt>こうほう</rt></ruby>、<ruby>接客業務<rt>せっきゃくぎょうむ</rt></ruby>、そしてレストランサービスです。</p>
+    <p class="en">The work is broadly divided into four categories: front desk operations, planning and public relations, guest services, and restaurant service.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="フロント業務では、チェックイン・チェックアウトの対応や、周辺観光地の案内、館内施設の予約の取り次ぎなどを行います。">🔊</button>フロント<ruby>業務<rt>ぎょうむ</rt></ruby>では、チェックイン・チェックアウトの<ruby>対応<rt>たいおう</rt></ruby>や、<ruby>周辺観光地<rt>しゅうへんかんこうち</rt></ruby>の<ruby>案内<rt>あんない</rt></ruby>、<ruby>館内施設<rt>かんないしせつ</rt></ruby>の<ruby>予約<rt>よやく</rt></ruby>の<ruby>取<rt>と</rt></ruby>り<ruby>次<rt>つ</rt></ruby>ぎなどを<ruby>行<rt>おこな</rt></ruby>います。</p>
+    <p class="en">Front desk operations include handling check-in and check-out, providing information about nearby tourist spots, and taking bookings for in-house facilities.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="客室清掃やベッドメイキングのような関連業務も付随的に担当できますが、それだけに専従することは認められていません。">🔊</button><ruby>客室清掃<rt>きゃくしつせいそう</rt></ruby>やベッドメイキングのような<ruby>関連業務<rt>かんれんぎょうむ</rt></ruby>も<ruby>付随的<rt>ふずいてき</rt></ruby>に<ruby>担当<rt>たんとう</rt></ruby>できますが、それだけに<ruby>専従<rt>せんじゅう</rt></ruby>することは<ruby>認<rt>みと</rt></ruby>められていません。</p>
+    <p class="en">Related tasks such as room cleaning and bed-making can also be handled incidentally, but working exclusively on those tasks alone is not permitted.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🏨🧳</div>
+    <div class="icon-caption"><span class="jp">ホテル・旅館で働く人たち</span><span class="en">People working at hotels and ryokan</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>特定技能<rt>とくていぎのう</rt></ruby>「<ruby>宿泊<rt>しゅくはく</rt></ruby>」の<ruby>業務<rt>ぎょうむ</rt></ruby>に<b>あてはまらない</b>ものはどれですか。</p>
+    <p class="q-en">Which of the following is NOT one of the categories of work under Specified Skilled Worker "Accommodation"?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 客室清掃だけに専従する仕事</span><span class="en">A job consisting only of room cleaning</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. フロント業務</span><span class="en">Front desk operations</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. レストランサービス</span><span class="en">Restaurant service</span></div>
+    <div class="explain"><div class="jp">客室清掃やベッドメイキングは付随業務として行うことはできますが、それだけに専従することは認められていません。</div><div class="en">Room cleaning and bed-making may be handled as incidental duties, but working exclusively on those tasks alone is not permitted.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch02" data-chapter="ch02">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第2章　フロント業務：チェックインとチェックアウト</span><span class="en">Front Desk: Check-in and Check-out</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="宿泊客が到着したら、宿泊カードに名前や住所を記入してもらい、本人確認のために身分証明書を確認します。">🔊</button><ruby>宿泊客<rt>しゅくはくきゃく</rt></ruby>が<ruby>到着<rt>とうちゃく</rt></ruby>したら、<ruby>宿泊<rt>しゅくはく</rt></ruby>カードに<ruby>名前<rt>なまえ</rt></ruby>や<ruby>住所<rt>じゅうしょ</rt></ruby>を<ruby>記入<rt>きにゅう</rt></ruby>してもらい、<ruby>本人確認<rt>ほんにんかくにん</rt></ruby>のために<ruby>身分証明書<rt>みぶんしょうめいしょ</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>します。</p>
+    <p class="en">When guests arrive, they are asked to fill in their name and address on the registration card, and identification is checked to verify their identity.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="外国のお客様の場合、法律により旅券(パスポート)のコピーが必要になることがあります。">🔊</button><ruby>外国<rt>がいこく</rt></ruby>のお<ruby>客様<rt>きゃくさま</rt></ruby>の<ruby>場合<rt>ばあい</rt></ruby>、<ruby>法律<rt>ほうりつ</rt></ruby>により<ruby>旅券<rt>りょけん</rt></ruby>(パスポート)のコピーが<ruby>必要<rt>ひつよう</rt></ruby>になることがあります。</p>
+    <p class="en">For foreign guests, a copy of the passport may be legally required.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="チェックアウトでは、部屋の鍵を受け取り、追加料金がないかを確認してから会計をします。">🔊</button>チェックアウトでは、<ruby>部屋<rt>へや</rt></ruby>の<ruby>鍵<rt>かぎ</rt></ruby>を<ruby>受<rt>う</rt></ruby>け<ruby>取<rt>と</rt></ruby>り、<ruby>追加料金<rt>ついかりょうきん</rt></ruby>がないかを<ruby>確認<rt>かくにん</rt></ruby>してから<ruby>会計<rt>かいけい</rt></ruby>をします。</p>
+    <p class="en">At check-out, staff collect the room key, check for any additional charges, and then process the payment.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="チェックインやチェックアウトが混み合う時間帯でも、一人ひとりに丁寧に対応することが大切です。">🔊</button>チェックインやチェックアウトが<ruby>混<rt>こ</rt></ruby>み<ruby>合<rt>あ</rt></ruby>う<ruby>時間帯<rt>じかんたい</rt></ruby>でも、<ruby>一人<rt>ひとり</rt></ruby>ひとりに<ruby>丁寧<rt>ていねい</rt></ruby>に<ruby>対応<rt>たいおう</rt></ruby>することが<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">Even during busy check-in or check-out times, it is important to treat each guest politely and carefully.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-jp">①<ruby>予約内容<rt>よやくないよう</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>する</div>
+      <div class="step-en">① Confirm the reservation details</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">②<ruby>宿泊<rt>しゅくはく</rt></ruby>カードの<ruby>記入<rt>きにゅう</rt></ruby>と<ruby>本人確認<rt>ほんにんかくにん</rt></ruby>をしてもらう</div>
+      <div class="step-en">② Have the guest fill in the registration card and verify their identity</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">③<ruby>部屋<rt>へや</rt></ruby>の<ruby>鍵<rt>かぎ</rt></ruby>を<ruby>渡<rt>わた</rt></ruby>し、<ruby>館内<rt>かんない</rt></ruby>の<ruby>案内<rt>あんない</rt></ruby>をする</div>
+      <div class="step-en">③ Hand over the room key and explain the facilities</div>
+    </div>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🛎️📋</div>
+    <div class="icon-caption"><span class="jp">チェックインでの本人確認</span><span class="en">Identity verification at check-in</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>外国<rt>がいこく</rt></ruby>のお<ruby>客様<rt>きゃくさま</rt></ruby>がチェックインするとき、<ruby>法律<rt>ほうりつ</rt></ruby>により<ruby>必要<rt>ひつよう</rt></ruby>になることがあるものはどれですか。</p>
+    <p class="q-en">What may be legally required when a foreign guest checks in?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 旅券(パスポート)のコピー</span><span class="en">A copy of the passport</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 領収書の発行</span><span class="en">Issuing a receipt</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 客室清掃の依頼</span><span class="en">Requesting room cleaning</span></div>
+    <div class="explain"><div class="jp">外国のお客様の場合、法律により旅券(パスポート)のコピーが必要になることがあります。</div><div class="en">For foreign guests, a copy of the passport may be legally required.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch03" data-chapter="ch03">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第3章　予約管理</span><span class="en">Reservations Management</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="ホテルや旅館では、電話やインターネットなど、さまざまな方法で予約を受け付けます。">🔊</button>ホテルや<ruby>旅館<rt>りょかん</rt></ruby>では、<ruby>電話<rt>でんわ</rt></ruby>やインターネットなど、さまざまな<ruby>方法<rt>ほうほう</rt></ruby>で<ruby>予約<rt>よやく</rt></ruby>を<ruby>受<rt>う</rt></ruby>け<ruby>付<rt>つ</rt></ruby>けます。</p>
+    <p class="en">Hotels and ryokan accept reservations through various methods, such as by phone and over the internet.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="予約を受けたら、空室状況をすぐに更新して、同じ部屋を二重に予約してしまう「ダブルブッキング」を防ぎます。">🔊</button><ruby>予約<rt>よやく</rt></ruby>を<ruby>受<rt>う</rt></ruby>けたら、<ruby>空室状況<rt>くうしつじょうきょう</rt></ruby>をすぐに<ruby>更新<rt>こうしん</rt></ruby>して、<ruby>同<rt>おな</rt></ruby>じ<ruby>部屋<rt>へや</rt></ruby>を<ruby>二重<rt>にじゅう</rt></ruby>に<ruby>予約<rt>よやく</rt></ruby>してしまう「ダブルブッキング」を<ruby>防<rt>ふせ</rt></ruby>ぎます。</p>
+    <p class="en">After accepting a reservation, staff immediately update the room availability to prevent "double booking" — accidentally reserving the same room twice.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="予約内容の宿泊日、人数、部屋のタイプなどは、間違いがないように正確に記録します。">🔊</button><ruby>予約内容<rt>よやくないよう</rt></ruby>の<ruby>宿泊日<rt>しゅくはくび</rt></ruby>、<ruby>人数<rt>にんずう</rt></ruby>、<ruby>部屋<rt>へや</rt></ruby>のタイプなどは、<ruby>間違<rt>まちが</rt></ruby>いがないように<ruby>正確<rt>せいかく</rt></ruby>に<ruby>記録<rt>きろく</rt></ruby>します。</p>
+    <p class="en">Reservation details such as the dates of stay, number of guests, and room type are recorded accurately to avoid mistakes.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="在庫管理(あいている部屋の数の管理)がしっかりできていないと、予約のトラブルにつながります。">🔊</button><ruby>在庫管理<rt>ざいこかんり</rt></ruby>(あいている<ruby>部屋<rt>へや</rt></ruby>の<ruby>数<rt>かず</rt></ruby>の<ruby>管理<rt>かんり</rt></ruby>)がしっかりできていないと、<ruby>予約<rt>よやく</rt></ruby>のトラブルにつながります。</p>
+    <p class="en">If inventory management (tracking the number of available rooms) is not done properly, it can lead to reservation trouble.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">📅🗓️</div>
+    <div class="icon-caption"><span class="jp">予約と空室状況の管理</span><span class="en">Managing reservations and room availability</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>同<rt>おな</rt></ruby>じ<ruby>部屋<rt>へや</rt></ruby>を<ruby>二重<rt>にじゅう</rt></ruby>に<ruby>予約<rt>よやく</rt></ruby>してしまうことを<ruby>何<rt>なん</rt></ruby>といいますか。</p>
+    <p class="q-en">What is it called when the same room is accidentally reserved twice?</p>
+      <div class="opt" data-val="A"><span class="jp">A. ダブルブッキング</span><span class="en">Double booking</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. チェックアウト</span><span class="en">Check-out</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 本人確認</span><span class="en">Identity verification</span></div>
+    <div class="explain"><div class="jp">同じ部屋を二重に予約してしまうことをダブルブッキングといい、空室状況をすぐに更新することで防ぎます。</div><div class="en">Accidentally reserving the same room twice is called double booking, and it is prevented by updating room availability immediately.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch04" data-chapter="ch04">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第4章　会計・精算</span><span class="en">Billing and Settlement</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="宿泊料金には、部屋代のほかに食事代やルームサービスなどの追加料金が含まれることがあります。">🔊</button><ruby>宿泊料金<rt>しゅくはくりょうきん</rt></ruby>には、<ruby>部屋代<rt>へやだい</rt></ruby>のほかに<ruby>食事代<rt>しょくじだい</rt></ruby>やルームサービスなどの<ruby>追加料金<rt>ついかりょうきん</rt></ruby>が<ruby>含<rt>ふく</rt></ruby>まれることがあります。</p>
+    <p class="en">In addition to the room charge, the accommodation fee may include extra charges such as meals or room service.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="会計のときは、金額を正確に確認し、現金やクレジットカードなど希望の支払方法で精算してもらいます。">🔊</button><ruby>会計<rt>かいけい</rt></ruby>のときは、<ruby>金額<rt>きんがく</rt></ruby>を<ruby>正確<rt>せいかく</rt></ruby>に<ruby>確認<rt>かくにん</rt></ruby>し、<ruby>現金<rt>げんきん</rt></ruby>やクレジットカードなど<ruby>希望<rt>きぼう</rt></ruby>の<ruby>支払方法<rt>しはらいほうほう</rt></ruby>で<ruby>精算<rt>せいさん</rt></ruby>してもらいます。</p>
+    <p class="en">When settling the bill, staff accurately check the amount and let the guest pay using their preferred method, such as cash or credit card.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="お客様から求められたら、金額や日付を正しく記入した領収書を発行します。">🔊</button>お<ruby>客様<rt>きゃくさま</rt></ruby>から<ruby>求<rt>もと</rt></ruby>められたら、<ruby>金額<rt>きんがく</rt></ruby>や<ruby>日付<rt>ひづけ</rt></ruby>を<ruby>正<rt>ただ</rt></ruby>しく<ruby>記入<rt>きにゅう</rt></ruby>した<ruby>領収書<rt>りょうしゅうしょ</rt></ruby>を<ruby>発行<rt>はっこう</rt></ruby>します。</p>
+    <p class="en">If a guest requests one, a receipt with the correct amount and date is issued.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="金額の間違いはお客様の信頼を失うことにつながるため、精算は落ち着いて丁寧に行います。">🔊</button><ruby>金額<rt>きんがく</rt></ruby>の<ruby>間違<rt>まちが</rt></ruby>いはお<ruby>客様<rt>きゃくさま</rt></ruby>の<ruby>信頼<rt>しんらい</rt></ruby>を<ruby>失<rt>うしな</rt></ruby>うことにつながるため、<ruby>精算<rt>せいさん</rt></ruby>は<ruby>落<rt>お</rt></ruby>ち<ruby>着<rt>つ</rt></ruby>いて<ruby>丁寧<rt>ていねい</rt></ruby>に<ruby>行<rt>おこな</rt></ruby>います。</p>
+    <p class="en">A billing mistake can cause guests to lose trust, so settlement is carried out calmly and carefully.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">💳🧾</div>
+    <div class="icon-caption"><span class="jp">料金の精算と領収書の発行</span><span class="en">Settling payment and issuing receipts</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp">お<ruby>客様<rt>きゃくさま</rt></ruby>から<ruby>求<rt>もと</rt></ruby>められたとき、<ruby>金額<rt>きんがく</rt></ruby>や<ruby>日付<rt>ひづけ</rt></ruby>を<ruby>正<rt>ただ</rt></ruby>しく<ruby>記入<rt>きにゅう</rt></ruby>して<ruby>発行<rt>はっこう</rt></ruby>するものはどれですか。</p>
+    <p class="q-en">When requested by a guest, what is issued with the correct amount and date written on it?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 領収書</span><span class="en">A receipt</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 宿泊カード</span><span class="en">A registration card</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 避難経路図</span><span class="en">An evacuation route map</span></div>
+    <div class="explain"><div class="jp">お客様から求められたら、金額や日付を正しく記入した領収書を発行します。</div><div class="en">If requested by a guest, a receipt with the correct amount and date is issued.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch05" data-chapter="ch05">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第5章　接客業務：館内案内とお問い合わせ対応</span><span class="en">Guest Services: In-House Guidance and Inquiries</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="接客業務では、大浴場やレストランの場所など、館内施設について宿泊客に案内します。">🔊</button><ruby>接客業務<rt>せっきゃくぎょうむ</rt></ruby>では、<ruby>大浴場<rt>だいよくじょう</rt></ruby>やレストランの<ruby>場所<rt>ばしょ</rt></ruby>など、<ruby>館内施設<rt>かんないしせつ</rt></ruby>について<ruby>宿泊客<rt>しゅくはくきゃく</rt></ruby>に<ruby>案内<rt>あんない</rt></ruby>します。</p>
+    <p class="en">In guest services, staff provide information to guests about in-house facilities, such as the location of the large communal bath or restaurant.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="周辺観光地や交通機関について聞かれたら、パンフレットや地図を使ってわかりやすく説明します。">🔊</button><ruby>周辺観光地<rt>しゅうへんかんこうち</rt></ruby>や<ruby>交通機関<rt>こうつうきかん</rt></ruby>について<ruby>聞<rt>き</rt></ruby>かれたら、パンフレットや<ruby>地図<rt>ちず</rt></ruby>を<ruby>使<rt>つか</rt></ruby>ってわかりやすく<ruby>説明<rt>せつめい</rt></ruby>します。</p>
+    <p class="en">When asked about nearby tourist spots or transportation, staff explain clearly using pamphlets and maps.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="お客様からの問い合わせには、できるだけ早く、正確な情報で答えるようにします。">🔊</button>お<ruby>客様<rt>きゃくさま</rt></ruby>からの<ruby>問<rt>と</rt></ruby>い<ruby>合<rt>あ</rt></ruby>わせには、できるだけ<ruby>早<rt>はや</rt></ruby>く、<ruby>正確<rt>せいかく</rt></ruby>な<ruby>情報<rt>じょうほう</rt></ruby>で<ruby>答<rt>こた</rt></ruby>えるようにします。</p>
+    <p class="en">Guest inquiries are answered as quickly as possible, with accurate information.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="自分だけでは分からないことは、あいまいに答えずに、先輩に確認してから案内します。">🔊</button><ruby>自分<rt>じぶん</rt></ruby>だけでは<ruby>分<rt>わ</rt></ruby>からないことは、あいまいに<ruby>答<rt>こた</rt></ruby>えずに、<ruby>先輩<rt>せんぱい</rt></ruby>に<ruby>確認<rt>かくにん</rt></ruby>してから<ruby>案内<rt>あんない</rt></ruby>します。</p>
+    <p class="en">If you don't know the answer yourself, don't give a vague reply — check with a senior staff member before responding.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🗺️🙋</div>
+    <div class="icon-caption"><span class="jp">館内案内と観光案内</span><span class="en">In-house guidance and tourist information</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp">お<ruby>客様<rt>きゃくさま</rt></ruby>から<ruby>自分<rt>じぶん</rt></ruby>では<ruby>分<rt>わ</rt></ruby>からないことを<ruby>聞<rt>き</rt></ruby>かれたとき、どうしますか。</p>
+    <p class="q-en">What should you do if a guest asks you something you don't know the answer to?</p>
+      <div class="opt" data-val="A"><span class="jp">A. あいまいに答えず、先輩に確認してから案内する</span><span class="en">Don't give a vague answer — check with a senior staff member first</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 分からなくても、それらしい答えをする</span><span class="en">Give a plausible-sounding answer even if you don't know</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 何も答えずに立ち去る</span><span class="en">Say nothing and walk away</span></div>
+    <div class="explain"><div class="jp">自分だけでは分からないことは、あいまいに答えずに、先輩に確認してから案内することが大切です。</div><div class="en">If you don't know the answer yourself, it's important not to guess — check with a senior staff member before responding.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch06" data-chapter="ch06">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第6章　レストランサービス</span><span class="en">Restaurant Service</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="レストランサービスでは、お客様からの注文を正確に受けて、キッチンに伝えます。">🔊</button>レストランサービスでは、お<ruby>客様<rt>きゃくさま</rt></ruby>からの<ruby>注文<rt>ちゅうもん</rt></ruby>を<ruby>正確<rt>せいかく</rt></ruby>に<ruby>受<rt>う</rt></ruby>けて、キッチンに<ruby>伝<rt>つた</rt></ruby>えます。</p>
+    <p class="en">In restaurant service, staff take orders from guests accurately and relay them to the kitchen.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="できあがった料理は、温かいうちに丁寧に配膳し、食べ終わった食器は速やかに片付けます。">🔊</button>できあがった<ruby>料理<rt>りょうり</rt></ruby>は、<ruby>温<rt>あたた</rt></ruby>かいうちに<ruby>丁寧<rt>ていねい</rt></ruby>に<ruby>配膳<rt>はいぜん</rt></ruby>し、<ruby>食<rt>た</rt></ruby>べ<ruby>終<rt>お</rt></ruby>わった<ruby>食器<rt>しょっき</rt></ruby>は<ruby>速<rt>すみ</rt></ruby>やかに<ruby>片付<rt>かたづ</rt></ruby>けます。</p>
+    <p class="en">Completed dishes are carefully served while still hot, and dishes are cleared away promptly once guests have finished eating.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="簡単な下ごしらえや盛りつけを担当することもあり、見た目の美しさにも気を配ります。">🔊</button><ruby>簡単<rt>かんたん</rt></ruby>な<ruby>下<rt>した</rt></ruby>ごしらえや<ruby>盛<rt>も</rt></ruby>りつけを<ruby>担当<rt>たんとう</rt></ruby>することもあり、<ruby>見<rt>み</rt></ruby>た<ruby>目<rt>め</rt></ruby>の<ruby>美<rt>うつく</rt></ruby>しさにも<ruby>気<rt>き</rt></ruby>を<ruby>配<rt>くば</rt></ruby>ります。</p>
+    <p class="en">Workers may also be responsible for simple food preparation and plating, paying attention to visual presentation as well.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="アレルギーのあるお客様には、料理の材料を正確に説明できるようにしておきます。">🔊</button>アレルギーのあるお<ruby>客様<rt>きゃくさま</rt></ruby>には、<ruby>料理<rt>りょうり</rt></ruby>の<ruby>材料<rt>ざいりょう</rt></ruby>を<ruby>正確<rt>せいかく</rt></ruby>に<ruby>説明<rt>せつめい</rt></ruby>できるようにしておきます。</p>
+    <p class="en">Staff make sure they can accurately explain a dish's ingredients to guests with allergies.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🍽️🍴</div>
+    <div class="icon-caption"><span class="jp">配膳と盛りつけ</span><span class="en">Serving dishes and plating food</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp">できあがった<ruby>料理<rt>りょうり</rt></ruby>を<ruby>客席<rt>きゃくせき</rt></ruby>まで<ruby>運<rt>はこ</rt></ruby>んで<ruby>出<rt>だ</rt></ruby>す<ruby>作業<rt>さぎょう</rt></ruby>を<ruby>何<rt>なん</rt></ruby>といいますか。</p>
+    <p class="q-en">What is the task of carrying completed dishes to the table and serving them called?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 配膳</span><span class="en">Serving (haizen)</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 精算</span><span class="en">Settlement</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 予約</span><span class="en">Reservation</span></div>
+    <div class="explain"><div class="jp">できあがった料理を客席まで運んで出す作業を配膳といいます。</div><div class="en">The task of carrying completed dishes to the table and serving them is called haizen (serving).</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch07" data-chapter="ch07">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第7章　客室清掃とベッドメイキングの基礎</span><span class="en">Room Cleaning and Bed-Making Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="客室清掃は、次の宿泊客が気持ちよく過ごせるように、部屋をきれいに整える仕事です。">🔊</button><ruby>客室清掃<rt>きゃくしつせいそう</rt></ruby>は、<ruby>次<rt>つぎ</rt></ruby>の<ruby>宿泊客<rt>しゅくはくきゃく</rt></ruby>が<ruby>気持<rt>きも</rt></ruby>ちよく<ruby>過<rt>す</rt></ruby>ごせるように、<ruby>部屋<rt>へや</rt></ruby>をきれいに<ruby>整<rt>ととの</rt></ruby>える<ruby>仕事<rt>しごと</rt></ruby>です。</p>
+    <p class="en">Room cleaning is the job of tidying rooms so that the next guest can have a pleasant stay.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="シーツや枕カバーなどのリネンは、清潔なものに交換し、ベッドメイキングをきれいに仕上げます。">🔊</button>シーツや<ruby>枕<rt>まくら</rt></ruby>カバーなどのリネンは、<ruby>清潔<rt>せいけつ</rt></ruby>なものに<ruby>交換<rt>こうかん</rt></ruby>し、ベッドメイキングをきれいに<ruby>仕上<rt>しあ</rt></ruby>げます。</p>
+    <p class="en">Linens such as sheets and pillowcases are replaced with clean ones, and beds are neatly made.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="バスルームや備品の点検も行い、こわれているものや足りないアメニティがあればすぐに報告します。">🔊</button>バスルームや<ruby>備品<rt>びひん</rt></ruby>の<ruby>点検<rt>てんけん</rt></ruby>も<ruby>行<rt>おこな</rt></ruby>い、こわれているものや<ruby>足<rt>た</rt></ruby>りないアメニティがあればすぐに<ruby>報告<rt>ほうこく</rt></ruby>します。</p>
+    <p class="en">The bathroom and amenities are also inspected, and any broken items or missing supplies are reported right away.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="これらの業務は付随業務として行うことができますが、フロント業務など他の業務とあわせて担当します。">🔊</button>これらの<ruby>業務<rt>ぎょうむ</rt></ruby>は<ruby>付随業務<rt>ふずいぎょうむ</rt></ruby>として<ruby>行<rt>おこな</rt></ruby>うことができますが、フロント<ruby>業務<rt>ぎょうむ</rt></ruby>など<ruby>他<rt>ほか</rt></ruby>の<ruby>業務<rt>ぎょうむ</rt></ruby>とあわせて<ruby>担当<rt>たんとう</rt></ruby>します。</p>
+    <p class="en">These tasks can be performed as incidental duties, but are handled alongside other work such as front desk operations.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🛏️🧹</div>
+    <div class="icon-caption"><span class="jp">客室清掃とベッドメイキング</span><span class="en">Room cleaning and bed-making</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>客室清掃<rt>きゃくしつせいそう</rt></ruby>で、こわれている<ruby>備品<rt>びひん</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけたときはどうしますか。</p>
+    <p class="q-en">What should you do if you find a broken amenity while cleaning a room?</p>
+      <div class="opt" data-val="A"><span class="jp">A. すぐに報告する</span><span class="en">Report it right away</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. そのままにしておく</span><span class="en">Leave it as is</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 自分で直そうとする</span><span class="en">Try to fix it yourself</span></div>
+    <div class="explain"><div class="jp">こわれているものや足りないアメニティがあれば、すぐに報告することが大切です。</div><div class="en">If there are any broken items or missing amenities, it is important to report them right away.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch08" data-chapter="ch08">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第8章　接客所作とおもてなしの心</span><span class="en">Hospitality Manners and Etiquette</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="ホテルや旅館で働くスタッフは、清潔感のある身だしなみを心がけます。">🔊</button>ホテルや<ruby>旅館<rt>りょかん</rt></ruby>で<ruby>働<rt>はたら</rt></ruby>くスタッフは、<ruby>清潔感<rt>せいけつかん</rt></ruby>のある<ruby>身<rt>み</rt></ruby>だしなみを<ruby>心<rt>こころ</rt></ruby>がけます。</p>
+    <p class="en">Staff working at hotels and ryokan pay attention to keeping a clean, tidy appearance.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="お客様に対しては、敬語を正しく使い、笑顔で丁寧に対応します。">🔊</button>お<ruby>客様<rt>きゃくさま</rt></ruby>に<ruby>対<rt>たい</rt></ruby>しては、<ruby>敬語<rt>けいご</rt></ruby>を<ruby>正<rt>ただ</rt></ruby>しく<ruby>使<rt>つか</rt></ruby>い、<ruby>笑顔<rt>えがお</rt></ruby>で<ruby>丁寧<rt>ていねい</rt></ruby>に<ruby>対応<rt>たいおう</rt></ruby>します。</p>
+    <p class="en">Staff use polite (keigo) Japanese correctly with guests and respond to them courteously with a smile.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="おじぎの角度や物を両手で渡すことなど、細かい立ち居振る舞いにも気を配ります。">🔊</button>おじぎの<ruby>角度<rt>かくど</rt></ruby>や<ruby>物<rt>もの</rt></ruby>を<ruby>両手<rt>りょうて</rt></ruby>で<ruby>渡<rt>わた</rt></ruby>すことなど、<ruby>細<rt>こま</rt></ruby>かい<ruby>立<rt>た</rt></ruby>ち<ruby>居<rt>い</rt></ruby><ruby>振<rt>ふ</rt></ruby>る<ruby>舞<rt>ま</rt></ruby>いにも<ruby>気<rt>き</rt></ruby>を<ruby>配<rt>くば</rt></ruby>ります。</p>
+    <p class="en">Attention is also paid to fine details of manner and bearing, such as the angle of a bow or handing items to guests with both hands.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="形だけでなく、お客様の気持ちを考えて行動する「おもてなし」の心が、日本の接客の基本です。">🔊</button><ruby>形<rt>かたち</rt></ruby>だけでなく、お<ruby>客様<rt>きゃくさま</rt></ruby>の<ruby>気持<rt>きも</rt></ruby>ちを<ruby>考<rt>かんが</rt></ruby>えて<ruby>行動<rt>こうどう</rt></ruby>する「おもてなし」の<ruby>心<rt>こころ</rt></ruby>が、<ruby>日本<rt>にほん</rt></ruby>の<ruby>接客<rt>せっきゃく</rt></ruby>の<ruby>基本<rt>きほん</rt></ruby>です。</p>
+    <p class="en">Beyond just outward form, acting with the guest's feelings in mind — the spirit of "omotenashi" (heartfelt hospitality) — is the foundation of Japanese customer service.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🙇👔</div>
+    <div class="icon-caption"><span class="jp">身だしなみと敬語</span><span class="en">Appearance and polite language</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>日本<rt>にほん</rt></ruby>の<ruby>接客<rt>せっきゃく</rt></ruby>で、<ruby>形<rt>かたち</rt></ruby>だけでなくお<ruby>客様<rt>きゃくさま</rt></ruby>の<ruby>気持<rt>きも</rt></ruby>ちを<ruby>考<rt>かんが</rt></ruby>えて<ruby>行動<rt>こうどう</rt></ruby>する<ruby>心<rt>こころ</rt></ruby>を<ruby>何<rt>なん</rt></ruby>といいますか。</p>
+    <p class="q-en">What is it called in Japanese hospitality when staff act with the guest's feelings in mind, not just outward form?</p>
+      <div class="opt" data-val="A"><span class="jp">A. おもてなし</span><span class="en">Omotenashi (heartfelt hospitality)</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. ダブルブッキング</span><span class="en">Double booking</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 精算</span><span class="en">Settlement</span></div>
+    <div class="explain"><div class="jp">形だけでなくお客様の気持ちを考えて行動する心を「おもてなし」といい、日本の接客の基本とされています。</div><div class="en">Acting with the guest's feelings in mind, not just outward form, is called "omotenashi," and is considered the foundation of Japanese hospitality.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch09" data-chapter="ch09">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第9章　安全・防災の基礎</span><span class="en">Safety and Disaster Prevention Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="ホテルや旅館のスタッフは、火災や地震などの緊急時に備えて、避難経路をよく理解しておきます。">🔊</button>ホテルや<ruby>旅館<rt>りょかん</rt></ruby>のスタッフは、<ruby>火災<rt>かさい</rt></ruby>や<ruby>地震<rt>じしん</rt></ruby>などの<ruby>緊急時<rt>きんきゅうじ</rt></ruby>に<ruby>備<rt>そな</rt></ruby>えて、<ruby>避難経路<rt>ひなんけいろ</rt></ruby>をよく<ruby>理解<rt>りかい</rt></ruby>しておきます。</p>
+    <p class="en">Hotel and ryokan staff make sure they understand the evacuation routes well, in preparation for emergencies such as fires or earthquakes.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="消火器の置き場所や使い方も、日頃から確認しておくことが大切です。">🔊</button><ruby>消火器<rt>しょうかき</rt></ruby>の<ruby>置<rt>お</rt></ruby>き<ruby>場所<rt>ばしょ</rt></ruby>や<ruby>使<rt>つか</rt></ruby>い<ruby>方<rt>かた</rt></ruby>も、<ruby>日頃<rt>ひごろ</rt></ruby>から<ruby>確認<rt>かくにん</rt></ruby>しておくことが<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">It is also important to regularly check the location and how to use fire extinguishers.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="定期的に行われる防災訓練には、しっかりと参加して、いざというときの行動を身につけます。">🔊</button><ruby>定期的<rt>ていきてき</rt></ruby>に<ruby>行<rt>おこな</rt></ruby>われる<ruby>防災訓練<rt>ぼうさいくんれん</rt></ruby>には、しっかりと<ruby>参加<rt>さんか</rt></ruby>して、いざというときの<ruby>行動<rt>こうどう</rt></ruby>を<ruby>身<rt>み</rt></ruby>につけます。</p>
+    <p class="en">Staff take part earnestly in regularly held disaster drills, so they know how to act when an emergency actually happens.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="緊急時には、宿泊客を落ち着かせながら、安全な場所へ誘導することがスタッフの役割です。">🔊</button><ruby>緊急時<rt>きんきゅうじ</rt></ruby>には、<ruby>宿泊客<rt>しゅくはくきゃく</rt></ruby>を<ruby>落<rt>お</rt></ruby>ち<ruby>着<rt>つ</rt></ruby>かせながら、<ruby>安全<rt>あんぜん</rt></ruby>な<ruby>場所<rt>ばしょ</rt></ruby>へ<ruby>誘導<rt>ゆうどう</rt></ruby>することがスタッフの<ruby>役割<rt>やくわり</rt></ruby>です。</p>
+    <p class="en">In an emergency, it is the staff's role to calm guests while guiding them to a safe location.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🚨🧯</div>
+    <div class="icon-caption"><span class="jp">避難経路の確認と防災訓練</span><span class="en">Checking evacuation routes and disaster drills</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>緊急時<rt>きんきゅうじ</rt></ruby>にすぐ<ruby>行動<rt>こうどう</rt></ruby>できるように、スタッフが<ruby>日頃<rt>ひごろ</rt></ruby>からしておくべきことはどれですか。</p>
+    <p class="q-en">What should staff do on a regular basis so they can act quickly in an emergency?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 避難経路や消火器の場所を確認しておく</span><span class="en">Check the evacuation routes and fire extinguisher locations</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. お客様の個人情報をSNSで発信する</span><span class="en">Post guests' personal information on social media</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 予約なしにダブルブッキングする</span><span class="en">Double-book rooms without reservations</span></div>
+    <div class="explain"><div class="jp">火災や地震などの緊急時に備えて、避難経路や消火器の置き場所・使い方を日頃から確認しておくことが大切です。</div><div class="en">In preparation for emergencies such as fires or earthquakes, it is important to regularly check the evacuation routes and the location and use of fire extinguishers.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch10" data-chapter="ch10">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第10章　企画・広報</span><span class="en">Planning and Public Relations</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="企画・広報の仕事は、より多くのお客様に来てもらえるように、ホテルや旅館の魅力を伝える仕事です。">🔊</button><ruby>企画<rt>きかく</rt></ruby>・<ruby>広報<rt>こうほう</rt></ruby>の<ruby>仕事<rt>しごと</rt></ruby>は、より<ruby>多<rt>おお</rt></ruby>くのお<ruby>客様<rt>きゃくさま</rt></ruby>に<ruby>来<rt>き</rt></ruby>てもらえるように、ホテルや<ruby>旅館<rt>りょかん</rt></ruby>の<ruby>魅力<rt>みりょく</rt></ruby>を<ruby>伝<rt>つた</rt></ruby>える<ruby>仕事<rt>しごと</rt></ruby>です。</p>
+    <p class="en">Planning and public relations work is about conveying the appeal of the hotel or ryokan so that more guests will choose to visit.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="季節ごとの宿泊プランや割引キャンペーンなどを企画し、より多くのお客様に喜んでもらえるように工夫します。">🔊</button><ruby>季節<rt>きせつ</rt></ruby>ごとの<ruby>宿泊<rt>しゅくはく</rt></ruby>プランや<ruby>割引<rt>わりびき</rt></ruby>キャンペーンなどを<ruby>企画<rt>きかく</rt></ruby>し、より<ruby>多<rt>おお</rt></ruby>くのお<ruby>客様<rt>きゃくさま</rt></ruby>に<ruby>喜<rt>よろこ</rt></ruby>んでもらえるように<ruby>工夫<rt>くふう</rt></ruby>します。</p>
+    <p class="en">Staff plan seasonal accommodation packages and discount campaigns, coming up with ideas that will delight more guests.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="SNSやホームページを使って、施設の写真や最新の情報を発信することも大切な役割です。">🔊</button>SNSやホームページを<ruby>使<rt>つか</rt></ruby>って、<ruby>施設<rt>しせつ</rt></ruby>の<ruby>写真<rt>しゃしん</rt></ruby>や<ruby>最新<rt>さいしん</rt></ruby>の<ruby>情報<rt>じょうほう</rt></ruby>を<ruby>発信<rt>はっしん</rt></ruby>することも<ruby>大切<rt>たいせつ</rt></ruby>な<ruby>役割<rt>やくわり</rt></ruby>です。</p>
+    <p class="en">Sharing photos of the facility and the latest information through social media and the website is also an important role.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="情報を発信するときは、事実と違う内容を書かないように十分に注意します。">🔊</button><ruby>情報<rt>じょうほう</rt></ruby>を<ruby>発信<rt>はっしん</rt></ruby>するときは、<ruby>事実<rt>じじつ</rt></ruby>と<ruby>違<rt>ちが</rt></ruby>う<ruby>内容<rt>ないよう</rt></ruby>を<ruby>書<rt>か</rt></ruby>かないように<ruby>十分<rt>じゅうぶん</rt></ruby>に<ruby>注意<rt>ちゅうい</rt></ruby>します。</p>
+    <p class="en">When posting information, great care is taken not to write anything that differs from the facts.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">📣📱</div>
+    <div class="icon-caption"><span class="jp">キャンペーンの企画とSNSでの発信</span><span class="en">Planning campaigns and posting on social media</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp">SNSやホームページで<ruby>情報<rt>じょうほう</rt></ruby>を<ruby>発信<rt>はっしん</rt></ruby>するときに<ruby>注意<rt>ちゅうい</rt></ruby>すべきことはどれですか。</p>
+    <p class="q-en">What should you be careful about when posting information on social media or a website?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 事実と違う内容を書かない</span><span class="en">Not writing anything that differs from the facts</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. できるだけ多く投稿すればよい</span><span class="en">Just post as often as possible</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. お客様の個人情報をそのまま載せる</span><span class="en">Post guests' personal information as-is</span></div>
+    <div class="explain"><div class="jp">情報を発信するときは、事実と違う内容を書かないように十分に注意します。</div><div class="en">When posting information, great care is taken not to write anything that differs from the facts.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch11" data-chapter="ch11">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第11章　報連相とコンプライアンス、判断練習</span><span class="en">Workplace Communication, Compliance, and Judgment Practice</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="ホテルや旅館の現場でも、報告・連絡・相談、いわゆる「報連相」がとても大切です。">🔊</button>ホテルや<ruby>旅館<rt>りょかん</rt></ruby>の<ruby>現場<rt>げんば</rt></ruby>でも、<ruby>報告<rt>ほうこく</rt></ruby>・<ruby>連絡<rt>れんらく</rt></ruby>・<ruby>相談<rt>そうだん</rt></ruby>、いわゆる「<ruby>報連相<rt>ほうれんそう</rt></ruby>」がとても<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">In hotel and ryokan workplaces too, "reporting, contacting, and consulting" — known as horenso — is extremely important.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="お客様からクレームを受けたときは、まず落ち着いて話を聞き、自分だけで判断せずに先輩やマネージャーに報告します。">🔊</button>お<ruby>客様<rt>きゃくさま</rt></ruby>からクレームを<ruby>受<rt>う</rt></ruby>けたときは、まず<ruby>落<rt>お</rt></ruby>ち<ruby>着<rt>つ</rt></ruby>いて<ruby>話<rt>はなし</rt></ruby>を<ruby>聞<rt>き</rt></ruby>き、<ruby>自分<rt>じぶん</rt></ruby>だけで<ruby>判断<rt>はんだん</rt></ruby>せずに<ruby>先輩<rt>せんぱい</rt></ruby>やマネージャーに<ruby>報告<rt>ほうこく</rt></ruby>します。</p>
+    <p class="en">When you receive a complaint from a guest, first listen calmly, and without deciding on your own, report it to a senior staff member or manager.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="特定技能で働くスタッフは、契約や在留資格の範囲内で働くというコンプライアンス(ルール順守)も守る必要があります。">🔊</button><ruby>特定技能<rt>とくていぎのう</rt></ruby>で<ruby>働<rt>はたら</rt></ruby>くスタッフは、<ruby>契約<rt>けいやく</rt></ruby>や<ruby>在留資格<rt>ざいりゅうしかく</rt></ruby>の<ruby>範囲内<rt>はんいない</rt></ruby>で<ruby>働<rt>はたら</rt></ruby>くというコンプライアンス(ルール<ruby>順守<rt>じゅんしゅ</rt></ruby>)も<ruby>守<rt>まも</rt></ruby>る<ruby>必要<rt>ひつよう</rt></ruby>があります。</p>
+    <p class="en">Staff working under Specified Skilled Worker status also need to follow compliance rules — working within the scope of their contract and residence status.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="判断に迷ったときは、一人で決めずに、まわりのスタッフに相談することが、お客様の信頼につながります。">🔊</button><ruby>判断<rt>はんだん</rt></ruby>に<ruby>迷<rt>まよ</rt></ruby>ったときは、<ruby>一人<rt>ひとり</rt></ruby>で<ruby>決<rt>き</rt></ruby>めずに、まわりのスタッフに<ruby>相談<rt>そうだん</rt></ruby>することが、お<ruby>客様<rt>きゃくさま</rt></ruby>の<ruby>信頼<rt>しんらい</rt></ruby>につながります。</p>
+    <p class="en">When you are unsure what to do, consulting with the staff around you instead of deciding alone helps build the guest's trust.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">💬🤝</div>
+    <div class="icon-caption"><span class="jp">報連相とクレーム対応</span><span class="en">Workplace communication and handling complaints</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp">お<ruby>客様<rt>きゃくさま</rt></ruby>から「<ruby>部屋<rt>へや</rt></ruby>が<ruby>汚<rt>きたな</rt></ruby>い」というクレームを<ruby>受<rt>う</rt></ruby>けました。<b>もっとも<ruby>適切<rt>てきせつ</rt></ruby>な</b><ruby>行動<rt>こうどう</rt></ruby>はどれですか。</p>
+    <p class="q-en">A guest complains that "the room is dirty." What is the most appropriate action?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 落ち着いて話を聞き、先輩やマネージャーに報告する</span><span class="en">Listen calmly and report it to a senior staff member or manager</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. その場で言い返して謝らない</span><span class="en">Argue back on the spot and refuse to apologize</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 聞こえないふりをする</span><span class="en">Pretend you didn't hear</span></div>
+    <div class="explain"><div class="jp">クレームを受けたときは、まず落ち着いて話を聞き、自分だけで判断せずに先輩やマネージャーに報告することが大切です。</div><div class="en">When you receive a complaint, it's important to first listen calmly, and report it to a senior staff member or manager rather than deciding on your own.</div></div>
+  </div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>特定技能<rt>とくていぎのう</rt></ruby>で<ruby>働<rt>はたら</rt></ruby>くスタッフが<ruby>守<rt>まも</rt></ruby>るべきこととして、<b><ruby>正<rt>ただ</rt></ruby>しい</b>ものはどれですか。</p>
+    <p class="q-en">What is correct regarding what staff working under Specified Skilled Worker status must follow?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 契約や在留資格の範囲内で働く</span><span class="en">Work within the scope of their contract and residence status</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 在留資格の範囲を超えてどんな仕事もしてよい</span><span class="en">They may do any job at all, beyond the scope of their residence status</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 会社に相談せずに自分の判断で仕事内容を変えてよい</span><span class="en">They may change their job duties on their own judgment, without consulting the company</span></div>
+    <div class="explain"><div class="jp">特定技能で働くスタッフは、契約や在留資格の範囲内で働くというコンプライアンス(ルール順守)を守る必要があります。</div><div class="en">Staff working under Specified Skilled Worker status need to follow compliance rules, working within the scope of their contract and residence status.</div></div>
+  </div>
+</div>
+</section>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+function safeGet(key){ try{ return JSON.parse(localStorage.getItem(key) || '{}'); }catch(e){ return {}; } }
+function safeSet(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+var readChapters = safeGet('accommodationssw_read');
+
+document.querySelectorAll('.chapter-card').forEach(function(c){
+  c.addEventListener('click', function(){ goToTarget(this.dataset.target); });
+});
+
+var allTocLinks = document.querySelectorAll('.toc-link');
+
+function showHome(){
+  document.getElementById('view-home').style.display = 'block';
+  document.getElementById('view-content').style.display = 'none';
+  document.getElementById('mobile-title').textContent = 'Accommodation SSW';
+  clearActiveTOC();
+}
+function showContent(){
+  document.getElementById('view-home').style.display = 'none';
+  document.getElementById('view-content').style.display = 'block';
+}
+function clearActiveTOC(){ allTocLinks.forEach(function(l){ l.classList.remove('active'); }); }
+function goToTarget(id){
+  showContent();
+  var el = document.getElementById(id);
+  if (el){ el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  setActiveTOC(id);
+  if (window.innerWidth <= 980) closeSidebar();
+  markRead(id);
+}
+function setActiveTOC(id){
+  clearActiveTOC();
+  var link = document.querySelector('.toc-link[data-target="'+id+'"]');
+  if (link) link.classList.add('active');
+}
+function markRead(id){
+  if (!readChapters[id]){ readChapters[id] = true; safeSet('accommodationssw_read', readChapters); updateProgress(); }
+}
+function updateProgress(){
+  var total = document.querySelectorAll('.toc-link').length;
+  var n = Object.keys(readChapters).length;
+  if (n > total) n = total;
+  var pct = total ? Math.round(n/total*100) : 0;
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-text').textContent = n+' / '+total+' read';
+  var hs = document.getElementById('home-progress-stat');
+  if (hs) hs.querySelector('b').textContent = pct+'%';
+}
+document.querySelectorAll('.toc-link').forEach(function(el){
+  el.addEventListener('click', function(){ goToTarget(this.dataset.target); });
+});
+document.querySelector('.brand').addEventListener('click', showHome);
+document.querySelector('.brand').style.cursor = 'pointer';
+
+function speakJP(text){
+  if (!text) return;
+  if (!('speechSynthesis' in window)){ alert('Text-to-speech is not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+function injectScoreBadges(){
+  document.querySelectorAll('.sec').forEach(function(sec){
+    var qblocks = sec.querySelectorAll('.q-block');
+    if (!qblocks.length) return;
+    var title = sec.querySelector('.sec-title');
+    if (!title || title.querySelector('.section-score-inline')) return;
+    var span = document.createElement('span');
+    span.className = 'section-score-inline';
+    span.style.marginLeft = 'auto';
+    span.dataset.total = qblocks.length;
+    span.dataset.correct = '0';
+    span.textContent = '0 / ' + qblocks.length;
+    title.style.flexDirection = 'row';
+    title.style.alignItems = 'center';
+    title.appendChild(span);
+  });
+}
+injectScoreBadges();
+
+document.addEventListener('click', function(e){
+  var spk = e.target.closest('.spk');
+  if (spk){ e.stopPropagation(); speakJP(spk.getAttribute('data-jp')); return; }
+
+  var opt = e.target.closest('.opt');
+  if (opt){
+    var qblock = opt.closest('.q-block');
+    if (!qblock || qblock.classList.contains('answered')) return;
+    var chosen = opt.getAttribute('data-val');
+    var answer = qblock.getAttribute('data-answer');
+    qblock.classList.add('answered');
+    qblock.querySelectorAll('.opt').forEach(function(o){
+      var v = o.getAttribute('data-val');
+      if (v === answer) o.classList.add('correct');
+      else if (v === chosen) o.classList.add('wrong');
+    });
+    var sec = qblock.closest('.sec');
+    if (sec){
+      var badge = sec.querySelector('.section-score-inline');
+      if (badge && chosen === answer){ badge.dataset.correct = (parseInt(badge.dataset.correct,10) + 1); }
+      if (badge) badge.textContent = badge.dataset.correct + ' / ' + badge.dataset.total;
+    }
+    return;
+  }
+});
+
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); }
+document.getElementById('menu-toggle').addEventListener('click', function(){
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+updateProgress();
+showHome();
+</script>
+</body>
+</html>
