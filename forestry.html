@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Forestry SSW — Japanese with Raza Sensei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#12395d; --navy-dark:#0b2945; --navy-light:#315E7F;
+  --steel:#7A8490; --rust:#d62828; --rust-dark:#b91f1f;
+  --ink:#1F2A21; --muted:#5F6B5F; --border:#DDE3DA; --paper:#F5F7F3; --card:#FFFFFF;
+  --good:#1F7A4D; --bad:#B3261E; --radius:14px; --shadow:0 2px 10px rgba(107,30,60,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); line-height:1.55;}
+.jp{font-family:'Noto Sans JP','Inter',sans-serif;}
+ruby rt{font-size:0.55em; color:var(--muted);}
+
+#app{display:flex; min-height:100vh;}
+#sidebar{width:290px; flex-shrink:0; background:var(--navy-dark); color:#fff; height:100vh; position:sticky; top:0; overflow-y:auto; padding-bottom:30px;}
+.brand{display:flex; align-items:center; gap:10px; padding:20px 18px 16px 18px; border-bottom:1px solid rgba(255,255,255,0.12); cursor:pointer;}
+.brand .logo{width:40px;height:40px;border-radius:10px;background:var(--rust); display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.brand-text{font-weight:800;font-size:13.5px;line-height:1.25;}
+.brand-text small{display:block;font-weight:500;font-size:11px;color:#A8C2D6;}
+#toc{padding:10px 8px 0 8px;}
+.toc-link{display:flex; align-items:center; gap:8px; padding:10px 12px; margin:3px 2px; font-size:12.5px; color:#C9DBE9; border-radius:9px; cursor:pointer;}
+.toc-icon{font-size:15px;}
+.toc-link:hover{background:rgba(255,255,255,0.08); color:#fff;}
+.toc-link.active{background:var(--rust); color:#fff; font-weight:700;}
+#sidebar-footer{padding:16px 18px; font-size:10.5px; color:#87A2B8; border-top:1px solid rgba(255,255,255,0.1); margin-top:14px;}
+
+#menu-toggle{display:none; position:fixed; top:14px; left:14px; z-index:50; width:42px;height:42px;border-radius:10px;background:var(--navy-dark);color:#fff; border:none; font-size:18px; box-shadow:var(--shadow); cursor:pointer;}
+
+#main{flex:1; min-width:0;}
+#topbar{position:sticky; top:0; z-index:20; background:var(--card); border-bottom:1px solid var(--border); padding:14px 32px; display:flex; align-items:center; justify-content:space-between;}
+#mobile-title{font-weight:800; font-size:14px; color:var(--navy-dark);}
+#progress-wrap{display:flex; align-items:center; gap:10px; font-size:12px; color:var(--muted);}
+#progress-track{width:130px; height:7px; background:var(--border); border-radius:5px; overflow:hidden;}
+#progress-fill{height:100%; background:linear-gradient(90deg,var(--rust),var(--navy-light)); width:0%; transition:width .3s;}
+
+#content{max-width:880px; margin:0 auto; padding:0 32px 100px 32px;}
+
+.home-hero{background:linear-gradient(135deg,var(--navy) 0%, var(--navy-dark) 100%); color:#fff; border-radius:20px; padding:44px 38px; margin:32px 0 28px 0; position:relative; overflow:hidden;}
+.home-hero::after{content:"🌲"; position:absolute; right:24px; bottom:-16px; font-size:130px; opacity:0.15; transform:rotate(-8deg);}
+.home-hero h2{margin:0 0 10px 0; font-size:23px; font-weight:800;}
+.home-hero p{margin:0; color:#D3E2ED; max-width:560px; font-size:14.5px;}
+.home-stats{display:flex; gap:14px; margin-top:24px; flex-wrap:wrap;}
+.home-stat{background:rgba(255,255,255,0.1); border-radius:12px; padding:12px 18px; min-width:100px;}
+.home-stat b{display:block; font-size:22px;}
+.home-stat span{font-size:11px; color:#BBD3E4;}
+.chapter-cards{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px;}
+@media(max-width:700px){.chapter-cards{grid-template-columns:1fr;}}
+.chapter-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; cursor:pointer; box-shadow:var(--shadow); border-top:4px solid var(--rust); transition:transform .15s;}
+.chapter-card:hover{transform:translateY(-2px);}
+.card-icon{font-size:26px;}
+.chapter-card h3{margin:8px 0 4px 0; font-size:14.5px;}
+.chapter-card p{margin:0; font-size:12px; color:var(--muted);}
+.footer-credit{text-align:center; color:var(--muted); font-size:12px; margin:40px 0 10px 0;}
+
+.chapter-section{padding-top:8px;}
+.chapter-banner{background:var(--navy-dark); color:#fff; border-radius:16px; padding:24px 26px; margin:28px 0 20px 0; border-left:6px solid var(--rust);}
+.chapter-banner-eyebrow{font-size:11px; letter-spacing:.05em; color:var(--rust); font-weight:700; text-transform:uppercase;}
+.chapter-banner-title{margin:6px 0 0 0; display:flex; flex-direction:column; gap:2px;}
+.chapter-banner-title .jp{font-size:19px; font-weight:800;}
+.chapter-banner-title .en{font-size:12.5px; color:#BFD6E6; font-weight:500;}
+
+.sec{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:22px 24px; margin-bottom:18px; box-shadow:var(--shadow);}
+.sec-title{display:flex; flex-direction:column; gap:2px; margin-bottom:14px; padding-bottom:12px; border-bottom:2px solid #EAEEF2;}
+.sec-title .jp{font-weight:800; font-size:15.5px; color:var(--navy-dark);}
+.sec-title .en{font-size:12px; color:var(--muted); font-weight:600;}
+
+.para{margin-bottom:14px;}
+.para .jp{font-size:15px; display:flex; align-items:flex-start; gap:8px; margin:0 0 4px 0;}
+.para .en{font-size:13px; color:var(--muted); margin:0; padding-left:34px;}
+
+.spk{flex-shrink:0; border:none; background:var(--rust); color:#fff; border-radius:50%; width:26px;height:26px; font-size:12px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.2); margin-top:1px;}
+.spk:hover{background:var(--rust-dark);}
+.spk:active{transform:scale(0.92);}
+
+.steps{margin:10px 0 16px 0; padding:14px 16px; background:#EEF3F7; border-radius:12px;}
+.step{margin-bottom:9px;}
+.step:last-child{margin-bottom:0;}
+.step-jp{font-size:14px;}
+.step-en{font-size:12px; color:var(--muted); margin-top:1px;}
+
+.icon-card{background:#EEF3F7; border:1px dashed var(--border); border-radius:12px; padding:20px; text-align:center; margin:16px 0;}
+.icon-visual{font-size:50px; line-height:1; margin-bottom:10px; letter-spacing:4px;}
+.icon-caption{display:flex; flex-direction:column; gap:2px;}
+.icon-caption .jp{font-size:12.5px; font-weight:600; color:var(--navy-dark);}
+.icon-caption .en{font-size:11px; color:var(--muted);}
+
+.q-block{background:#EEF3F7; border-radius:12px; padding:16px 18px; margin:14px 0; border:1px solid var(--border);}
+.q-jp{font-size:14.5px; font-weight:700; margin:0 0 2px 0;}
+.q-en{font-size:12px; color:var(--muted); margin:0 0 12px 0;}
+.opt{padding:10px 14px; border-radius:9px; border:1.5px solid var(--border); margin-bottom:7px; cursor:pointer; background:#fff; display:flex; flex-direction:column; gap:1px;}
+.opt:hover{border-color:var(--navy-light);}
+.opt .jp{font-size:13.5px;}
+.opt .en{font-size:11.5px; color:var(--muted);}
+.q-block.answered .opt{cursor:default; pointer-events:none;}
+.q-block.answered .opt.correct{background:#E7F5EC; border-color:var(--good);}
+.q-block.answered .opt.wrong{background:#FBEAE9; border-color:var(--bad);}
+.explain{display:none; margin-top:10px; padding:10px 12px; background:#fff; border-left:3px solid var(--navy); border-radius:6px; font-size:12.5px;}
+.q-block.answered .explain{display:block;}
+.explain .jp{font-weight:600; margin-bottom:3px;}
+.explain .en{color:var(--muted);}
+.section-score-inline{background:var(--navy); color:#fff; padding:2px 9px; border-radius:20px; font-size:11px !important;}
+
+@media(max-width:980px){
+  #sidebar{position:fixed; left:-310px; top:0; z-index:40; transition:left .2s; width:270px; box-shadow:4px 0 20px rgba(0,0,0,0.3);}
+  #sidebar.open{left:0;}
+  #menu-toggle{display:flex; align-items:center; justify-content:center;}
+  #content{padding:0 16px 100px 16px;}
+  #topbar{padding:14px 16px 14px 64px;}
+  .home-hero{padding:30px 22px;}
+}
+</style>
+</head>
+<body>
+<button id="menu-toggle">☰</button>
+<div id="app">
+  <aside id="sidebar">
+    <div class="brand"><div class="logo">🌲</div><div class="brand-text">Forestry<br>SSW<small>Japanese with Raza Sensei</small></div></div>
+    <div id="toc">
+    <div class="toc-link" data-target="ch01"><span class="toc-icon">🌲</span>第1章　林業分野の仕事</div>
+    <div class="toc-link" data-target="ch02"><span class="toc-icon">🦺</span>第2章　林業の安全対策</div>
+    <div class="toc-link" data-target="ch03"><span class="toc-icon">🪚</span>第3章　チェーンソーの基本</div>
+    <div class="toc-link" data-target="ch04"><span class="toc-icon">🪓</span>第4章　伐木の基本</div>
+    <div class="toc-link" data-target="ch05"><span class="toc-icon">⚠</span>第5章　かかり木と退避</div>
+    <div class="toc-link" data-target="ch06"><span class="toc-icon">🚜</span>第6章　造材と集材</div>
+    <div class="toc-link" data-target="ch07"><span class="toc-icon">🌱</span>第7章　育林の基本</div>
+    <div class="toc-link" data-target="ch08"><span class="toc-icon">🪴</span>第8章　育苗の基本</div>
+    <div class="toc-link" data-target="ch09"><span class="toc-icon">🚧</span>第9章　林道と機械の保守管理</div>
+    <div class="toc-link" data-target="ch10"><span class="toc-icon">🐻</span>第10章　危険予知と野生動物・悪天候への対応</div>
+    <div class="toc-link" data-target="ch11"><span class="toc-icon">💬</span>第11章　報連相と判断練習</div>
+    </div>
+    <div id="sidebar-footer">特定技能「林業分野」<br>Bilingual Study Guide · Ruby Furigana · Audio<br><br>Original study material — not affiliated with or reproducing any official test-prep publisher's text.</div>
+  </aside>
+  <main id="main">
+    <div id="topbar">
+      <div id="mobile-title">Forestry SSW</div>
+      <div id="progress-wrap"><div id="progress-track"><div id="progress-fill"></div></div><span id="progress-text">0 / 11 read</span></div>
+    </div>
+    <div id="content">
+      <div id="view-home">
+        <div class="home-hero">
+          <h2>特定技能「林業分野」<br>Forestry — SSW Exam Prep</h2>
+          <p>An original bilingual study guide covering this field's core work — forestry safety fundamentals, chainsaw handling, tree felling technique (the undercut, back cut, and hinge), hung-up tree danger and evacuation, bucking and yarding, silviculture (planting, weeding, thinning), seedling cultivation, forest roads and machinery maintenance, and hazard prediction — with furigana and tap-to-listen audio.</p>
+          <div class="home-stats">
+            <div class="home-stat"><b>11</b><span>Chapters</span></div>
+            <div class="home-stat"><b>🔊</b><span>Audio</span></div>
+            <div class="home-stat" id="home-progress-stat"><b>0%</b><span>Completed</span></div>
+          </div>
+        </div>
+        <div class="chapter-cards" id="chapter-cards">
+<div class="chapter-card" data-target="ch01"><div class="card-icon">🌲</div><h3>第1章　林業分野の仕事</h3><p>Ch.1 — Work in the Forestry Field</p></div>
+<div class="chapter-card" data-target="ch02"><div class="card-icon">🦺</div><h3>第2章　林業の安全対策</h3><p>Ch.2 — Forestry Safety Measures</p></div>
+<div class="chapter-card" data-target="ch03"><div class="card-icon">🪚</div><h3>第3章　チェーンソーの基本</h3><p>Ch.3 — Chainsaw Basics</p></div>
+<div class="chapter-card" data-target="ch04"><div class="card-icon">🪓</div><h3>第4章　伐木の基本</h3><p>Ch.4 — Tree Felling Basics</p></div>
+<div class="chapter-card" data-target="ch05"><div class="card-icon">⚠️</div><h3>第5章　かかり木と退避</h3><p>Ch.5 — Hung-Up Trees and Evacuation</p></div>
+<div class="chapter-card" data-target="ch06"><div class="card-icon">🚜</div><h3>第6章　造材と集材</h3><p>Ch.6 — Bucking and Yarding</p></div>
+<div class="chapter-card" data-target="ch07"><div class="card-icon">🌱</div><h3>第7章　育林の基本</h3><p>Ch.7 — Silviculture Basics</p></div>
+<div class="chapter-card" data-target="ch08"><div class="card-icon">🪴</div><h3>第8章　育苗の基本</h3><p>Ch.8 — Seedling Cultivation Basics</p></div>
+<div class="chapter-card" data-target="ch09"><div class="card-icon">🚧</div><h3>第9章　林道と機械の保守管理</h3><p>Ch.9 — Forest Roads and Machinery Maintenance</p></div>
+<div class="chapter-card" data-target="ch10"><div class="card-icon">🐻</div><h3>第10章　危険予知と野生動物・悪天候への対応</h3><p>Ch.10 — Hazard Prediction, Wildlife, and Bad Weather</p></div>
+<div class="chapter-card" data-target="ch11"><div class="card-icon">💬</div><h3>第11章　報連相と判断練習</h3><p>Ch.11 — Workplace Communication and Judgment Practice</p></div>
+        </div>
+        <p class="footer-credit">Japanese with Raza Sensei · SSW Forestry System · Original bilingual study guide, icons &amp; text independently authored</p>
+      </div>
+      <div id="view-content" style="display:none;">
+<section class="chapter-section" id="ch01" data-chapter="ch01">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第1章　林業分野の仕事</span><span class="en">Ch.1 — Work in the Forestry Field</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="林業分野の特定技能には、育林、素材生産、育苗、製炭を含む原木生産という業務区分があります。">🔊</button><ruby>林業分野<rt>りんぎょうぶんや</rt></ruby>の<ruby>特定技能<rt>とくていぎのう</rt></ruby>には、<ruby>育林<rt>いくりん</rt></ruby>、<ruby>素材生産<rt>そざいせいさん</rt></ruby>、<ruby>育苗<rt>いくびょう</rt></ruby>、<ruby>製炭<rt>せいたん</rt></ruby>を<ruby>含<rt>ふく</rt></ruby>む<ruby>原木生産<rt>げんぼくせいさん</rt></ruby>という<ruby>業務区分<rt>ぎょうむくぶん</rt></ruby>があります。</p>
+    <p class="en">The Forestry SSW field includes work categories such as silviculture, raw material (timber) production, seedling cultivation, and log production including charcoal-making.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「森林」を健康に育てながら、必要な木材を生産することが、林業の基本です。">🔊</button>「<ruby>森林<rt>しんりん</rt></ruby>」を<ruby>健康<rt>けんこう</rt></ruby>に<ruby>育<rt>そだ</rt></ruby>てながら、<ruby>必要<rt>ひつよう</rt></ruby>な<ruby>木材<rt>もくざい</rt></ruby>を<ruby>生産<rt>せいさん</rt></ruby>することが、<ruby>林業<rt>りんぎょう</rt></ruby>の<ruby>基本<rt>きほん</rt></ruby>です。</p>
+    <p class="en">The foundation of forestry is producing the timber that is needed while keeping the forest healthy.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="切り倒される前の1本1本の木を「立木」といい、その状態をよく観察することが安全な作業の第一歩です。">🔊</button><ruby>切<rt>き</rt></ruby>り<ruby>倒<rt>たお</rt></ruby>される<ruby>前<rt>まえ</rt></ruby>の1<ruby>本<rt>ぽん</rt></ruby>1<ruby>本<rt>ぽん</rt></ruby>の<ruby>木<rt>き</rt></ruby>を「<ruby>立木<rt>たちき</rt></ruby>」といい、その<ruby>状態<rt>じょうたい</rt></ruby>をよく<ruby>観察<rt>かんさつ</rt></ruby>することが<ruby>安全<rt>あんぜん</rt></ruby>な<ruby>作業<rt>さぎょう</rt></ruby>の<ruby>第一歩<rt>だいいっぽ</rt></ruby>です。</p>
+    <p class="en">Each individual tree before it is felled is called a "standing tree," and carefully observing its condition is the first step toward safe work.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="林業は自然を相手にする仕事のため、他の産業と比べても安全への意識がとても重要です。">🔊</button><ruby>林業<rt>りんぎょう</rt></ruby>は<ruby>自然<rt>しぜん</rt></ruby>を<ruby>相手<rt>あいて</rt></ruby>にする<ruby>仕事<rt>しごと</rt></ruby>のため、<ruby>他<rt>ほか</rt></ruby>の<ruby>産業<rt>さんぎょう</rt></ruby>と<ruby>比<rt>くら</rt></ruby>べても<ruby>安全<rt>あんぜん</rt></ruby>への<ruby>意識<rt>いしき</rt></ruby>がとても<ruby>重要<rt>じゅうよう</rt></ruby>です。</p>
+    <p class="en">Because forestry work involves nature, safety awareness is extremely important, even compared to other industries.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🌲</div>
+    <div class="icon-caption"><span class="jp">森を育て、木材を生産する仕事</span><span class="en">Growing forests and producing timber</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="a">
+    <p class="q-jp"><ruby>林業分野<rt>りんぎょうぶんや</rt></ruby>の<ruby>業務区分<rt>ぎょうむくぶん</rt></ruby>に<b>あてはまらない</b>ものはどれですか。</p>
+    <p class="q-en">Which of the following is NOT one of the Forestry field's work categories?</p>
+      <div class="opt" data-val="a"><span class="jp">a. 遠洋漁業</span><span class="en">Deep-sea fishing operations</span></div>
+      <div class="opt" data-val="b"><span class="jp">b. 育林</span><span class="en">Silviculture</span></div>
+      <div class="opt" data-val="c"><span class="jp">c. 素材生産</span><span class="en">Raw material (timber) production</span></div>
+    <div class="explain"><div class="jp">林業分野の業務区分には、育林・素材生産・育苗・製炭を含む原木生産があります。遠洋漁業はこの分野にはあてはまりません。</div><div class="en">The Forestry field's work categories include silviculture, raw material production, seedling cultivation, and log production including charcoal-making. Deep-sea fishing is not part of this field.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch02" data-chapter="ch02">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第2章　林業の安全対策</span><span class="en">Ch.2 — Forestry Safety Measures</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="林業は、他の産業と比べて「労働災害」が起きやすいといわれており、安全対策がとても重要です。">🔊</button><ruby>林業<rt>りんぎょう</rt></ruby>は、<ruby>他<rt>ほか</rt></ruby>の<ruby>産業<rt>さんぎょう</rt></ruby>と<ruby>比<rt>くら</rt></ruby>べて「<ruby>労働災害<rt>ろうどうさいがい</rt></ruby>」が<ruby>起<rt>お</rt></ruby>きやすいといわれており、<ruby>安全対策<rt>あんぜんたいさく</rt></ruby>がとても<ruby>重要<rt>じゅうよう</rt></ruby>です。</p>
+    <p class="en">Forestry is said to have a higher rate of "workplace accidents" compared to other industries, so safety measures are extremely important.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="作業をするときは、ヘルメットや防護ズボンなどの「保護具」を必ず身につけます。">🔊</button><ruby>作業<rt>さぎょう</rt></ruby>をするときは、ヘルメットや<ruby>防護<rt>ぼうご</rt></ruby>ズボンなどの「<ruby>保護具<rt>ほごぐ</rt></ruby>」を<ruby>必<rt>かなら</rt></ruby>ず<ruby>身<rt>み</rt></ruby>につけます。</p>
+    <p class="en">When working, workers always wear "protective equipment" such as a helmet and chainsaw-resistant chaps.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="高いところでの作業や、すべりやすい斜面での作業では、「安全帯」を使用して転落を防ぎます。">🔊</button><ruby>高<rt>たか</rt></ruby>いところでの<ruby>作業<rt>さぎょう</rt></ruby>や、すべりやすい<ruby>斜面<rt>しゃめん</rt></ruby>での<ruby>作業<rt>さぎょう</rt></ruby>では、「<ruby>安全帯<rt>あんぜんたい</rt></ruby>」を<ruby>使用<rt>しよう</rt></ruby>して<ruby>転落<rt>てんらく</rt></ruby>を<ruby>防<rt>ふせ</rt></ruby>ぎます。</p>
+    <p class="en">For work at heights or on slippery slopes, workers use a "safety harness" to prevent falls.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="作業を始める前には、保護具に破損がないかを点検し、正しく着用できているかを確認します。">🔊</button><ruby>作業<rt>さぎょう</rt></ruby>を<ruby>始<rt>はじ</rt></ruby>める<ruby>前<rt>まえ</rt></ruby>には、<ruby>保護具<rt>ほごぐ</rt></ruby>に<ruby>破損<rt>はそん</rt></ruby>がないかを<ruby>点検<rt>てんけん</rt></ruby>し、<ruby>正<rt>ただ</rt></ruby>しく<ruby>着用<rt>ちゃくよう</rt></ruby>できているかを<ruby>確認<rt>かくにん</rt></ruby>します。</p>
+    <p class="en">Before starting work, workers check protective equipment for damage and confirm it is being worn correctly.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🦺</div>
+    <div class="icon-caption"><span class="jp">保護具とヘルメットの着用</span><span class="en">Wearing protective equipment and a helmet</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="a">
+    <p class="q-jp"><ruby>高<rt>たか</rt></ruby>いところや<ruby>斜面<rt>しゃめん</rt></ruby>での<ruby>作業<rt>さぎょう</rt></ruby>で、<ruby>転落<rt>てんらく</rt></ruby>を<ruby>防<rt>ふせ</rt></ruby>ぐために<ruby>使用<rt>しよう</rt></ruby>するものは<b>どれですか</b>。</p>
+    <p class="q-en">What is used to prevent falls when working at heights or on slopes?</p>
+      <div class="opt" data-val="a"><span class="jp">a. 安全帯</span><span class="en">Safety harness</span></div>
+      <div class="opt" data-val="b"><span class="jp">b. チェーンソー</span><span class="en">Chainsaw</span></div>
+      <div class="opt" data-val="c"><span class="jp">c. コンテナ苗</span><span class="en">Container seedling</span></div>
+    <div class="explain"><div class="jp">高いところやすべりやすい斜面での作業では、安全帯を使用して転落を防ぎます。</div><div class="en">For work at heights or on slippery slopes, workers use a safety harness to prevent falls.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch03" data-chapter="ch03">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第3章　チェーンソーの基本</span><span class="en">Ch.3 — Chainsaw Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「チェーンソー」は木を切るための刃物のついた機械で、使い方を誤ると大きな事故につながります。">🔊</button>「チェーンソー」は<ruby>木<rt>き</rt></ruby>を<ruby>切<rt>き</rt></ruby>るための<ruby>刃物<rt>はもの</rt></ruby>のついた<ruby>機械<rt>きかい</rt></ruby>で、<ruby>使<rt>つか</rt></ruby>い<ruby>方<rt>かた</rt></ruby>を<ruby>誤<rt>あやま</rt></ruby>ると<ruby>大<rt>おお</rt></ruby>きな<ruby>事故<rt>じこ</rt></ruby>につながります。</p>
+    <p class="en">A "chainsaw" is a machine with a cutting blade used to cut trees, and using it incorrectly can lead to serious accidents.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="刃の切れ味を保つために、チェーンソーの刃を研ぐことを「目立て」といい、作業の前や合間に行います。">🔊</button><ruby>刃<rt>は</rt></ruby>の<ruby>切<rt>き</rt></ruby>れ<ruby>味<rt>あじ</rt></ruby>を<ruby>保<rt>たも</rt></ruby>つために、チェーンソーの<ruby>刃<rt>は</rt></ruby>を<ruby>研<rt>と</rt></ruby>ぐことを「<ruby>目立<rt>めた</rt></ruby>て」といい、<ruby>作業<rt>さぎょう</rt></ruby>の<ruby>前<rt>まえ</rt></ruby>や<ruby>合間<rt>あいま</rt></ruby>に<ruby>行<rt>おこな</rt></ruby>います。</p>
+    <p class="en">Sharpening the chainsaw's chain to keep it cutting well is called "chain sharpening," and it is done before and between work sessions.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="刃先が木やかたいものに触れて、チェーンソーが急に跳ね返る「キックバック」は、重大なけがの原因になります。">🔊</button><ruby>刃先<rt>はさき</rt></ruby>が<ruby>木<rt>き</rt></ruby>やかたいものに<ruby>触<rt>ふ</rt></ruby>れて、チェーンソーが<ruby>急<rt>きゅう</rt></ruby>に<ruby>跳<rt>は</rt></ruby>ね<ruby>返<rt>かえ</rt></ruby>る「キックバック」は、<ruby>重大<rt>じゅうだい</rt></ruby>なけがの<ruby>原因<rt>げんいん</rt></ruby>になります。</p>
+    <p class="en">"Kickback" — when the tip of the blade touches wood or something hard and the chainsaw suddenly jerks back — can cause serious injury.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="キックバックを防ぐため、チェーンソーをしっかりと両手で持ち、「防護ズボン」など専用の装備を着用します。">🔊</button>キックバックを<ruby>防<rt>ふせ</rt></ruby>ぐため、チェーンソーをしっかりと<ruby>両手<rt>りょうて</rt></ruby>で<ruby>持<rt>も</rt></ruby>ち、「<ruby>防護<rt>ぼうご</rt></ruby>ズボン」など<ruby>専用<rt>せんよう</rt></ruby>の<ruby>装備<rt>そうび</rt></ruby>を<ruby>着用<rt>ちゃくよう</rt></ruby>します。</p>
+    <p class="en">To prevent kickback, workers hold the chainsaw firmly with both hands and wear specialized equipment such as "chainsaw-resistant chaps."</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🪚</div>
+    <div class="icon-caption"><span class="jp">チェーンソーの点検とキックバック防止</span><span class="en">Inspecting the chainsaw and preventing kickback</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="a">
+    <p class="q-jp"><ruby>刃先<rt>はさき</rt></ruby>がかたいものに<ruby>触<rt>ふ</rt></ruby>れてチェーンソーが<ruby>急<rt>きゅう</rt></ruby>に<ruby>跳<rt>は</rt></ruby>ね<ruby>返<rt>かえ</rt></ruby>ることを<b>何といいますか</b>。</p>
+    <p class="q-en">What is it called when the tip of the chainsaw's blade touches something hard and the saw suddenly jerks back?</p>
+      <div class="opt" data-val="a"><span class="jp">a. キックバック</span><span class="en">Kickback</span></div>
+      <div class="opt" data-val="b"><span class="jp">b. かかり木</span><span class="en">Hung-up tree</span></div>
+      <div class="opt" data-val="c"><span class="jp">c. 目立て</span><span class="en">Chain sharpening</span></div>
+    <div class="explain"><div class="jp">刃先が木やかたいものに触れて、チェーンソーが急に跳ね返ることをキックバックといいます。</div><div class="en">When the tip of the blade touches wood or something hard and the chainsaw suddenly jerks back, this is called kickback.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch04" data-chapter="ch04">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第4章　伐木の基本</span><span class="en">Ch.4 — Tree Felling Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="木を切り倒す作業を「伐木」といい、倒す方向を正確にコントロールする技術が必要です。">🔊</button><ruby>木<rt>き</rt></ruby>を<ruby>切<rt>き</rt></ruby>り<ruby>倒<rt>たお</rt></ruby>す<ruby>作業<rt>さぎょう</rt></ruby>を「<ruby>伐木<rt>ばつぼく</rt></ruby>」といい、<ruby>倒<rt>たお</rt></ruby>す<ruby>方向<rt>ほうこう</rt></ruby>を<ruby>正確<rt>せいかく</rt></ruby>にコントロールする<ruby>技術<rt>ぎじゅつ</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>です。</p>
+    <p class="en">The work of cutting down a tree is called "felling," and it requires the skill to precisely control the direction the tree falls.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="まず、倒したい方向の幹に「受け口」という切り込みを入れます。">🔊</button>まず、<ruby>倒<rt>たお</rt></ruby>したい<ruby>方向<rt>ほうこう</rt></ruby>の<ruby>幹<rt>みき</rt></ruby>に「<ruby>受<rt>う</rt></ruby>け<ruby>口<rt>ぐち</rt></ruby>」という<ruby>切<rt>き</rt></ruby>り<ruby>込<rt>こ</rt></ruby>みを<ruby>入<rt>い</rt></ruby>れます。</p>
+    <p class="en">First, a notch called the "undercut" is cut into the trunk on the side facing the direction the tree will fall.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="次に反対側から「追い口」を切りますが、幹を切り離さず「つる」と呼ばれる部分を残すことが大切です。">🔊</button><ruby>次<rt>つぎ</rt></ruby>に<ruby>反対側<rt>はんたいがわ</rt></ruby>から「<ruby>追<rt>お</rt></ruby>い<ruby>口<rt>ぐち</rt></ruby>」を<ruby>切<rt>き</rt></ruby>りますが、<ruby>幹<rt>みき</rt></ruby>を<ruby>切<rt>き</rt></ruby>り<ruby>離<rt>はな</rt></ruby>さず「つる」と<ruby>呼<rt>よ</rt></ruby>ばれる<ruby>部分<rt>ぶぶん</rt></ruby>を<ruby>残<rt>のこ</rt></ruby>すことが<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">Next, the "back cut" is made from the opposite side, but it is important not to cut all the way through — leaving a section called the "hinge" intact.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「つる」が木の倒れる方向と速度をコントロールする役割を果たすため、つるを切りすぎないよう注意します。">🔊</button>「つる」が<ruby>木<rt>き</rt></ruby>の<ruby>倒<rt>たお</rt></ruby>れる<ruby>方向<rt>ほうこう</rt></ruby>と<ruby>速度<rt>そくど</rt></ruby>をコントロールする<ruby>役割<rt>やくわり</rt></ruby>を<ruby>果<rt>は</rt></ruby>たすため、つるを<ruby>切<rt>き</rt></ruby>りすぎないよう<ruby>注意<rt>ちゅうい</rt></ruby>します。</p>
+    <p class="en">Because the "hinge" plays the role of controlling the direction and speed at which the tree falls, workers take care not to cut through it too much.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🪓</div>
+    <div class="icon-caption"><span class="jp">受け口・追い口・つる</span><span class="en">The undercut, back cut, and hinge</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="a">
+    <p class="q-jp"><ruby>幹<rt>みき</rt></ruby>を<ruby>切<rt>き</rt></ruby>り<ruby>離<rt>はな</rt></ruby>さずに<ruby>残<rt>のこ</rt></ruby>し、<ruby>木<rt>き</rt></ruby>の<ruby>倒<rt>たお</rt></ruby>れる<ruby>方向<rt>ほうこう</rt></ruby>をコントロールする<ruby>部分<rt>ぶぶん</rt></ruby>を<b>何といいますか</b>。</p>
+    <p class="q-en">What is the part of the trunk left uncut, which controls the direction the tree falls, called?</p>
+      <div class="opt" data-val="a"><span class="jp">a. つる</span><span class="en">Hinge</span></div>
+      <div class="opt" data-val="b"><span class="jp">b. 受け口</span><span class="en">Undercut</span></div>
+      <div class="opt" data-val="c"><span class="jp">c. キックバック</span><span class="en">Kickback</span></div>
+    <div class="explain"><div class="jp">幹を切り離さずに残す「つる」の部分が、木の倒れる方向と速度をコントロールします。</div><div class="en">The "hinge" — the part of the trunk left uncut — controls the direction and speed at which the tree falls.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch05" data-chapter="ch05">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第5章　かかり木と退避</span><span class="en">Ch.5 — Hung-Up Trees and Evacuation</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="倒した木が完全に地面まで倒れず、周りの木に寄りかかった状態を「かかり木」といい、とても危険です。">🔊</button><ruby>倒<rt>たお</rt></ruby>した<ruby>木<rt>き</rt></ruby>が<ruby>完全<rt>かんぜん</rt></ruby>に<ruby>地面<rt>じめん</rt></ruby>まで<ruby>倒<rt>たお</rt></ruby>れず、<ruby>周<rt>まわ</rt></ruby>りの<ruby>木<rt>き</rt></ruby>に<ruby>寄<rt>よ</rt></ruby>りかかった<ruby>状態<rt>じょうたい</rt></ruby>を「かかり<ruby>木<rt>ぎ</rt></ruby>」といい、とても<ruby>危険<rt>きけん</rt></ruby>です。</p>
+    <p class="en">A situation where a felled tree does not fall completely to the ground but leans against surrounding trees is called a "hung-up tree," and it is extremely dangerous.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="かかり木はいつ落ちてくるかわからないため、下に入ったり、無理に動かそうとしたりしてはいけません。">🔊</button>かかり<ruby>木<rt>ぎ</rt></ruby>はいつ<ruby>落<rt>お</rt></ruby>ちてくるかわからないため、<ruby>下<rt>した</rt></ruby>に<ruby>入<rt>はい</rt></ruby>ったり、<ruby>無理<rt>むり</rt></ruby>に<ruby>動<rt>うご</rt></ruby>かそうとしたりしてはいけません。</p>
+    <p class="en">Because a hung-up tree can fall at any moment, workers must never go underneath it or try to force it down.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="木を倒すときは、あらかじめ「退避」する場所を決めておき、倒す方向の反対側で3メートル以上離れた場所に移動します。">🔊</button><ruby>木<rt>き</rt></ruby>を<ruby>倒<rt>たお</rt></ruby>すときは、あらかじめ「<ruby>退避<rt>たいひ</rt></ruby>」する<ruby>場所<rt>ばしょ</rt></ruby>を<ruby>決<rt>き</rt></ruby>めておき、<ruby>倒<rt>たお</rt></ruby>す<ruby>方向<rt>ほうこう</rt></ruby>の<ruby>反対側<rt>はんたいがわ</rt></ruby>で3メートル<ruby>以上<rt>いじょう</rt></ruby><ruby>離<rt>はな</rt></ruby>れた<ruby>場所<rt>ばしょ</rt></ruby>に<ruby>移動<rt>いどう</rt></ruby>します。</p>
+    <p class="en">Before felling a tree, workers decide on an "evacuation" spot in advance, and move to a location at least 3 meters away, on the opposite side from the direction of fall.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="木を倒す前には、決められた「合図」を出し、倒す方向に他の作業者がいないことを指差呼称で確認します。">🔊</button><ruby>木<rt>き</rt></ruby>を<ruby>倒<rt>たお</rt></ruby>す<ruby>前<rt>まえ</rt></ruby>には、<ruby>決<rt>き</rt></ruby>められた「<ruby>合図<rt>あいず</rt></ruby>」を<ruby>出<rt>だ</rt></ruby>し、<ruby>倒<rt>たお</rt></ruby>す<ruby>方向<rt>ほうこう</rt></ruby>に<ruby>他<rt>ほか</rt></ruby>の<ruby>作業者<rt>さぎょうしゃ</rt></ruby>がいないことを<ruby>指差呼称<rt>しさこしょう</rt></ruby>で<ruby>確認<rt>かくにん</rt></ruby>します。</p>
+    <p class="en">Before felling a tree, workers give a predetermined "signal" and use pointing-and-calling to confirm that no other workers are in the direction of fall.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">⚠️</div>
+    <div class="icon-caption"><span class="jp">かかり木の危険性と退避場所</span><span class="en">The danger of hung-up trees, and evacuation spots</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="a">
+    <p class="q-jp">かかり<ruby>木<rt>ぎ</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけたときの<b>もっとも適切な行動</b>はどれですか。</p>
+    <p class="q-en">What is the most appropriate action when a hung-up tree is found?</p>
+      <div class="opt" data-val="a"><span class="jp">a. 下に入ったり無理に動かしたりしない</span><span class="en">Not go underneath it or try to force it down</span></div>
+      <div class="opt" data-val="b"><span class="jp">b. すぐに下に入って手で押して倒す</span><span class="en">Go underneath immediately and push it down by hand</span></div>
+      <div class="opt" data-val="c"><span class="jp">c. 気にせず次の木の伐倒を始める</span><span class="en">Ignore it and start felling the next tree</span></div>
+    <div class="explain"><div class="jp">かかり木はいつ落ちてくるかわからないため、下に入ったり無理に動かそうとしたりしてはいけません。</div><div class="en">Because a hung-up tree can fall at any moment, workers must never go underneath it or try to force it down.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch06" data-chapter="ch06">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第6章　造材と集材</span><span class="en">Ch.6 — Bucking and Yarding</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="倒した木を使いやすい長さに切り分ける作業を「造材」といい、それぞれの丸太を「玉切り」します。">🔊</button><ruby>倒<rt>たお</rt></ruby>した<ruby>木<rt>き</rt></ruby>を<ruby>使<rt>つか</rt></ruby>いやすい<ruby>長<rt>なが</rt></ruby>さに<ruby>切<rt>き</rt></ruby>り<ruby>分<rt>わ</rt></ruby>ける<ruby>作業<rt>さぎょう</rt></ruby>を「<ruby>造材<rt>ぞうざい</rt></ruby>」といい、それぞれの<ruby>丸太<rt>まるた</rt></ruby>を「<ruby>玉切<rt>たまぎ</rt></ruby>り」します。</p>
+    <p class="en">The work of cutting a felled tree into usable lengths is called "bucking," and each resulting log is cut to size in a process called "cross-cutting."</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="山で切った丸太を、トラックが入れる場所まで運ぶ作業を「集材」といいます。">🔊</button><ruby>山<rt>やま</rt></ruby>で<ruby>切<rt>き</rt></ruby>った<ruby>丸太<rt>まるた</rt></ruby>を、トラックが<ruby>入<rt>はい</rt></ruby>れる<ruby>場所<rt>ばしょ</rt></ruby>まで<ruby>運<rt>はこ</rt></ruby>ぶ<ruby>作業<rt>さぎょう</rt></ruby>を「<ruby>集材<rt>しゅうざい</rt></ruby>」といいます。</p>
+    <p class="en">The work of transporting logs cut in the mountains to a location a truck can reach is called "yarding."</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="近年は、プロセッサやハーベスタなどの「高性能林業機械」を使って、伐木から造材までを効率的に行うことが増えています。">🔊</button><ruby>近年<rt>きんねん</rt></ruby>は、プロセッサやハーベスタなどの「<ruby>高性能林業機械<rt>こうせいのうりんぎょうきかい</rt></ruby>」を<ruby>使<rt>つか</rt></ruby>って、<ruby>伐木<rt>ばつぼく</rt></ruby>から<ruby>造材<rt>ぞうざい</rt></ruby>までを<ruby>効率的<rt>こうりつてき</rt></ruby>に<ruby>行<rt>おこな</rt></ruby>うことが<ruby>増<rt>ふ</rt></ruby>えています。</p>
+    <p class="en">In recent years, "high-performance forestry machinery" such as processors and harvesters has increasingly been used to efficiently handle everything from felling to bucking.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="機械を使う作業でも、周りに人がいないかを確認してから操作することが基本です。">🔊</button><ruby>機械<rt>きかい</rt></ruby>を<ruby>使<rt>つか</rt></ruby>う<ruby>作業<rt>さぎょう</rt></ruby>でも、<ruby>周<rt>まわ</rt></ruby>りに<ruby>人<rt>ひと</rt></ruby>がいないかを<ruby>確認<rt>かくにん</rt></ruby>してから<ruby>操作<rt>そうさ</rt></ruby>することが<ruby>基本<rt>きほん</rt></ruby>です。</p>
+    <p class="en">Even when using machinery, the basic rule is to check that no one is nearby before operating it.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🚜</div>
+    <div class="icon-caption"><span class="jp">玉切りと高性能林業機械</span><span class="en">Bucking logs to length and high-performance forestry machinery</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="a">
+    <p class="q-jp"><ruby>倒<rt>たお</rt></ruby>した<ruby>木<rt>き</rt></ruby>を<ruby>使<rt>つか</rt></ruby>いやすい<ruby>長<rt>なが</rt></ruby>さに<ruby>切<rt>き</rt></ruby>り<ruby>分<rt>わ</rt></ruby>ける<ruby>作業<rt>さぎょう</rt></ruby>を<b>何といいますか</b>。</p>
+    <p class="q-en">What is the work of cutting a felled tree into usable lengths called?</p>
+      <div class="opt" data-val="a"><span class="jp">a. 造材</span><span class="en">Bucking</span></div>
+      <div class="opt" data-val="b"><span class="jp">b. 集材</span><span class="en">Yarding</span></div>
+      <div class="opt" data-val="c"><span class="jp">c. 育苗</span><span class="en">Seedling cultivation</span></div>
+    <div class="explain"><div class="jp">倒した木を使いやすい長さに切り分ける作業を造材といいます。</div><div class="en">The work of cutting a felled tree into usable lengths is called bucking.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch07" data-chapter="ch07">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第7章　育林の基本</span><span class="en">Ch.7 — Silviculture Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="木を植え、育て、森林を次の世代につなげていく仕事を「育林」といいます。">🔊</button><ruby>木<rt>き</rt></ruby>を<ruby>植<rt>う</rt></ruby>え、<ruby>育<rt>そだ</rt></ruby>て、<ruby>森林<rt>しんりん</rt></ruby>を<ruby>次<rt>つぎ</rt></ruby>の<ruby>世代<rt>せだい</rt></ruby>につなげていく<ruby>仕事<rt>しごと</rt></ruby>を「<ruby>育林<rt>いくりん</rt></ruby>」といいます。</p>
+    <p class="en">The work of planting and growing trees to carry the forest forward for the next generation is called "silviculture."</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="苗木を山に植える「植栽」から、育林の1年が始まります。">🔊</button><ruby>苗木<rt>なえぎ</rt></ruby>を<ruby>山<rt>やま</rt></ruby>に<ruby>植<rt>う</rt></ruby>える「<ruby>植栽<rt>しょくさい</rt></ruby>」から、<ruby>育林<rt>いくりん</rt></ruby>の1<ruby>年<rt>ねん</rt></ruby>が<ruby>始<rt>はじ</rt></ruby>まります。</p>
+    <p class="en">A year of silviculture begins with "planting," when saplings are planted on the mountainside.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="苗木の成長を妨げる雑草を刈り取る「下刈り」は、夏の暑い時期に行う大変な作業です。">🔊</button><ruby>苗木<rt>なえぎ</rt></ruby>の<ruby>成長<rt>せいちょう</rt></ruby>を<ruby>妨<rt>さまた</rt></ruby>げる<ruby>雑草<rt>ざっそう</rt></ruby>を<ruby>刈<rt>か</rt></ruby>り<ruby>取<rt>と</rt></ruby>る「<ruby>下刈<rt>したが</rt></ruby>り」は、<ruby>夏<rt>なつ</rt></ruby>の<ruby>暑<rt>あつ</rt></ruby>い<ruby>時期<rt>じき</rt></ruby>に<ruby>行<rt>おこな</rt></ruby>う<ruby>大変<rt>たいへん</rt></ruby>な<ruby>作業<rt>さぎょう</rt></ruby>です。</p>
+    <p class="en">"Weeding," which cuts back the weeds that hinder sapling growth, is demanding work carried out during the hot summer.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="木が混み合いすぎないように、一部の木を選んで間引く「間伐」を行い、残った木を健やかに育てます。">🔊</button><ruby>木<rt>き</rt></ruby>が<ruby>混<rt>こ</rt></ruby>み<ruby>合<rt>あ</rt></ruby>いすぎないように、一部の<ruby>木<rt>き</rt></ruby>を<ruby>選<rt>えら</rt></ruby>んで<ruby>間引<rt>まび</rt></ruby>く「<ruby>間伐<rt>かんばつ</rt></ruby>」を<ruby>行<rt>おこな</rt></ruby>い、<ruby>残<rt>のこ</rt></ruby>った<ruby>木<rt>き</rt></ruby>を<ruby>健<rt>すこ</rt></ruby>やかに<ruby>育<rt>そだ</rt></ruby>てます。</p>
+    <p class="en">"Thinning" is carried out — selectively removing some trees so the forest isn't too crowded — allowing the remaining trees to grow healthily.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🌱</div>
+    <div class="icon-caption"><span class="jp">植栽・下刈り・間伐</span><span class="en">Planting, weeding, and thinning</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="a">
+    <p class="q-jp"><ruby>苗木<rt>なえぎ</rt></ruby>の<ruby>成長<rt>せいちょう</rt></ruby>を<ruby>妨<rt>さまた</rt></ruby>げる<ruby>雑草<rt>ざっそう</rt></ruby>を<ruby>刈<rt>か</rt></ruby>り<ruby>取<rt>と</rt></ruby>る<ruby>作業<rt>さぎょう</rt></ruby>を<b>何といいますか</b>。</p>
+    <p class="q-en">What is the work of cutting back weeds that hinder sapling growth called?</p>
+      <div class="opt" data-val="a"><span class="jp">a. 下刈り</span><span class="en">Weeding</span></div>
+      <div class="opt" data-val="b"><span class="jp">b. 間伐</span><span class="en">Thinning</span></div>
+      <div class="opt" data-val="c"><span class="jp">c. 玉切り</span><span class="en">Cross-cutting</span></div>
+    <div class="explain"><div class="jp">苗木の成長を妨げる雑草を刈り取る作業を下刈りといいます。</div><div class="en">The work of cutting back the weeds that hinder sapling growth is called weeding.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch08" data-chapter="ch08">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第8章　育苗の基本</span><span class="en">Ch.8 — Seedling Cultivation Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="植栽に使う苗木のもとになる「林業用種苗」を育てる仕事を「育苗」といいます。">🔊</button><ruby>植栽<rt>しょくさい</rt></ruby>に<ruby>使<rt>つか</rt></ruby>う<ruby>苗木<rt>なえぎ</rt></ruby>のもとになる「<ruby>林業用種苗<rt>りんぎょうようしゅびょう</rt></ruby>」を<ruby>育<rt>そだ</rt></ruby>てる<ruby>仕事<rt>しごと</rt></ruby>を「<ruby>育苗<rt>いくびょう</rt></ruby>」といいます。</p>
+    <p class="en">The work of growing "forestry seed stock" — the starting material for the saplings used in planting — is called "seedling cultivation."</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="近年は、プラスチック容器で育てる「コンテナ苗」が広く使われ、一年中植栽できるという利点があります。">🔊</button><ruby>近年<rt>きんねん</rt></ruby>は、プラスチック<ruby>容器<rt>ようき</rt></ruby>で<ruby>育<rt>そだ</rt></ruby>てる「コンテナ<ruby>苗<rt>なえ</rt></ruby>」が<ruby>広<rt>ひろ</rt></ruby>く<ruby>使<rt>つか</rt></ruby>われ、<ruby>一年中<rt>いちねんじゅう</rt></ruby><ruby>植栽<rt>しょくさい</rt></ruby>できるという<ruby>利点<rt>りてん</rt></ruby>があります。</p>
+    <p class="en">In recent years, "container seedlings" grown in plastic containers have become widely used, with the advantage that they can be planted year-round.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="苗が植栽できる大きさまで育ったものを「山出し苗」と呼び、畑から山へ出荷されます。">🔊</button><ruby>苗<rt>なえ</rt></ruby>が<ruby>植栽<rt>しょくさい</rt></ruby>できる<ruby>大<rt>おお</rt></ruby>きさまで<ruby>育<rt>そだ</rt></ruby>ったものを「<ruby>山出<rt>やまだ</rt></ruby>し<ruby>苗<rt>なえ</rt></ruby>」と<ruby>呼<rt>よ</rt></ruby>び、<ruby>畑<rt>はたけ</rt></ruby>から<ruby>山<rt>やま</rt></ruby>へ<ruby>出荷<rt>しゅっか</rt></ruby>されます。</p>
+    <p class="en">A seedling that has grown to a size suitable for planting is called a "field-ready seedling," and it is shipped from the nursery field to the mountain.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="苗を健康に育てるためには、水やりや雑草取りなど、日々の手入れが欠かせません。">🔊</button><ruby>苗<rt>なえ</rt></ruby>を<ruby>健康<rt>けんこう</rt></ruby>に<ruby>育<rt>そだ</rt></ruby>てるためには、<ruby>水<rt>みず</rt></ruby>やりや<ruby>雑草<rt>ざっそう</rt></ruby><ruby>取<rt>と</rt></ruby>りなど、<ruby>日々<rt>ひび</rt></ruby>の<ruby>手入<rt>てい</rt></ruby>れが<ruby>欠<rt>か</rt></ruby>かせません。</p>
+    <p class="en">To raise seedlings in good health, daily care such as watering and weeding is essential.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🪴</div>
+    <div class="icon-caption"><span class="jp">種苗とコンテナ苗の管理</span><span class="en">Managing seed stock and container seedlings</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="a">
+    <p class="q-jp">プラスチック<ruby>容器<rt>ようき</rt></ruby>で<ruby>育<rt>そだ</rt></ruby>て、<ruby>一年中<rt>いちねんじゅう</rt></ruby><ruby>植栽<rt>しょくさい</rt></ruby>できる<ruby>苗<rt>なえ</rt></ruby>を<b>何といいますか</b>。</p>
+    <p class="q-en">What is a seedling grown in a plastic container, which can be planted year-round, called?</p>
+      <div class="opt" data-val="a"><span class="jp">a. コンテナ苗</span><span class="en">Container seedling</span></div>
+      <div class="opt" data-val="b"><span class="jp">b. 山出し苗</span><span class="en">Field-ready seedling</span></div>
+      <div class="opt" data-val="c"><span class="jp">c. つる</span><span class="en">Hinge</span></div>
+    <div class="explain"><div class="jp">プラスチック容器で育てる苗をコンテナ苗といい、一年中植栽できるという利点があります。</div><div class="en">A seedling grown in a plastic container is called a container seedling, and it has the advantage of being plantable year-round.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch09" data-chapter="ch09">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第9章　林道と機械の保守管理</span><span class="en">Ch.9 — Forest Roads and Machinery Maintenance</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="山の中で作業したり、木材を運んだりするためには、「林道」や「作業道」と呼ばれる道が必要です。">🔊</button><ruby>山<rt>やま</rt></ruby>の<ruby>中<rt>なか</rt></ruby>で<ruby>作業<rt>さぎょう</rt></ruby>したり、<ruby>木材<rt>もくざい</rt></ruby>を<ruby>運<rt>はこ</rt></ruby>んだりするためには、「<ruby>林道<rt>りんどう</rt></ruby>」や「<ruby>作業道<rt>さぎょうどう</rt></ruby>」と<ruby>呼<rt>よ</rt></ruby>ばれる<ruby>道<rt>みち</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>です。</p>
+    <p class="en">Roads called "forest roads" and "work roads" are needed in order to work in the mountains and transport timber.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="大雨の後などは、道が崩れていないか、倒木がないかを確認してから通行します。">🔊</button><ruby>大雨<rt>おおあめ</rt></ruby>の<ruby>後<rt>あと</rt></ruby>などは、<ruby>道<rt>みち</rt></ruby>が<ruby>崩<rt>くず</rt></ruby>れていないか、<ruby>倒木<rt>とうぼく</rt></ruby>がないかを<ruby>確認<rt>かくにん</rt></ruby>してから<ruby>通行<rt>つうこう</rt></ruby>します。</p>
+    <p class="en">After heavy rain, workers check whether the road has collapsed or a tree has fallen before using it.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="チェーンソーや高性能林業機械は、使用後に汚れを落とし、燃料や油の量を確認するなどの「保守管理」を行います。">🔊</button>チェーンソーや<ruby>高性能林業機械<rt>こうせいのうりんぎょうきかい</rt></ruby>は、<ruby>使用後<rt>しようご</rt></ruby>に<ruby>汚<rt>よご</rt></ruby>れを<ruby>落<rt>お</rt></ruby>とし、<ruby>燃料<rt>ねんりょう</rt></ruby>や<ruby>油<rt>あぶら</rt></ruby>の<ruby>量<rt>りょう</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>するなどの「<ruby>保守管理<rt>ほしゅかんり</rt></ruby>」を<ruby>行<rt>おこな</rt></ruby>います。</p>
+    <p class="en">After use, chainsaws and high-performance forestry machinery undergo "maintenance," such as cleaning off dirt and checking fuel and oil levels.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="機械の不具合は大きな事故につながるため、使用前の「点検整備」を習慣にします。">🔊</button><ruby>機械<rt>きかい</rt></ruby>の<ruby>不具合<rt>ふぐあい</rt></ruby>は<ruby>大<rt>おお</rt></ruby>きな<ruby>事故<rt>じこ</rt></ruby>につながるため、<ruby>使用前<rt>しようぜん</rt></ruby>の「<ruby>点検整備<rt>てんけんせいび</rt></ruby>」を<ruby>習慣<rt>しゅうかん</rt></ruby>にします。</p>
+    <p class="en">Because equipment malfunctions can lead to serious accidents, workers make "pre-use inspection" a habit.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🚧</div>
+    <div class="icon-caption"><span class="jp">作業道と点検整備</span><span class="en">Work roads and equipment inspection</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="a">
+    <p class="q-jp">チェーンソーの<ruby>使用後<rt>しようご</rt></ruby>に、<ruby>汚<rt>よご</rt></ruby>れを<ruby>落<rt>お</rt></ruby>としたり<ruby>燃料<rt>ねんりょう</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>したりすることを<b>何といいますか</b>。</p>
+    <p class="q-en">What is it called when a chainsaw is cleaned and its fuel checked after use?</p>
+      <div class="opt" data-val="a"><span class="jp">a. 保守管理</span><span class="en">Maintenance</span></div>
+      <div class="opt" data-val="b"><span class="jp">b. 造材</span><span class="en">Bucking</span></div>
+      <div class="opt" data-val="c"><span class="jp">c. 下刈り</span><span class="en">Weeding</span></div>
+    <div class="explain"><div class="jp">使用後に汚れを落とし、燃料や油の量を確認するなどのことを保守管理といいます。</div><div class="en">Cleaning off dirt and checking fuel and oil levels after use is called maintenance.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch10" data-chapter="ch10">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第10章　危険予知と野生動物・悪天候への対応</span><span class="en">Ch.10 — Hazard Prediction, Wildlife, and Bad Weather</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="作業に潜む危険を事前に予測する「危険予知」(KY)は、林業のような自然の中での仕事で特に重要です。">🔊</button><ruby>作業<rt>さぎょう</rt></ruby>に<ruby>潜<rt>ひそ</rt></ruby>む<ruby>危険<rt>きけん</rt></ruby>を<ruby>事前<rt>じぜん</rt></ruby>に<ruby>予測<rt>よそく</rt></ruby>する「<ruby>危険予知<rt>きけんよち</rt></ruby>」(KY)は、<ruby>林業<rt>りんぎょう</rt></ruby>のような<ruby>自然<rt>しぜん</rt></ruby>の<ruby>中<rt>なか</rt></ruby>での<ruby>仕事<rt>しごと</rt></ruby>で<ruby>特<rt>とく</rt></ruby>に<ruby>重要<rt>じゅうよう</rt></ruby>です。</p>
+    <p class="en">"Hazard prediction" (KY), which anticipates dangers hidden in a task beforehand, is especially important for outdoor work like forestry.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="山の中では「熊」に出会う危険があるため、ラジオや鈴など音の出るものを身につけて存在を知らせます。">🔊</button><ruby>山<rt>やま</rt></ruby>の<ruby>中<rt>なか</rt></ruby>では「<ruby>熊<rt>くま</rt></ruby>」に<ruby>出会<rt>であ</rt></ruby>う<ruby>危険<rt>きけん</rt></ruby>があるため、ラジオや<ruby>鈴<rt>すず</rt></ruby>など<ruby>音<rt>おと</rt></ruby>の<ruby>出<rt>で</rt></ruby>るものを<ruby>身<rt>み</rt></ruby>につけて<ruby>存在<rt>そんざい</rt></ruby>を<ruby>知<rt>し</rt></ruby>らせます。</p>
+    <p class="en">There is a risk of encountering a "bear" in the mountains, so workers carry something that makes noise, such as a radio or bell, to announce their presence.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「スズメバチ」の巣に気づかずに近づいてしまうと刺される危険があるため、作業前に周囲をよく確認します。">🔊</button>「スズメバチ」の<ruby>巣<rt>す</rt></ruby>に<ruby>気<rt>き</rt></ruby>づかずに<ruby>近<rt>ちか</rt></ruby>づいてしまうと<ruby>刺<rt>さ</rt></ruby>される<ruby>危険<rt>きけん</rt></ruby>があるため、<ruby>作業前<rt>さぎょうまえ</rt></ruby>に<ruby>周囲<rt>しゅうい</rt></ruby>をよく<ruby>確認<rt>かくにん</rt></ruby>します。</p>
+    <p class="en">Approaching a "wasp" nest without noticing it can result in being stung, so workers carefully check their surroundings before starting work.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="強風や大雨などの「悪天候」のときは、無理に作業を続けず、中止の判断をすることも大切です。">🔊</button><ruby>強風<rt>きょうふう</rt></ruby>や<ruby>大雨<rt>おおあめ</rt></ruby>などの「<ruby>悪天候<rt>あくてんこう</rt></ruby>」のときは、<ruby>無理<rt>むり</rt></ruby>に<ruby>作業<rt>さぎょう</rt></ruby>を<ruby>続<rt>つづ</rt></ruby>けず、<ruby>中止<rt>ちゅうし</rt></ruby>の<ruby>判断<rt>はんだん</rt></ruby>をすることも<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">During "bad weather" such as strong winds or heavy rain, it is also important not to force work to continue, and instead decide to stop.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🐻</div>
+    <div class="icon-caption"><span class="jp">熊・スズメバチと悪天候時の判断</span><span class="en">Bears, wasps, and decisions during bad weather</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="a">
+    <p class="q-jp"><ruby>強風<rt>きょうふう</rt></ruby>や<ruby>大雨<rt>おおあめ</rt></ruby>などの<ruby>悪天候<rt>あくてんこう</rt></ruby>のときに<b>もっとも適切な行動</b>はどれですか。</p>
+    <p class="q-en">What is the most appropriate action during bad weather such as strong winds or heavy rain?</p>
+      <div class="opt" data-val="a"><span class="jp">a. 無理に続けず中止の判断をする</span><span class="en">Not force work to continue, and decide to stop</span></div>
+      <div class="opt" data-val="b"><span class="jp">b. 予定どおり無理に作業を続ける</span><span class="en">Force work to continue as scheduled</span></div>
+      <div class="opt" data-val="c"><span class="jp">c. 一人だけ先に伐木を始める</span><span class="en">Have just one person go ahead and start felling alone</span></div>
+    <div class="explain"><div class="jp">強風や大雨などの悪天候のときは、無理に作業を続けず、中止の判断をすることも大切です。</div><div class="en">During bad weather such as strong winds or heavy rain, it is important not to force work to continue, and instead decide to stop.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch11" data-chapter="ch11">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第11章　報連相と判断練習</span><span class="en">Ch.11 — Workplace Communication and Judgment Practice</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="林業の現場でも、報告・連絡・相談、いわゆる「報連相」がとても大切です。">🔊</button><ruby>林業<rt>りんぎょう</rt></ruby>の<ruby>現場<rt>げんば</rt></ruby>でも、<ruby>報告<rt>ほうこく</rt></ruby>・<ruby>連絡<rt>れんらく</rt></ruby>・<ruby>相談<rt>そうだん</rt></ruby>、いわゆる「<ruby>報連相<rt>ほうれんそう</rt></ruby>」がとても<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">At forestry worksites too, "reporting, contacting, and consulting" — known as horenso — is extremely important.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="作業中にかかり木や機械の異常に気づいたときは、自分だけで判断せず、すぐに先輩に報告します。">🔊</button><ruby>作業中<rt>さぎょうちゅう</rt></ruby>にかかり<ruby>木<rt>ぎ</rt></ruby>や<ruby>機械<rt>きかい</rt></ruby>の<ruby>異常<rt>いじょう</rt></ruby>に<ruby>気<rt>き</rt></ruby>づいたときは、<ruby>自分<rt>じぶん</rt></ruby>だけで<ruby>判断<rt>はんだん</rt></ruby>せず、すぐに<ruby>先輩<rt>せんぱい</rt></ruby>に<ruby>報告<rt>ほうこく</rt></ruby>します。</p>
+    <p class="en">If you notice a hung-up tree or equipment abnormality during work, don't judge the situation on your own — report it to a senior worker right away.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="天候が急に悪化しそうなときは、早めに連絡して指示を受けます。">🔊</button><ruby>天候<rt>てんこう</rt></ruby>が<ruby>急<rt>きゅう</rt></ruby>に<ruby>悪化<rt>あっか</rt></ruby>しそうなときは、<ruby>早<rt>はや</rt></ruby>めに<ruby>連絡<rt>れんらく</rt></ruby>して<ruby>指示<rt>しじ</rt></ruby>を<ruby>受<rt>う</rt></ruby>けます。</p>
+    <p class="en">When the weather looks like it might suddenly worsen, contact someone early and receive instructions.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="判断に迷ったときは、一人で決めずに、まわりのスタッフに相談することが、安全な山の作業につながります。">🔊</button><ruby>判断<rt>はんだん</rt></ruby>に<ruby>迷<rt>まよ</rt></ruby>ったときは、<ruby>一人<rt>ひとり</rt></ruby>で<ruby>決<rt>き</rt></ruby>めずに、まわりのスタッフに<ruby>相談<rt>そうだん</rt></ruby>することが、<ruby>安全<rt>あんぜん</rt></ruby>な<ruby>山<rt>やま</rt></ruby>の<ruby>作業<rt>さぎょう</rt></ruby>につながります。</p>
+    <p class="en">When you are unsure what to do, consulting with the staff around you instead of deciding alone leads to safer work in the mountains.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">💬</div>
+    <div class="icon-caption"><span class="jp">報連相と判断力</span><span class="en">Workplace communication and good judgment</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="a">
+    <p class="q-jp"><ruby>伐木<rt>ばつぼく</rt></ruby><ruby>作業中<rt>さぎょうちゅう</rt></ruby>に、かかり<ruby>木<rt>ぎ</rt></ruby>ができてしまいました。<b>もっとも適切な行動</b>はどれですか。</p>
+    <p class="q-en">While felling a tree, it becomes a hung-up tree. What is the most appropriate action?</p>
+      <div class="opt" data-val="a"><span class="jp">a. すぐに先輩に報告し、指示を受ける</span><span class="en">Report it to a senior worker right away and receive instructions</span></div>
+      <div class="opt" data-val="b"><span class="jp">b. 一人で下に入って手で押して倒す</span><span class="en">Go underneath alone and push it down by hand</span></div>
+      <div class="opt" data-val="c"><span class="jp">c. 気にせず次の木の伐倒に移る</span><span class="en">Ignore it and move on to felling the next tree</span></div>
+    <div class="explain"><div class="jp">かかり木に気づいたときは、自分だけで判断せず、すぐに先輩に報告して指示を受けます。</div><div class="en">When you notice a hung-up tree, you should not judge the situation on your own — report it to a senior worker right away and receive instructions.</div></div>
+  </div>
+  <div class="q-block" data-answer="a">
+    <p class="q-jp"><ruby>作業中<rt>さぎょうちゅう</rt></ruby>に、<ruby>急<rt>きゅう</rt></ruby>に<ruby>風<rt>かぜ</rt></ruby>が<ruby>強<rt>つよ</rt></ruby>くなってきました。<b>最初にすること</b>はどれですか。</p>
+    <p class="q-en">While working, the wind suddenly picks up. What should you do first?</p>
+      <div class="opt" data-val="a"><span class="jp">a. すぐに連絡して指示を受ける</span><span class="en">Contact someone right away and receive instructions</span></div>
+      <div class="opt" data-val="b"><span class="jp">b. 風が弱まるまでそのまま伐木を続ける</span><span class="en">Keep felling as-is until the wind dies down</span></div>
+      <div class="opt" data-val="c"><span class="jp">c. 一人で判断して作業を中止する</span><span class="en">Decide alone to stop work without telling anyone</span></div>
+    <div class="explain"><div class="jp">天候が急に悪化しそうなときは、早めに連絡して指示を受けることが大切です。</div><div class="en">When the weather looks like it might suddenly worsen, it's important to contact someone early and receive instructions.</div></div>
+  </div>
+</div>
+</section>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+function safeGet(key){ try{ return JSON.parse(localStorage.getItem(key) || '{}'); }catch(e){ return {}; } }
+function safeSet(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+var readChapters = safeGet('forestryssw_read');
+
+document.querySelectorAll('.chapter-card').forEach(function(c){
+  c.addEventListener('click', function(){ goToTarget(this.dataset.target); });
+});
+
+var allTocLinks = document.querySelectorAll('.toc-link');
+
+function showHome(){
+  document.getElementById('view-home').style.display = 'block';
+  document.getElementById('view-content').style.display = 'none';
+  document.getElementById('mobile-title').textContent = 'Forestry SSW';
+  clearActiveTOC();
+}
+function showContent(){
+  document.getElementById('view-home').style.display = 'none';
+  document.getElementById('view-content').style.display = 'block';
+}
+function clearActiveTOC(){ allTocLinks.forEach(function(l){ l.classList.remove('active'); }); }
+function goToTarget(id){
+  showContent();
+  var el = document.getElementById(id);
+  if (el){ el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  setActiveTOC(id);
+  if (window.innerWidth <= 980) closeSidebar();
+  markRead(id);
+}
+function setActiveTOC(id){
+  clearActiveTOC();
+  var link = document.querySelector('.toc-link[data-target="'+id+'"]');
+  if (link) link.classList.add('active');
+}
+function markRead(id){
+  if (!readChapters[id]){ readChapters[id] = true; safeSet('forestryssw_read', readChapters); updateProgress(); }
+}
+function updateProgress(){
+  var total = document.querySelectorAll('.toc-link').length;
+  var n = Object.keys(readChapters).length;
+  if (n > total) n = total;
+  var pct = total ? Math.round(n/total*100) : 0;
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-text').textContent = n+' / '+total+' read';
+  var hs = document.getElementById('home-progress-stat');
+  if (hs) hs.querySelector('b').textContent = pct+'%';
+}
+document.querySelectorAll('.toc-link').forEach(function(el){
+  el.addEventListener('click', function(){ goToTarget(this.dataset.target); });
+});
+document.querySelector('.brand').addEventListener('click', showHome);
+document.querySelector('.brand').style.cursor = 'pointer';
+
+function speakJP(text){
+  if (!text) return;
+  if (!('speechSynthesis' in window)){ alert('Text-to-speech is not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+function injectScoreBadges(){
+  document.querySelectorAll('.sec').forEach(function(sec){
+    var qblocks = sec.querySelectorAll('.q-block');
+    if (!qblocks.length) return;
+    var title = sec.querySelector('.sec-title');
+    if (!title || title.querySelector('.section-score-inline')) return;
+    var span = document.createElement('span');
+    span.className = 'section-score-inline';
+    span.style.marginLeft = 'auto';
+    span.dataset.total = qblocks.length;
+    span.dataset.correct = '0';
+    span.textContent = '0 / ' + qblocks.length;
+    title.style.flexDirection = 'row';
+    title.style.alignItems = 'center';
+    title.appendChild(span);
+  });
+}
+injectScoreBadges();
+
+document.addEventListener('click', function(e){
+  var spk = e.target.closest('.spk');
+  if (spk){ e.stopPropagation(); speakJP(spk.getAttribute('data-jp')); return; }
+
+  var opt = e.target.closest('.opt');
+  if (opt){
+    var qblock = opt.closest('.q-block');
+    if (!qblock || qblock.classList.contains('answered')) return;
+    var chosen = opt.getAttribute('data-val');
+    var answer = qblock.getAttribute('data-answer');
+    qblock.classList.add('answered');
+    qblock.querySelectorAll('.opt').forEach(function(o){
+      var v = o.getAttribute('data-val');
+      if (v === answer) o.classList.add('correct');
+      else if (v === chosen) o.classList.add('wrong');
+    });
+    var sec = qblock.closest('.sec');
+    if (sec){
+      var badge = sec.querySelector('.section-score-inline');
+      if (badge && chosen === answer){ badge.dataset.correct = (parseInt(badge.dataset.correct,10) + 1); }
+      if (badge) badge.textContent = badge.dataset.correct + ' / ' + badge.dataset.total;
+    }
+    return;
+  }
+});
+
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); }
+document.getElementById('menu-toggle').addEventListener('click', function(){
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+updateProgress();
+showHome();
+</script>
+</body>
+</html>
