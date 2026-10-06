@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fishery SSW — Japanese with Raza Sensei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#12395d; --navy-dark:#0b2945; --navy-light:#315E7F;
+  --steel:#7A8490; --rust:#d62828; --rust-dark:#b91f1f;
+  --ink:#12262A; --muted:#5C7278; --border:#DCE6E7; --paper:#F4F9F9; --card:#FFFFFF;
+  --good:#1F7A4D; --bad:#B3261E; --radius:14px; --shadow:0 2px 10px rgba(107,30,60,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); line-height:1.55;}
+.jp{font-family:'Noto Sans JP','Inter',sans-serif;}
+ruby rt{font-size:0.55em; color:var(--muted);}
+
+#app{display:flex; min-height:100vh;}
+#sidebar{width:290px; flex-shrink:0; background:var(--navy-dark); color:#fff; height:100vh; position:sticky; top:0; overflow-y:auto; padding-bottom:30px;}
+.brand{display:flex; align-items:center; gap:10px; padding:20px 18px 16px 18px; border-bottom:1px solid rgba(255,255,255,0.12); cursor:pointer;}
+.brand .logo{width:40px;height:40px;border-radius:10px;background:var(--rust); display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.brand-text{font-weight:800;font-size:13.5px;line-height:1.25;}
+.brand-text small{display:block;font-weight:500;font-size:11px;color:#A8C2D6;}
+#toc{padding:10px 8px 0 8px;}
+.toc-link{display:flex; align-items:center; gap:8px; padding:10px 12px; margin:3px 2px; font-size:12.5px; color:#C9DBE9; border-radius:9px; cursor:pointer;}
+.toc-icon{font-size:15px;}
+.toc-link:hover{background:rgba(255,255,255,0.08); color:#fff;}
+.toc-link.active{background:var(--rust); color:#fff; font-weight:700;}
+#sidebar-footer{padding:16px 18px; font-size:10.5px; color:#87A2B8; border-top:1px solid rgba(255,255,255,0.1); margin-top:14px;}
+
+#menu-toggle{display:none; position:fixed; top:14px; left:14px; z-index:50; width:42px;height:42px;border-radius:10px;background:var(--navy-dark);color:#fff; border:none; font-size:18px; box-shadow:var(--shadow); cursor:pointer;}
+
+#main{flex:1; min-width:0;}
+#topbar{position:sticky; top:0; z-index:20; background:var(--card); border-bottom:1px solid var(--border); padding:14px 32px; display:flex; align-items:center; justify-content:space-between;}
+#mobile-title{font-weight:800; font-size:14px; color:var(--navy-dark);}
+#progress-wrap{display:flex; align-items:center; gap:10px; font-size:12px; color:var(--muted);}
+#progress-track{width:130px; height:7px; background:var(--border); border-radius:5px; overflow:hidden;}
+#progress-fill{height:100%; background:linear-gradient(90deg,var(--rust),var(--navy-light)); width:0%; transition:width .3s;}
+
+#content{max-width:880px; margin:0 auto; padding:0 32px 100px 32px;}
+
+.home-hero{background:linear-gradient(135deg,var(--navy) 0%, var(--navy-dark) 100%); color:#fff; border-radius:20px; padding:44px 38px; margin:32px 0 28px 0; position:relative; overflow:hidden;}
+.home-hero::after{content:"🐟"; position:absolute; right:24px; bottom:-16px; font-size:130px; opacity:0.15; transform:rotate(-8deg);}
+.home-hero h2{margin:0 0 10px 0; font-size:23px; font-weight:800;}
+.home-hero p{margin:0; color:#D3E2ED; max-width:560px; font-size:14.5px;}
+.home-stats{display:flex; gap:14px; margin-top:24px; flex-wrap:wrap;}
+.home-stat{background:rgba(255,255,255,0.1); border-radius:12px; padding:12px 18px; min-width:100px;}
+.home-stat b{display:block; font-size:22px;}
+.home-stat span{font-size:11px; color:#BBD3E4;}
+.chapter-cards{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px;}
+@media(max-width:700px){.chapter-cards{grid-template-columns:1fr;}}
+.chapter-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; cursor:pointer; box-shadow:var(--shadow); border-top:4px solid var(--rust); transition:transform .15s;}
+.chapter-card:hover{transform:translateY(-2px);}
+.card-icon{font-size:26px;}
+.chapter-card h3{margin:8px 0 4px 0; font-size:14.5px;}
+.chapter-card p{margin:0; font-size:12px; color:var(--muted);}
+.footer-credit{text-align:center; color:var(--muted); font-size:12px; margin:40px 0 10px 0;}
+
+.chapter-section{padding-top:8px;}
+.chapter-banner{background:var(--navy-dark); color:#fff; border-radius:16px; padding:24px 26px; margin:28px 0 20px 0; border-left:6px solid var(--rust);}
+.chapter-banner-eyebrow{font-size:11px; letter-spacing:.05em; color:var(--rust); font-weight:700; text-transform:uppercase;}
+.chapter-banner-title{margin:6px 0 0 0; display:flex; flex-direction:column; gap:2px;}
+.chapter-banner-title .jp{font-size:19px; font-weight:800;}
+.chapter-banner-title .en{font-size:12.5px; color:#BFD6E6; font-weight:500;}
+
+.sec{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:22px 24px; margin-bottom:18px; box-shadow:var(--shadow);}
+.sec-title{display:flex; flex-direction:column; gap:2px; margin-bottom:14px; padding-bottom:12px; border-bottom:2px solid #EAEEF2;}
+.sec-title .jp{font-weight:800; font-size:15.5px; color:var(--navy-dark);}
+.sec-title .en{font-size:12px; color:var(--muted); font-weight:600;}
+
+.para{margin-bottom:14px;}
+.para .jp{font-size:15px; display:flex; align-items:flex-start; gap:8px; margin:0 0 4px 0;}
+.para .en{font-size:13px; color:var(--muted); margin:0; padding-left:34px;}
+
+.spk{flex-shrink:0; border:none; background:var(--rust); color:#fff; border-radius:50%; width:26px;height:26px; font-size:12px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.2); margin-top:1px;}
+.spk:hover{background:var(--rust-dark);}
+.spk:active{transform:scale(0.92);}
+
+.steps{margin:10px 0 16px 0; padding:14px 16px; background:#EEF3F7; border-radius:12px;}
+.step{margin-bottom:9px;}
+.step:last-child{margin-bottom:0;}
+.step-jp{font-size:14px;}
+.step-en{font-size:12px; color:var(--muted); margin-top:1px;}
+
+.icon-card{background:#EEF3F7; border:1px dashed var(--border); border-radius:12px; padding:20px; text-align:center; margin:16px 0;}
+.icon-visual{font-size:50px; line-height:1; margin-bottom:10px; letter-spacing:4px;}
+.icon-caption{display:flex; flex-direction:column; gap:2px;}
+.icon-caption .jp{font-size:12.5px; font-weight:600; color:var(--navy-dark);}
+.icon-caption .en{font-size:11px; color:var(--muted);}
+
+.q-block{background:#EEF3F7; border-radius:12px; padding:16px 18px; margin:14px 0; border:1px solid var(--border);}
+.q-jp{font-size:14.5px; font-weight:700; margin:0 0 2px 0;}
+.q-en{font-size:12px; color:var(--muted); margin:0 0 12px 0;}
+.opt{padding:10px 14px; border-radius:9px; border:1.5px solid var(--border); margin-bottom:7px; cursor:pointer; background:#fff; display:flex; flex-direction:column; gap:1px;}
+.opt:hover{border-color:var(--navy-light);}
+.opt .jp{font-size:13.5px;}
+.opt .en{font-size:11.5px; color:var(--muted);}
+.q-block.answered .opt{cursor:default; pointer-events:none;}
+.q-block.answered .opt.correct{background:#E7F5EC; border-color:var(--good);}
+.q-block.answered .opt.wrong{background:#FBEAE9; border-color:var(--bad);}
+.explain{display:none; margin-top:10px; padding:10px 12px; background:#fff; border-left:3px solid var(--navy); border-radius:6px; font-size:12.5px;}
+.q-block.answered .explain{display:block;}
+.explain .jp{font-weight:600; margin-bottom:3px;}
+.explain .en{color:var(--muted);}
+.section-score-inline{background:var(--navy); color:#fff; padding:2px 9px; border-radius:20px; font-size:11px !important;}
+
+@media(max-width:980px){
+  #sidebar{position:fixed; left:-310px; top:0; z-index:40; transition:left .2s; width:270px; box-shadow:4px 0 20px rgba(0,0,0,0.3);}
+  #sidebar.open{left:0;}
+  #menu-toggle{display:flex; align-items:center; justify-content:center;}
+  #content{padding:0 16px 100px 16px;}
+  #topbar{padding:14px 16px 14px 64px;}
+  .home-hero{padding:30px 22px;}
+}
+</style>
+</head>
+<body>
+<button id="menu-toggle">☰</button>
+<div id="app">
+  <aside id="sidebar">
+    <div class="brand"><div class="logo">🎣</div><div class="brand-text">Fishery<br>SSW<small>Japanese with Raza Sensei</small></div></div>
+    <div id="toc">
+    <div class="toc-link" data-target="ch01"><span class="toc-icon">🎣</span>第1章　漁業分野の仕事</div>
+    <div class="toc-link" data-target="ch02"><span class="toc-icon">🦺</span>第2章　漁船と作業現場の安全</div>
+    <div class="toc-link" data-target="ch03"><span class="toc-icon">🕸</span>第3章　漁具の製作と補修</div>
+    <div class="toc-link" data-target="ch04"><span class="toc-icon">🕸</span>第4章　網漁業の基本</div>
+    <div class="toc-link" data-target="ch05"><span class="toc-icon">🪝</span>第5章　釣り漁業の基本</div>
+    <div class="toc-link" data-target="ch06"><span class="toc-icon">📡</span>第6章　魚群探索と漁獲物の取り扱い</div>
+    <div class="toc-link" data-target="ch07"><span class="toc-icon">🐟</span>第7章　養殖業の概要と資材・施設管理</div>
+    <div class="toc-link" data-target="ch08"><span class="toc-icon">🐣</span>第8章　種苗の管理</div>
+    <div class="toc-link" data-target="ch09"><span class="toc-icon">📦</span>第9章　養殖水産物の収獲と処理</div>
+    <div class="toc-link" data-target="ch10"><span class="toc-icon">🧪</span>第10章　水質管理と魚病予防</div>
+    <div class="toc-link" data-target="ch11"><span class="toc-icon">💬</span>第11章　報連相と判断練習</div>
+    </div>
+    <div id="sidebar-footer">特定技能「漁業分野」<br>Bilingual Study Guide · Ruby Furigana · Audio<br><br>Original study material — not affiliated with or reproducing any official test-prep publisher's text.</div>
+  </aside>
+  <main id="main">
+    <div id="topbar">
+      <div id="mobile-title">Fishery SSW</div>
+      <div id="progress-wrap"><div id="progress-track"><div id="progress-fill"></div></div><span id="progress-text">0 / 11 read</span></div>
+    </div>
+    <div id="content">
+      <div id="view-home">
+        <div class="home-hero">
+          <h2>特定技能「漁業分野」<br>Fishery — SSW Exam Prep</h2>
+          <p>An original bilingual study guide covering this field's core work — fishing vessel safety, producing and repairing fishing gear, net and line fishing methods, fish-finding and catch handling, aquaculture facility and seed-stock management, harvesting and processing, and water-quality &amp; disease prevention — with furigana and tap-to-listen audio.</p>
+          <div class="home-stats">
+            <div class="home-stat"><b>11</b><span>Chapters</span></div>
+            <div class="home-stat"><b>🔊</b><span>Audio</span></div>
+            <div class="home-stat" id="home-progress-stat"><b>0%</b><span>Completed</span></div>
+          </div>
+        </div>
+        <div class="chapter-cards" id="chapter-cards">
+<div class="chapter-card" data-target="ch01"><div class="card-icon">🎣</div><h3>第1章　漁業分野の仕事</h3><p>Chapter 1: Work in the Fishery Field</p></div>
+<div class="chapter-card" data-target="ch02"><div class="card-icon">🦺</div><h3>第2章　漁船と作業現場の安全</h3><p>Chapter 2: Fishing Vessel and Workplace Safety</p></div>
+<div class="chapter-card" data-target="ch03"><div class="card-icon">🕸️</div><h3>第3章　漁具の製作と補修</h3><p>Chapter 3: Producing and Repairing Fishing Gear</p></div>
+<div class="chapter-card" data-target="ch04"><div class="card-icon">🕸️</div><h3>第4章　網漁業の基本</h3><p>Chapter 4: Net Fishing Basics</p></div>
+<div class="chapter-card" data-target="ch05"><div class="card-icon">🪝</div><h3>第5章　釣り漁業の基本</h3><p>Chapter 5: Line Fishing Basics</p></div>
+<div class="chapter-card" data-target="ch06"><div class="card-icon">📡</div><h3>第6章　魚群探索と漁獲物の取り扱い</h3><p>Chapter 6: Fish-Finding and Handling the Catch</p></div>
+<div class="chapter-card" data-target="ch07"><div class="card-icon">🐟</div><h3>第7章　養殖業の概要と資材・施設管理</h3><p>Chapter 7: Aquaculture Overview and Facility Management</p></div>
+<div class="chapter-card" data-target="ch08"><div class="card-icon">🐣</div><h3>第8章　種苗の管理</h3><p>Chapter 8: Seed Stock Management</p></div>
+<div class="chapter-card" data-target="ch09"><div class="card-icon">📦</div><h3>第9章　養殖水産物の収獲と処理</h3><p>Chapter 9: Harvesting and Processing Farmed Products</p></div>
+<div class="chapter-card" data-target="ch10"><div class="card-icon">🧪</div><h3>第10章　水質管理と魚病予防</h3><p>Chapter 10: Water Quality Management and Disease Prevention</p></div>
+<div class="chapter-card" data-target="ch11"><div class="card-icon">💬</div><h3>第11章　報連相と判断練習</h3><p>Chapter 11: Workplace Communication and Judgment Practice</p></div>
+        </div>
+        <p class="footer-credit">Japanese with Raza Sensei · SSW Fishery System · Original bilingual study guide, icons &amp; text independently authored</p>
+      </div>
+      <div id="view-content" style="display:none;">
+<section class="chapter-section" id="ch01" data-chapter="ch01">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第1章　漁業分野の仕事</span><span class="en">Chapter 1: Work in the Fishery Field</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="漁業分野の特定技能には、「漁業」と「養殖業」という二つの区分があります。">🔊</button><ruby>漁業分野<rt>ぎょぎょうぶんや</rt></ruby>の<ruby>特定技能<rt>とくていぎのう</rt></ruby>には、「<ruby>漁業<rt>ぎょぎょう</rt></ruby>」と「<ruby>養殖業<rt>ようしょくぎょう</rt></ruby>」という<ruby>二<rt>ふた</rt></ruby>つの<ruby>区分<rt>くぶん</rt></ruby>があります。</p>
+    <p class="en">The Fishery SSW field has two categories: "fishing operations" and "aquaculture."</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="漁業の区分では、漁具の製作・補修、魚群の探索、漁具・漁労機械の操作などを行います。">🔊</button><ruby>漁業<rt>ぎょぎょう</rt></ruby>の<ruby>区分<rt>くぶん</rt></ruby>では、<ruby>漁具<rt>ぎょぐ</rt></ruby>の<ruby>製作<rt>せいさく</rt></ruby>・<ruby>補修<rt>ほしゅう</rt></ruby>、<ruby>魚群<rt>ぎょぐん</rt></ruby>の<ruby>探索<rt>たんさく</rt></ruby>、<ruby>漁具<rt>ぎょぐ</rt></ruby>・<ruby>漁労機械<rt>ぎょろうきかい</rt></ruby>の<ruby>操作<rt>そうさ</rt></ruby>などを<ruby>行<rt>おこな</rt></ruby>います。</p>
+    <p class="en">In the fishing operations category, workers make and repair fishing gear, search for schools of fish, and operate fishing gear and machinery.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="養殖業の区分では、養殖資材の生産・補修・管理、種苗の管理、養殖した水産動植物の収獲・処理などを行います。">🔊</button><ruby>養殖業<rt>ようしょくぎょう</rt></ruby>の<ruby>区分<rt>くぶん</rt></ruby>では、<ruby>養殖資材<rt>ようしょくしざい</rt></ruby>の<ruby>生産<rt>せいさん</rt></ruby>・<ruby>補修<rt>ほしゅう</rt></ruby>・<ruby>管理<rt>かんり</rt></ruby>、<ruby>種苗<rt>しゅびょう</rt></ruby>の<ruby>管理<rt>かんり</rt></ruby>、<ruby>養殖<rt>ようしょく</rt></ruby>した<ruby>水産動植物<rt>すいさんどうしょくぶつ</rt></ruby>の<ruby>収獲<rt>しゅうかく</rt></ruby>・<ruby>処理<rt>しょり</rt></ruby>などを<ruby>行<rt>おこな</rt></ruby>います。</p>
+    <p class="en">In the aquaculture category, workers produce, repair, and manage aquaculture materials, manage seed stock, and harvest and process farmed aquatic animals and plants.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="どちらの区分も、水産資源を大切にしながら、安全に作業することが求められます。">🔊</button>どちらの<ruby>区分<rt>くぶん</rt></ruby>も、<ruby>水産資源<rt>すいさんしげん</rt></ruby>を<ruby>大切<rt>たいせつ</rt></ruby>にしながら、<ruby>安全<rt>あんぜん</rt></ruby>に<ruby>作業<rt>さぎょう</rt></ruby>することが<ruby>求<rt>もと</rt></ruby>められます。</p>
+    <p class="en">In both categories, workers are expected to work safely while taking good care of marine resources.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🎣</div>
+    <div class="icon-caption"><span class="jp">漁業と養殖業で働く人たち</span><span class="en">People working in fishing operations and aquaculture</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>特定技能<rt>とくていぎのう</rt></ruby>「<ruby>漁業<rt>ぎょぎょう</rt></ruby>」の<b>区分にあてはまらない</b>ものはどれですか。</p>
+    <p class="q-en">Which of the following is NOT one of the categories under Specified Skilled Worker "Fishery"?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 遠洋航海の船長業務</span><span class="en">Serving as the captain of an ocean-going voyage</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 漁業</span><span class="en">Fishing operations</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 養殖業</span><span class="en">Aquaculture</span></div>
+    <div class="explain"><div class="jp">漁業分野の特定技能には、漁業と養殖業の二つの区分があります。船長業務はこの区分にはあてはまりません。</div><div class="en">The Fishery SSW field has two categories: fishing operations and aquaculture. Serving as a ship's captain is not one of these categories.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch02" data-chapter="ch02">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第2章　漁船と作業現場の安全</span><span class="en">Chapter 2: Fishing Vessel and Workplace Safety</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="漁業や養殖業の作業は海の上で行うことが多いため、海難事故を防ぐことがとても重要です。">🔊</button><ruby>漁業<rt>ぎょぎょう</rt></ruby>や<ruby>養殖業<rt>ようしょくぎょう</rt></ruby>の<ruby>作業<rt>さぎょう</rt></ruby>は<ruby>海<rt>うみ</rt></ruby>の<ruby>上<rt>うえ</rt></ruby>で<ruby>行<rt>おこな</rt></ruby>うことが<ruby>多<rt>おお</rt></ruby>いため、<ruby>海難事故<rt>かいなんじこ</rt></ruby>を<ruby>防<rt>ふせ</rt></ruby>ぐことがとても<ruby>重要<rt>じゅうよう</rt></ruby>です。</p>
+    <p class="en">Since fishing and aquaculture work is often carried out on the water, preventing maritime accidents is extremely important.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="甲板で作業するときは、必ず救命胴衣を着用し、波による転落に注意します。">🔊</button><ruby>甲板<rt>かんぱん</rt></ruby>で<ruby>作業<rt>さぎょう</rt></ruby>するときは、<ruby>必<rt>かなら</rt></ruby>ず<ruby>救命胴衣<rt>きゅうめいどうい</rt></ruby>を<ruby>着用<rt>ちゃくよう</rt></ruby>し、<ruby>波<rt>なみ</rt></ruby>による<ruby>転落<rt>てんらく</rt></ruby>に<ruby>注意<rt>ちゅうい</rt></ruby>します。</p>
+    <p class="en">When working on deck, workers always wear a life jacket and stay alert to the risk of falling overboard due to waves.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="出港する前には、気象海象(天気や波の状況)を確認し、危険なときは無理に出ないようにします。">🔊</button><ruby>出港<rt>しゅっこう</rt></ruby>する<ruby>前<rt>まえ</rt></ruby>には、<ruby>気象海象<rt>きしょうかいしょう</rt></ruby>(<ruby>天気<rt>てんき</rt></ruby>や<ruby>波<rt>なみ</rt></ruby>の<ruby>状況<rt>じょうきょう</rt></ruby>)を<ruby>確認<rt>かくにん</rt></ruby>し、<ruby>危険<rt>きけん</rt></ruby>なときは<ruby>無理<rt>むり</rt></ruby>に<ruby>出<rt>で</rt></ruby>ないようにします。</p>
+    <p class="en">Before setting out, workers check the weather and sea conditions, and avoid heading out when it is dangerous.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="機械やロープに手や指を巻き込まれないように、周りをよく確認してから作業をします。">🔊</button><ruby>機械<rt>きかい</rt></ruby>やロープに<ruby>手<rt>て</rt></ruby>や<ruby>指<rt>ゆび</rt></ruby>を<ruby>巻<rt>ま</rt></ruby>き<ruby>込<rt>こ</rt></ruby>まれないように、<ruby>周<rt>まわ</rt></ruby>りをよく<ruby>確認<rt>かくにん</rt></ruby>してから<ruby>作業<rt>さぎょう</rt></ruby>をします。</p>
+    <p class="en">Workers check their surroundings carefully before working, to avoid getting their hands or fingers caught in machinery or rope.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-jp">①<ruby>気象海象<rt>きしょうかいしょう</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>する</div>
+      <div class="step-en">① Check the weather and sea conditions</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">②<ruby>救命胴衣<rt>きゅうめいどうい</rt></ruby>など<ruby>安全装備<rt>あんぜんそうび</rt></ruby>を<ruby>点検<rt>てんけん</rt></ruby>する</div>
+      <div class="step-en">② Inspect safety equipment such as life jackets</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">③<ruby>機械<rt>きかい</rt></ruby>やロープの<ruby>状態<rt>じょうたい</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>する</div>
+      <div class="step-en">③ Check the condition of machinery and ropes</div>
+    </div>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🦺</div>
+    <div class="icon-caption"><span class="jp">救命胴衣の着用と海の安全</span><span class="en">Wearing a life jacket and staying safe at sea</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>甲板<rt>かんぱん</rt></ruby>で<ruby>作業<rt>さぎょう</rt></ruby>するときに<b>必ず着用する</b>ものはどれですか。</p>
+    <p class="q-en">What must always be worn when working on deck?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 救命胴衣</span><span class="en">A life jacket</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 保護メガネ</span><span class="en">Safety glasses</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 種苗</span><span class="en">Seed stock</span></div>
+    <div class="explain"><div class="jp">甲板で作業するときは、必ず救命胴衣を着用し、波による転落に注意します。</div><div class="en">When working on deck, workers must always wear a life jacket and stay alert to the risk of falling overboard due to waves.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch03" data-chapter="ch03">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第3章　漁具の製作と補修</span><span class="en">Chapter 3: Producing and Repairing Fishing Gear</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="漁具とは、網や釣り具など、魚を獲るために使う道具のことです。">🔊</button><ruby>漁具<rt>ぎょぐ</rt></ruby>とは、<ruby>網<rt>あみ</rt></ruby>や<ruby>釣<rt>つ</rt></ruby>り<ruby>具<rt>ぐ</rt></ruby>など、<ruby>魚<rt>さかな</rt></ruby>を<ruby>獲<rt>と</rt></ruby>るために<ruby>使<rt>つか</rt></ruby>う<ruby>道具<rt>どうぐ</rt></ruby>のことです。</p>
+    <p class="en">Fishing gear refers to tools used to catch fish, such as nets and fishing tackle.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="網は使っているうちに破れることがあるため、破れた部分を見つけて編み直す「補修」の技術が必要です。">🔊</button><ruby>網<rt>あみ</rt></ruby>は<ruby>使<rt>つか</rt></ruby>っているうちに<ruby>破<rt>やぶ</rt></ruby>れることがあるため、<ruby>破<rt>やぶ</rt></ruby>れた<ruby>部分<rt>ぶぶん</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけて<ruby>編<rt>あ</rt></ruby>み<ruby>直<rt>なお</rt></ruby>す「<ruby>補修<rt>ほしゅう</rt></ruby>」の<ruby>技術<rt>ぎじゅつ</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>です。</p>
+    <p class="en">Because nets can tear with use, the skill of "repair" — finding torn sections and reweaving them — is necessary.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="釣り具も糸の結び方や釣り針の手入れなど、正しい使い方と手入れの方法を覚えます。">🔊</button><ruby>釣<rt>つ</rt></ruby>り<ruby>具<rt>ぐ</rt></ruby>も<ruby>糸<rt>いと</rt></ruby>の<ruby>結<rt>むす</rt></ruby>び<ruby>方<rt>かた</rt></ruby>や<ruby>釣<rt>つ</rt></ruby>り<ruby>針<rt>ばり</rt></ruby>の<ruby>手入<rt>てい</rt></ruby>れなど、<ruby>正<rt>ただ</rt></ruby>しい<ruby>使<rt>つか</rt></ruby>い<ruby>方<rt>かた</rt></ruby>と<ruby>手入<rt>てい</rt></ruby>れの<ruby>方法<rt>ほうほう</rt></ruby>を<ruby>覚<rt>おぼ</rt></ruby>えます。</p>
+    <p class="en">Workers also learn the correct way to use and maintain fishing tackle, including how to tie fishing line and how to care for hooks.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="漁具の手入れを怠ると、漁の効率が下がるだけでなく、作業中の事故にもつながります。">🔊</button><ruby>漁具<rt>ぎょぐ</rt></ruby>の<ruby>手入<rt>てい</rt></ruby>れを<ruby>怠<rt>おこた</rt></ruby>ると、<ruby>漁<rt>りょう</rt></ruby>の<ruby>効率<rt>こうりつ</rt></ruby>が<ruby>下<rt>さ</rt></ruby>がるだけでなく、<ruby>作業中<rt>さぎょうちゅう</rt></ruby>の<ruby>事故<rt>じこ</rt></ruby>にもつながります。</p>
+    <p class="en">Neglecting to maintain fishing gear not only lowers fishing efficiency, but can also lead to accidents during work.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🕸️</div>
+    <div class="icon-caption"><span class="jp">網や釣り具の手入れ</span><span class="en">Maintaining nets and fishing tackle</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>破<rt>やぶ</rt></ruby>れた<ruby>網<rt>あみ</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけて<ruby>編<rt>あ</rt></ruby>み<ruby>直<rt>なお</rt></ruby>す<ruby>技術<rt>ぎじゅつ</rt></ruby>を<b>何といいますか</b>。</p>
+    <p class="q-en">What is the skill of finding a torn net and reweaving it called?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 補修</span><span class="en">Repair</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 給餌</span><span class="en">Feeding</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 収獲</span><span class="en">Harvesting</span></div>
+    <div class="explain"><div class="jp">破れた部分を見つけて編み直す技術を補修といいます。</div><div class="en">The skill of finding a torn section and reweaving it is called repair (hoshu).</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch04" data-chapter="ch04">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第4章　網漁業の基本</span><span class="en">Chapter 4: Net Fishing Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="網を使って魚を獲る漁業を「網漁業」といい、いくつかの方法があります。">🔊</button><ruby>網<rt>あみ</rt></ruby>を<ruby>使<rt>つか</rt></ruby>って<ruby>魚<rt>さかな</rt></ruby>を<ruby>獲<rt>と</rt></ruby>る<ruby>漁業<rt>ぎょぎょう</rt></ruby>を「<ruby>網漁業<rt>あみぎょぎょう</rt></ruby>」といい、いくつかの<ruby>方法<rt>ほうほう</rt></ruby>があります。</p>
+    <p class="en">Fishing that uses nets to catch fish is called "net fishing," and there are several methods.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「投網」は、円い網を広げるように投げて魚を囲む方法です。">🔊</button>「<ruby>投網<rt>とあみ</rt></ruby>」は、<ruby>円<rt>まる</rt></ruby>い<ruby>網<rt>あみ</rt></ruby>を<ruby>広<rt>ひろ</rt></ruby>げるように<ruby>投<rt>な</rt></ruby>げて<ruby>魚<rt>さかな</rt></ruby>を<ruby>囲<rt>かこ</rt></ruby>む<ruby>方法<rt>ほうほう</rt></ruby>です。</p>
+    <p class="en">"Cast netting" is a method where a round net is thrown so it spreads open, surrounding the fish.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「巻き網」は、魚群を大きな網で取り囲んでから、網の底を絞って魚を捕らえる方法です。">🔊</button>「<ruby>巻<rt>ま</rt></ruby>き<ruby>網<rt>あみ</rt></ruby>」は、<ruby>魚群<rt>ぎょぐん</rt></ruby>を<ruby>大<rt>おお</rt></ruby>きな<ruby>網<rt>あみ</rt></ruby>で<ruby>取<rt>と</rt></ruby>り<ruby>囲<rt>かこ</rt></ruby>んでから、<ruby>網<rt>あみ</rt></ruby>の<ruby>底<rt>そこ</rt></ruby>を<ruby>絞<rt>しぼ</rt></ruby>って<ruby>魚<rt>さかな</rt></ruby>を<ruby>捕<rt>と</rt></ruby>らえる<ruby>方法<rt>ほうほう</rt></ruby>です。</p>
+    <p class="en">"Purse seining" is a method where a school of fish is surrounded with a large net, and then the bottom of the net is drawn closed to trap the fish.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「刺し網」は、魚の通り道に網を張っておき、泳いできた魚を網の目に絡ませて獲る方法です。">🔊</button>「<ruby>刺<rt>さ</rt></ruby>し<ruby>網<rt>あみ</rt></ruby>」は、<ruby>魚<rt>さかな</rt></ruby>の<ruby>通<rt>とお</rt></ruby>り<ruby>道<rt>みち</rt></ruby>に<ruby>網<rt>あみ</rt></ruby>を<ruby>張<rt>は</rt></ruby>っておき、<ruby>泳<rt>およ</rt></ruby>いできた<ruby>魚<rt>さかな</rt></ruby>を<ruby>網<rt>あみ</rt></ruby>の<ruby>目<rt>め</rt></ruby>に<ruby>絡<rt>から</rt></ruby>ませて<ruby>獲<rt>と</rt></ruby>る<ruby>方法<rt>ほうほう</rt></ruby>です。</p>
+    <p class="en">"Gillnetting" is a method where a net is set across a fish's path, catching fish that swim into it by entangling them in the mesh.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🕸️</div>
+    <div class="icon-caption"><span class="jp">さまざまな網漁業の方法</span><span class="en">Different methods of net fishing</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>魚群<rt>ぎょぐん</rt></ruby>を<ruby>大<rt>おお</rt></ruby>きな<ruby>網<rt>あみ</rt></ruby>で<ruby>取<rt>と</rt></ruby>り<ruby>囲<rt>かこ</rt></ruby>んでから<ruby>底<rt>そこ</rt></ruby>を<ruby>絞<rt>しぼ</rt></ruby>って<ruby>捕<rt>と</rt></ruby>らえる<ruby>漁法<rt>ぎょほう</rt></ruby>は<b>どれですか</b>。</p>
+    <p class="q-en">Which fishing method surrounds a school of fish with a large net and then draws the bottom closed to trap them?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 巻き網</span><span class="en">Purse seining</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 投網</span><span class="en">Cast netting</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 刺し網</span><span class="en">Gillnetting</span></div>
+    <div class="explain"><div class="jp">巻き網は、魚群を大きな網で取り囲んでから、網の底を絞って魚を捕らえる方法です。</div><div class="en">Purse seining is a method where a school of fish is surrounded with a large net, and then the bottom of the net is drawn closed to trap the fish.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch05" data-chapter="ch05">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第5章　釣り漁業の基本</span><span class="en">Chapter 5: Line Fishing Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="釣り針を使って魚を獲る漁業を「釣り漁業」といいます。">🔊</button><ruby>釣<rt>つ</rt></ruby>り<ruby>針<rt>ばり</rt></ruby>を<ruby>使<rt>つか</rt></ruby>って<ruby>魚<rt>さかな</rt></ruby>を<ruby>獲<rt>と</rt></ruby>る<ruby>漁業<rt>ぎょぎょう</rt></ruby>を「<ruby>釣<rt>つ</rt></ruby>り<ruby>漁業<rt>ぎょぎょう</rt></ruby>」といいます。</p>
+    <p class="en">Fishing that uses hooks to catch fish is called "line fishing."</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「はえ縄」は、長い幹縄にたくさんの枝縄と釣り針を付けて海に沈める方法です。">🔊</button>「はえ<ruby>縄<rt>なわ</rt></ruby>」は、<ruby>長<rt>なが</rt></ruby>い<ruby>幹縄<rt>みきなわ</rt></ruby>にたくさんの<ruby>枝縄<rt>えだなわ</rt></ruby>と<ruby>釣<rt>つ</rt></ruby>り<ruby>針<rt>ばり</rt></ruby>を<ruby>付<rt>つ</rt></ruby>けて<ruby>海<rt>うみ</rt></ruby>に<ruby>沈<rt>しず</rt></ruby>める<ruby>方法<rt>ほうほう</rt></ruby>です。</p>
+    <p class="en">"Longlining" is a method of attaching many branch lines and hooks to a long main line and sinking it into the sea.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「一本釣り」は、1本の竿や糸で1匹ずつ魚を釣り上げる方法です。">🔊</button>「<ruby>一本釣<rt>いっぽんづ</rt></ruby>り」は、1<ruby>本<rt>ぽん</rt></ruby>の<ruby>竿<rt>さお</rt></ruby>や<ruby>糸<rt>いと</rt></ruby>で1<ruby>匹<rt>ぴき</rt></ruby>ずつ<ruby>魚<rt>さかな</rt></ruby>を<ruby>釣<rt>つ</rt></ruby>り<ruby>上<rt>あ</rt></ruby>げる<ruby>方法<rt>ほうほう</rt></ruby>です。</p>
+    <p class="en">"Pole-and-line fishing" is a method of catching fish one at a time using a single rod or line.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="どちらの方法も、魚の種類や大きさに合った釣り針の大きさやえさを選ぶことが大切です。">🔊</button>どちらの<ruby>方法<rt>ほうほう</rt></ruby>も、<ruby>魚<rt>さかな</rt></ruby>の<ruby>種類<rt>しゅるい</rt></ruby>や<ruby>大<rt>おお</rt></ruby>きさに<ruby>合<rt>あ</rt></ruby>った<ruby>釣<rt>つ</rt></ruby>り<ruby>針<rt>ばり</rt></ruby>の<ruby>大<rt>おお</rt></ruby>きさやえさを<ruby>選<rt>えら</rt></ruby>ぶことが<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">In both methods, it is important to choose the right hook size and bait for the type and size of fish being targeted.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🪝</div>
+    <div class="icon-caption"><span class="jp">はえ縄と一本釣り</span><span class="en">Longline and pole-and-line fishing</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>長<rt>なが</rt></ruby>い<ruby>幹縄<rt>みきなわ</rt></ruby>にたくさんの<ruby>枝縄<rt>えだなわ</rt></ruby>と<ruby>釣<rt>つ</rt></ruby>り<ruby>針<rt>ばり</rt></ruby>を<ruby>付<rt>つ</rt></ruby>けて<ruby>沈<rt>しず</rt></ruby>める<ruby>漁法<rt>ぎょほう</rt></ruby>は<b>どれですか</b>。</p>
+    <p class="q-en">Which fishing method attaches many branch lines and hooks to a long main line and sinks it into the sea?</p>
+      <div class="opt" data-val="A"><span class="jp">A. はえ縄</span><span class="en">Longlining</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 一本釣り</span><span class="en">Pole-and-line fishing</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 巻き網</span><span class="en">Purse seining</span></div>
+    <div class="explain"><div class="jp">はえ縄は、長い幹縄にたくさんの枝縄と釣り針を付けて海に沈める方法です。</div><div class="en">Longlining is a method of attaching many branch lines and hooks to a long main line and sinking it into the sea.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch06" data-chapter="ch06">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第6章　魚群探索と漁獲物の取り扱い</span><span class="en">Chapter 6: Fish-Finding and Handling the Catch</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="漁船には「魚群探知機」という機械が付いていて、音波を使って魚の群れを探します。">🔊</button><ruby>漁船<rt>ぎょせん</rt></ruby>には「<ruby>魚群探知機<rt>ぎょぐんたんちき</rt></ruby>」という<ruby>機械<rt>きかい</rt></ruby>が<ruby>付<rt>つ</rt></ruby>いていて、<ruby>音波<rt>おんぱ</rt></ruby>を<ruby>使<rt>つか</rt></ruby>って<ruby>魚<rt>さかな</rt></ruby>の<ruby>群<rt>む</rt></ruby>れを<ruby>探<rt>さが</rt></ruby>します。</p>
+    <p class="en">Fishing boats are equipped with a device called a "fish finder," which uses sound waves to locate schools of fish.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="漁獲物が船に揚がったら、魚の種類や大きさで「選別」を行います。">🔊</button><ruby>漁獲物<rt>ぎょかくぶつ</rt></ruby>が<ruby>船<rt>ふね</rt></ruby>に<ruby>揚<rt>あ</rt></ruby>がったら、<ruby>魚<rt>さかな</rt></ruby>の<ruby>種類<rt>しゅるい</rt></ruby>や<ruby>大<rt>おお</rt></ruby>きさで「<ruby>選別<rt>せんべつ</rt></ruby>」を<ruby>行<rt>おこな</rt></ruby>います。</p>
+    <p class="en">Once the catch is brought aboard, it is sorted by species and size.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="魚の「鮮度」を保つため、氷を使ってすぐに冷やし、できるだけ早く港に運びます。">🔊</button><ruby>魚<rt>さかな</rt></ruby>の「<ruby>鮮度<rt>せんど</rt></ruby>」を<ruby>保<rt>たも</rt></ruby>つため、<ruby>氷<rt>こおり</rt></ruby>を<ruby>使<rt>つか</rt></ruby>ってすぐに<ruby>冷<rt>ひ</rt></ruby>やし、できるだけ<ruby>早<rt>はや</rt></ruby>く<ruby>港<rt>みなと</rt></ruby>に<ruby>運<rt>はこ</rt></ruby>びます。</p>
+    <p class="en">To preserve freshness, fish are quickly chilled with ice and brought to port as fast as possible.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="丁寧な取り扱いは魚の価値を高め、雑な取り扱いは品質を下げてしまいます。">🔊</button><ruby>丁寧<rt>ていねい</rt></ruby>な<ruby>取<rt>と</rt></ruby>り<ruby>扱<rt>あつか</rt></ruby>いは<ruby>魚<rt>さかな</rt></ruby>の<ruby>価値<rt>かち</rt></ruby>を<ruby>高<rt>たか</rt></ruby>め、<ruby>雑<rt>ざつ</rt></ruby>な<ruby>取<rt>と</rt></ruby>り<ruby>扱<rt>あつか</rt></ruby>いは<ruby>品質<rt>ひんしつ</rt></ruby>を<ruby>下<rt>さ</rt></ruby>げてしまいます。</p>
+    <p class="en">Careful handling raises the value of the fish, while rough handling lowers its quality.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">📡</div>
+    <div class="icon-caption"><span class="jp">魚群探知機と鮮度管理</span><span class="en">Fish finders and freshness management</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>魚群探知機<rt>ぎょぐんたんちき</rt></ruby>は<b>何を使って</b><ruby>魚<rt>さかな</rt></ruby>の<ruby>群<rt>む</rt></ruby>れを<ruby>探<rt>さが</rt></ruby>しますか。</p>
+    <p class="q-en">What does a fish finder use to locate schools of fish?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 音波</span><span class="en">Sound waves</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 光</span><span class="en">Light</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. におい</span><span class="en">Smell</span></div>
+    <div class="explain"><div class="jp">魚群探知機は、音波を使って魚の群れを探します。</div><div class="en">A fish finder uses sound waves to locate schools of fish.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch07" data-chapter="ch07">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第7章　養殖業の概要と資材・施設管理</span><span class="en">Chapter 7: Aquaculture Overview and Facility Management</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="養殖業は、魚や貝、海藻などの水産動植物を、人の手で育てる仕事です。">🔊</button><ruby>養殖業<rt>ようしょくぎょう</rt></ruby>は、<ruby>魚<rt>さかな</rt></ruby>や<ruby>貝<rt>かい</rt></ruby>、<ruby>海藻<rt>かいそう</rt></ruby>などの<ruby>水産動植物<rt>すいさんどうしょくぶつ</rt></ruby>を、<ruby>人<rt>ひと</rt></ruby>の<ruby>手<rt>て</rt></ruby>で<ruby>育<rt>そだ</rt></ruby>てる<ruby>仕事<rt>しごと</rt></ruby>です。</p>
+    <p class="en">Aquaculture is the job of raising aquatic animals and plants — such as fish, shellfish, and seaweed — by hand.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「いけす」と呼ばれる網の生け簀や養殖池など、養殖に必要な資材や施設を製作し、管理します。">🔊</button>「いけす」と<ruby>呼<rt>よ</rt></ruby>ばれる<ruby>網<rt>あみ</rt></ruby>の<ruby>生<rt>い</rt></ruby>け<ruby>簀<rt>す</rt></ruby>や<ruby>養殖池<rt>ようしょくいけ</rt></ruby>など、<ruby>養殖<rt>ようしょく</rt></ruby>に<ruby>必要<rt>ひつよう</rt></ruby>な<ruby>資材<rt>しざい</rt></ruby>や<ruby>施設<rt>しせつ</rt></ruby>を<ruby>製作<rt>せいさく</rt></ruby>し、<ruby>管理<rt>かんり</rt></ruby>します。</p>
+    <p class="en">Workers make and manage the materials and facilities needed for aquaculture, such as net cages called "ikesu" and aquaculture ponds.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="いけすや養殖池は、波や汚れで傷むことがあるため、定期的な点検と補修が欠かせません。">🔊</button>いけすや<ruby>養殖池<rt>ようしょくいけ</rt></ruby>は、<ruby>波<rt>なみ</rt></ruby>や<ruby>汚<rt>よご</rt></ruby>れで<ruby>傷<rt>いた</rt></ruby>むことがあるため、<ruby>定期的<rt>ていきてき</rt></ruby>な<ruby>点検<rt>てんけん</rt></ruby>と<ruby>補修<rt>ほしゅう</rt></ruby>が<ruby>欠<rt>か</rt></ruby>かせません。</p>
+    <p class="en">Because cages and ponds can be damaged by waves or dirt, regular inspection and repair are essential.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="給餌(えさをあげること)も重要な作業で、えさの量やタイミングを魚の様子に合わせて調整します。">🔊</button><ruby>給餌<rt>きゅうじ</rt></ruby>(えさをあげること)も<ruby>重要<rt>じゅうよう</rt></ruby>な<ruby>作業<rt>さぎょう</rt></ruby>で、えさの<ruby>量<rt>りょう</rt></ruby>やタイミングを<ruby>魚<rt>さかな</rt></ruby>の<ruby>様子<rt>ようす</rt></ruby>に<ruby>合<rt>あ</rt></ruby>わせて<ruby>調整<rt>ちょうせい</rt></ruby>します。</p>
+    <p class="en">Feeding is also important work, and the amount and timing of feed are adjusted according to how the fish are doing.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🐟</div>
+    <div class="icon-caption"><span class="jp">いけすと養殖資材の管理</span><span class="en">Managing fish cages and aquaculture materials</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>養殖<rt>ようしょく</rt></ruby>で<ruby>使<rt>つか</rt></ruby>う、<ruby>網<rt>あみ</rt></ruby>でできた<ruby>生<rt>い</rt></ruby>け<ruby>簀<rt>す</rt></ruby>のことを<b>何といいますか</b>。</p>
+    <p class="q-en">What is a net cage used in aquaculture called?</p>
+      <div class="opt" data-val="A"><span class="jp">A. いけす</span><span class="en">Ikesu (fish cage)</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. はえ縄</span><span class="en">Longline</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 刺し網</span><span class="en">Gillnet</span></div>
+    <div class="explain"><div class="jp">養殖で使う網でできた生け簀のことを「いけす」といいます。</div><div class="en">A net cage used in aquaculture is called "ikesu."</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch08" data-chapter="ch08">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第8章　種苗の管理</span><span class="en">Chapter 8: Seed Stock Management</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="養殖のもとになる卵や稚魚のことを「種苗」といいます。">🔊</button><ruby>養殖<rt>ようしょく</rt></ruby>のもとになる<ruby>卵<rt>たまご</rt></ruby>や<ruby>稚魚<rt>ちぎょ</rt></ruby>のことを「<ruby>種苗<rt>しゅびょう</rt></ruby>」といいます。</p>
+    <p class="en">The eggs or juvenile fish that form the starting point of aquaculture are called "seed stock" (shubyo).</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="種苗を健康に育てるためには、水温や水質を適切に管理することが欠かせません。">🔊</button><ruby>種苗<rt>しゅびょう</rt></ruby>を<ruby>健康<rt>けんこう</rt></ruby>に<ruby>育<rt>そだ</rt></ruby>てるためには、<ruby>水温<rt>すいおん</rt></ruby>や<ruby>水質<rt>すいしつ</rt></ruby>を<ruby>適切<rt>てきせつ</rt></ruby>に<ruby>管理<rt>かんり</rt></ruby>することが<ruby>欠<rt>か</rt></ruby>かせません。</p>
+    <p class="en">To raise seed stock in good health, properly managing water temperature and water quality is essential.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="稚魚には成長に合わせた餌料を与え、大きさにばらつきが出ないように成長管理を行います。">🔊</button><ruby>稚魚<rt>ちぎょ</rt></ruby>には<ruby>成長<rt>せいちょう</rt></ruby>に<ruby>合<rt>あ</rt></ruby>わせた<ruby>餌料<rt>じりょう</rt></ruby>を<ruby>与<rt>あた</rt></ruby>え、<ruby>大<rt>おお</rt></ruby>きさにばらつきが<ruby>出<rt>で</rt></ruby>ないように<ruby>成長管理<rt>せいちょうかんり</rt></ruby>を<ruby>行<rt>おこな</rt></ruby>います。</p>
+    <p class="en">Juvenile fish are given feed suited to their growth stage, and growth is managed so that sizes do not vary too much.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="病気や異常が見られる種苗は、早めに見つけてほかの個体から分けます。">🔊</button><ruby>病気<rt>びょうき</rt></ruby>や<ruby>異常<rt>いじょう</rt></ruby>が<ruby>見<rt>み</rt></ruby>られる<ruby>種苗<rt>しゅびょう</rt></ruby>は、<ruby>早<rt>はや</rt></ruby>めに<ruby>見<rt>み</rt></ruby>つけてほかの<ruby>個体<rt>こたい</rt></ruby>から<ruby>分<rt>わ</rt></ruby>けます。</p>
+    <p class="en">Seed stock showing signs of disease or abnormality is identified early and separated from other individuals.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🐣</div>
+    <div class="icon-caption"><span class="jp">種苗と稚魚の管理</span><span class="en">Managing seed stock and juvenile fish</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>養殖<rt>ようしょく</rt></ruby>のもとになる<ruby>卵<rt>たまご</rt></ruby>や<ruby>稚魚<rt>ちぎょ</rt></ruby>のことを<b>何といいますか</b>。</p>
+    <p class="q-en">What are the eggs or juvenile fish that form the starting point of aquaculture called?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 種苗</span><span class="en">Seed stock</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 漁具</span><span class="en">Fishing gear</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 漁獲物</span><span class="en">The catch</span></div>
+    <div class="explain"><div class="jp">養殖のもとになる卵や稚魚のことを種苗といいます。</div><div class="en">The eggs or juvenile fish that form the starting point of aquaculture are called seed stock (shubyo).</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch09" data-chapter="ch09">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第9章　養殖水産物の収獲と処理</span><span class="en">Chapter 9: Harvesting and Processing Farmed Products</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="養殖した魚や貝が十分な大きさに育ったら、「収獲」を行います。">🔊</button><ruby>養殖<rt>ようしょく</rt></ruby>した<ruby>魚<rt>さかな</rt></ruby>や<ruby>貝<rt>かい</rt></ruby>が<ruby>十分<rt>じゅうぶん</rt></ruby>な<ruby>大<rt>おお</rt></ruby>きさに<ruby>育<rt>そだ</rt></ruby>ったら、「<ruby>収獲<rt>しゅうかく</rt></ruby>」を<ruby>行<rt>おこな</rt></ruby>います。</p>
+    <p class="en">When farmed fish or shellfish have grown to a sufficient size, "harvesting" is carried out.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="収獲した水産物は、洗浄や選別などの「加工」を行ってから出荷します。">🔊</button><ruby>収獲<rt>しゅうかく</rt></ruby>した<ruby>水産物<rt>すいさんぶつ</rt></ruby>は、<ruby>洗浄<rt>せんじょう</rt></ruby>や<ruby>選別<rt>せんべつ</rt></ruby>などの「<ruby>加工<rt>かこう</rt></ruby>」を<ruby>行<rt>おこな</rt></ruby>ってから<ruby>出荷<rt>しゅっか</rt></ruby>します。</p>
+    <p class="en">Harvested seafood is "processed" — washed and sorted — before being shipped out.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="大きさや重さをそろえて「箱詰め」をすることで、市場での評価が高くなります。">🔊</button><ruby>大<rt>おお</rt></ruby>きさや<ruby>重<rt>おも</rt></ruby>さをそろえて「<ruby>箱詰<rt>はこづ</rt></ruby>め」をすることで、<ruby>市場<rt>しじょう</rt></ruby>での<ruby>評価<rt>ひょうか</rt></ruby>が<ruby>高<rt>たか</rt></ruby>くなります。</p>
+    <p class="en">Sorting items by size and weight before "boxing" them raises their evaluation on the market.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="出荷までの間も、鮮度や衛生に気を配って取り扱います。">🔊</button><ruby>出荷<rt>しゅっか</rt></ruby>までの<ruby>間<rt>あいだ</rt></ruby>も、<ruby>鮮度<rt>せんど</rt></ruby>や<ruby>衛生<rt>えいせい</rt></ruby>に<ruby>気<rt>き</rt></ruby>を<ruby>配<rt>くば</rt></ruby>って<ruby>取<rt>と</rt></ruby>り<ruby>扱<rt>あつか</rt></ruby>います。</p>
+    <p class="en">Products are handled with attention to freshness and hygiene right up until shipping.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">📦</div>
+    <div class="icon-caption"><span class="jp">収獲・箱詰めと出荷</span><span class="en">Harvesting, packing, and shipping</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>収獲<rt>しゅうかく</rt></ruby>した<ruby>水産物<rt>すいさんぶつ</rt></ruby>を<ruby>洗浄<rt>せんじょう</rt></ruby>したり<ruby>選別<rt>せんべつ</rt></ruby>したりすることを<b>何といいますか</b>。</p>
+    <p class="q-en">What is it called when harvested seafood is washed and sorted?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 加工</span><span class="en">Processing</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 給餌</span><span class="en">Feeding</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 気象海象</span><span class="en">Weather and sea conditions</span></div>
+    <div class="explain"><div class="jp">収獲した水産物を洗浄や選別することを加工といいます。</div><div class="en">Washing and sorting harvested seafood is called processing.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch10" data-chapter="ch10">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第10章　水質管理と魚病予防</span><span class="en">Chapter 10: Water Quality Management and Disease Prevention</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="養殖している魚を健康に育てるためには、「水質管理」がとても大切です。">🔊</button><ruby>養殖<rt>ようしょく</rt></ruby>している<ruby>魚<rt>さかな</rt></ruby>を<ruby>健康<rt>けんこう</rt></ruby>に<ruby>育<rt>そだ</rt></ruby>てるためには、「<ruby>水質管理<rt>すいしつかんり</rt></ruby>」がとても<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">"Water quality management" is extremely important for raising farmed fish in good health.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="水中の「溶存酸素」(水に溶けている酸素)が不足すると、魚が弱ったり死んだりすることがあります。">🔊</button><ruby>水中<rt>すいちゅう</rt></ruby>の「<ruby>溶存酸素<rt>ようぞんさんそ</rt></ruby>」(<ruby>水<rt>みず</rt></ruby>に<ruby>溶<rt>と</rt></ruby>けている<ruby>酸素<rt>さんそ</rt></ruby>)が<ruby>不足<rt>ふそく</rt></ruby>すると、<ruby>魚<rt>さかな</rt></ruby>が<ruby>弱<rt>よわ</rt></ruby>ったり<ruby>死<rt>し</rt></ruby>んだりすることがあります。</p>
+    <p class="en">If "dissolved oxygen" (oxygen dissolved in the water) becomes insufficient, fish can weaken or die.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="水温や水質を定期的に検査し、いつもと違うことがあればすぐに対応します。">🔊</button><ruby>水温<rt>すいおん</rt></ruby>や<ruby>水質<rt>すいしつ</rt></ruby>を<ruby>定期的<rt>ていきてき</rt></ruby>に<ruby>検査<rt>けんさ</rt></ruby>し、いつもと<ruby>違<rt>ちが</rt></ruby>うことがあればすぐに<ruby>対応<rt>たいおう</rt></ruby>します。</p>
+    <p class="en">Water temperature and quality are checked regularly, and any unusual change is dealt with right away.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「魚病」(魚の病気)の予防には、清潔な環境を保ち、異常のある魚を早く見つけることが大切です。">🔊</button>「<ruby>魚病<rt>ぎょびょう</rt></ruby>」(<ruby>魚<rt>さかな</rt></ruby>の<ruby>病気<rt>びょうき</rt></ruby>)の<ruby>予防<rt>よぼう</rt></ruby>には、<ruby>清潔<rt>せいけつ</rt></ruby>な<ruby>環境<rt>かんきょう</rt></ruby>を<ruby>保<rt>たも</rt></ruby>ち、<ruby>異常<rt>いじょう</rt></ruby>のある<ruby>魚<rt>さかな</rt></ruby>を<ruby>早<rt>はや</rt></ruby>く<ruby>見<rt>み</rt></ruby>つけることが<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">To prevent "fish disease," it is important to keep the environment clean and to identify sick fish quickly.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🧪</div>
+    <div class="icon-caption"><span class="jp">水質検査と魚の健康管理</span><span class="en">Water testing and fish health management</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>水中<rt>すいちゅう</rt></ruby>の<ruby>溶存酸素<rt>ようぞんさんそ</rt></ruby>が<ruby>不足<rt>ふそく</rt></ruby>すると、<b>どうなることがありますか</b>。</p>
+    <p class="q-en">What can happen if dissolved oxygen in the water becomes insufficient?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 魚が弱ったり死んだりする</span><span class="en">Fish can weaken or die</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 種苗の値段が下がる</span><span class="en">The price of seed stock drops</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 漁具の補修が不要になる</span><span class="en">Fishing gear no longer needs repair</span></div>
+    <div class="explain"><div class="jp">水中の溶存酸素が不足すると、魚が弱ったり死んだりすることがあります。</div><div class="en">If dissolved oxygen in the water becomes insufficient, fish can weaken or die.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch11" data-chapter="ch11">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第11章　報連相と判断練習</span><span class="en">Chapter 11: Workplace Communication and Judgment Practice</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="漁船や養殖の現場でも、報告・連絡・相談、いわゆる「報連相」がとても大切です。">🔊</button><ruby>漁船<rt>ぎょせん</rt></ruby>や<ruby>養殖<rt>ようしょく</rt></ruby>の<ruby>現場<rt>げんば</rt></ruby>でも、<ruby>報告<rt>ほうこく</rt></ruby>・<ruby>連絡<rt>れんらく</rt></ruby>・<ruby>相談<rt>そうだん</rt></ruby>、いわゆる「<ruby>報連相<rt>ほうれんそう</rt></ruby>」がとても<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">On fishing boats and at aquaculture sites too, "reporting, contacting, and consulting" — known as horenso — is extremely important.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="作業中に予想していなかった異常に気づいたときは、自分だけで判断せず、すぐに船長や先輩に報告します。">🔊</button><ruby>作業中<rt>さぎょうちゅう</rt></ruby>に<ruby>予想<rt>よそう</rt></ruby>していなかった<ruby>異常<rt>いじょう</rt></ruby>に<ruby>気<rt>き</rt></ruby>づいたときは、<ruby>自分<rt>じぶん</rt></ruby>だけで<ruby>判断<rt>はんだん</rt></ruby>せず、すぐに<ruby>船長<rt>せんちょう</rt></ruby>や<ruby>先輩<rt>せんぱい</rt></ruby>に<ruby>報告<rt>ほうこく</rt></ruby>します。</p>
+    <p class="en">If you notice something unexpected during work, don't judge the situation on your own — report it to the captain or a senior worker right away.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="天候が急に悪化しそうなときは、早めに連絡して指示を受けます。">🔊</button><ruby>天候<rt>てんこう</rt></ruby>が<ruby>急<rt>きゅう</rt></ruby>に<ruby>悪化<rt>あっか</rt></ruby>しそうなときは、<ruby>早<rt>はや</rt></ruby>めに<ruby>連絡<rt>れんらく</rt></ruby>して<ruby>指示<rt>しじ</rt></ruby>を<ruby>受<rt>う</rt></ruby>けます。</p>
+    <p class="en">When the weather looks like it might suddenly worsen, contact someone early and receive instructions.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="判断に迷ったときは、一人で決めずに、まわりのスタッフに相談することが、安全な作業につながります。">🔊</button><ruby>判断<rt>はんだん</rt></ruby>に<ruby>迷<rt>まよ</rt></ruby>ったときは、<ruby>一人<rt>ひとり</rt></ruby>で<ruby>決<rt>き</rt></ruby>めずに、まわりのスタッフに<ruby>相談<rt>そうだん</rt></ruby>することが、<ruby>安全<rt>あんぜん</rt></ruby>な<ruby>作業<rt>さぎょう</rt></ruby>につながります。</p>
+    <p class="en">When you are unsure what to do, consulting with the staff around you instead of deciding alone leads to safer work.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">💬</div>
+    <div class="icon-caption"><span class="jp">報連相と判断力</span><span class="en">Workplace communication and good judgment</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>養殖<rt>ようしょく</rt></ruby>のいけすで、<ruby>普段<rt>ふだん</rt></ruby>と<ruby>違<rt>ちが</rt></ruby>う<ruby>様子<rt>ようす</rt></ruby>の<ruby>魚<rt>さかな</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけました。<b>もっとも適切な行動</b>はどれですか。</p>
+    <p class="q-en">You notice fish behaving unusually in an aquaculture cage. What is the most appropriate action?</p>
+      <div class="opt" data-val="A"><span class="jp">A. すぐに先輩に報告し、指示を受ける</span><span class="en">Report it to a senior worker right away and receive instructions</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 自分の判断だけで薬を使う</span><span class="en">Use medication based on your own judgment alone</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 気づかなかったことにする</span><span class="en">Pretend you didn't notice</span></div>
+    <div class="explain"><div class="jp">普段と違う様子の魚を見つけたときは、自分だけで判断せず、すぐに先輩に報告して指示を受けます。</div><div class="en">When you notice fish behaving unusually, you should report it to a senior worker right away and receive instructions, rather than deciding on your own.</div></div>
+  </div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>出港<rt>しゅっこう</rt></ruby>する<ruby>前<rt>まえ</rt></ruby>に、<ruby>天候<rt>てんこう</rt></ruby>が<ruby>急<rt>きゅう</rt></ruby>に<ruby>悪<rt>わる</rt></ruby>くなりそうだと<ruby>気<rt>き</rt></ruby>づきました。<b>最初にすること</b>はどれですか。</p>
+    <p class="q-en">Before setting out, you notice the weather looks like it might suddenly turn bad. What should you do first?</p>
+      <div class="opt" data-val="A"><span class="jp">A. すぐに船長や先輩に連絡して指示を受ける</span><span class="en">Contact the captain or a senior worker right away and receive instructions</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. そのまま予定どおり出港する</span><span class="en">Set out as scheduled anyway</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 一人で判断して出港を中止する</span><span class="en">Decide alone and cancel departure without telling anyone</span></div>
+    <div class="explain"><div class="jp">天候が急に悪化しそうなときは、早めに連絡して指示を受けることが大切です。</div><div class="en">When the weather looks like it might suddenly worsen, it's important to contact someone early and receive instructions.</div></div>
+  </div>
+</div>
+</section>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+function safeGet(key){ try{ return JSON.parse(localStorage.getItem(key) || '{}'); }catch(e){ return {}; } }
+function safeSet(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+var readChapters = safeGet('fisheryssw_read');
+
+document.querySelectorAll('.chapter-card').forEach(function(c){
+  c.addEventListener('click', function(){ goToTarget(this.dataset.target); });
+});
+
+var allTocLinks = document.querySelectorAll('.toc-link');
+
+function showHome(){
+  document.getElementById('view-home').style.display = 'block';
+  document.getElementById('view-content').style.display = 'none';
+  document.getElementById('mobile-title').textContent = 'Fishery SSW';
+  clearActiveTOC();
+}
+function showContent(){
+  document.getElementById('view-home').style.display = 'none';
+  document.getElementById('view-content').style.display = 'block';
+}
+function clearActiveTOC(){ allTocLinks.forEach(function(l){ l.classList.remove('active'); }); }
+function goToTarget(id){
+  showContent();
+  var el = document.getElementById(id);
+  if (el){ el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  setActiveTOC(id);
+  if (window.innerWidth <= 980) closeSidebar();
+  markRead(id);
+}
+function setActiveTOC(id){
+  clearActiveTOC();
+  var link = document.querySelector('.toc-link[data-target="'+id+'"]');
+  if (link) link.classList.add('active');
+}
+function markRead(id){
+  if (!readChapters[id]){ readChapters[id] = true; safeSet('fisheryssw_read', readChapters); updateProgress(); }
+}
+function updateProgress(){
+  var total = document.querySelectorAll('.toc-link').length;
+  var n = Object.keys(readChapters).length;
+  if (n > total) n = total;
+  var pct = total ? Math.round(n/total*100) : 0;
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-text').textContent = n+' / '+total+' read';
+  var hs = document.getElementById('home-progress-stat');
+  if (hs) hs.querySelector('b').textContent = pct+'%';
+}
+document.querySelectorAll('.toc-link').forEach(function(el){
+  el.addEventListener('click', function(){ goToTarget(this.dataset.target); });
+});
+document.querySelector('.brand').addEventListener('click', showHome);
+document.querySelector('.brand').style.cursor = 'pointer';
+
+function speakJP(text){
+  if (!text) return;
+  if (!('speechSynthesis' in window)){ alert('Text-to-speech is not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+function injectScoreBadges(){
+  document.querySelectorAll('.sec').forEach(function(sec){
+    var qblocks = sec.querySelectorAll('.q-block');
+    if (!qblocks.length) return;
+    var title = sec.querySelector('.sec-title');
+    if (!title || title.querySelector('.section-score-inline')) return;
+    var span = document.createElement('span');
+    span.className = 'section-score-inline';
+    span.style.marginLeft = 'auto';
+    span.dataset.total = qblocks.length;
+    span.dataset.correct = '0';
+    span.textContent = '0 / ' + qblocks.length;
+    title.style.flexDirection = 'row';
+    title.style.alignItems = 'center';
+    title.appendChild(span);
+  });
+}
+injectScoreBadges();
+
+document.addEventListener('click', function(e){
+  var spk = e.target.closest('.spk');
+  if (spk){ e.stopPropagation(); speakJP(spk.getAttribute('data-jp')); return; }
+
+  var opt = e.target.closest('.opt');
+  if (opt){
+    var qblock = opt.closest('.q-block');
+    if (!qblock || qblock.classList.contains('answered')) return;
+    var chosen = opt.getAttribute('data-val');
+    var answer = qblock.getAttribute('data-answer');
+    qblock.classList.add('answered');
+    qblock.querySelectorAll('.opt').forEach(function(o){
+      var v = o.getAttribute('data-val');
+      if (v === answer) o.classList.add('correct');
+      else if (v === chosen) o.classList.add('wrong');
+    });
+    var sec = qblock.closest('.sec');
+    if (sec){
+      var badge = sec.querySelector('.section-score-inline');
+      if (badge && chosen === answer){ badge.dataset.correct = (parseInt(badge.dataset.correct,10) + 1); }
+      if (badge) badge.textContent = badge.dataset.correct + ' / ' + badge.dataset.total;
+    }
+    return;
+  }
+});
+
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); }
+document.getElementById('menu-toggle').addEventListener('click', function(){
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+updateProgress();
+showHome();
+</script>
+</body>
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fishery SSW — Theory Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#12395d; --teal-dark:#0b2945; --teal-light:#315E7F;
+  --caution:#d62828; --caution-dark:#b91f1f;
+  --ink:#2B1D22; --muted:#6B5D63; --border:#E6DCDF; --paper:#FAF6F4; --card:#FFFFFF;
+  --good:#1F7A4D; --bad:#B3261E; --radius:14px; --shadow:0 2px 10px rgba(107,30,60,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); line-height:1.55;}
+.jp{font-family:'Noto Sans JP','Inter',sans-serif;}
+ruby rt{font-size:0.55em; color:var(--muted);}
+
+header{background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%); color:#fff; padding:22px 24px; position:sticky; top:0; z-index:20; box-shadow:0 2px 10px rgba(0,0,0,0.15);}
+header h1{margin:0; font-size:19px; font-weight:800; display:flex; align-items:center; gap:10px;}
+header p{margin:4px 0 0 0; font-size:12.5px; color:#BFD6E6;}
+
+#tabs{display:flex; gap:6px; padding:14px 24px 0 24px; background:var(--card); border-bottom:1px solid var(--border); overflow-x:auto;}
+.tab-btn{padding:11px 18px; border:none; background:none; font-size:13.5px; font-weight:700; color:var(--muted); cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap;}
+.tab-btn.active{color:var(--teal-dark); border-bottom-color:var(--caution);}
+.tab-panel{display:none; max-width:820px; margin:0 auto; padding:24px 20px 80px 20px;}
+.tab-panel.active{display:block;}
+
+.stat-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;}
+.stat-pill{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px 16px; box-shadow:var(--shadow); font-size:12.5px; color:var(--muted);}
+.stat-pill b{color:var(--teal-dark); font-size:16px; display:block;}
+
+.filter-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+.filter-chip{padding:7px 14px; border-radius:20px; border:1.5px solid var(--border); background:var(--card); font-size:12px; font-weight:600; cursor:pointer; color:var(--muted);}
+.filter-chip.active{background:var(--teal); border-color:var(--teal); color:#fff;}
+
+#flash-stage{display:flex; flex-direction:column; align-items:center; gap:18px;}
+.flashcard{width:100%; max-width:480px; min-height:220px; background:var(--card); border-radius:20px; box-shadow:var(--shadow); border:1px solid var(--border); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 24px; cursor:pointer; text-align:center; position:relative;}
+.flashcard .badge{position:absolute; top:14px; left:16px; font-size:10.5px; color:var(--muted); background:#EEF3F7; padding:3px 9px; border-radius:20px;}
+.flashcard .term-jp{font-size:28px; font-weight:800; display:flex; align-items:center; gap:10px;}
+.flashcard .term-reading{font-size:13px; color:var(--muted); margin-top:6px;}
+.flashcard .term-en{font-size:17px; color:var(--teal-dark); font-weight:700; margin-top:14px;}
+.flashcard .hint{position:absolute; bottom:12px; font-size:11px; color:#9DB3C4;}
+.flash-controls{display:flex; gap:12px;}
+.btn{padding:11px 20px; border-radius:10px; border:none; font-size:13.5px; font-weight:700; cursor:pointer; background:var(--teal); color:#fff;}
+.btn.secondary{background:var(--card); color:var(--teal-dark); border:1.5px solid var(--border);}
+.btn.yellow{background:var(--caution); color:var(--teal-dark);}
+.btn:active{transform:scale(0.97);}
+#flash-progress{font-size:12.5px; color:var(--muted);}
+
+.q-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px; margin-bottom:16px; box-shadow:var(--shadow);}
+.q-card .q-meta{font-size:10.5px; color:var(--muted); background:#EEF3F7; display:inline-block; padding:2px 9px; border-radius:20px; margin-bottom:8px;}
+.q-jp{font-size:15px; font-weight:700; margin:0 0 2px 0;}
+.q-en{font-size:12.5px; color:var(--muted); margin:0 0 12px 0;}
+.opt{padding:10px 14px; border-radius:9px; border:1.5px solid var(--border); margin-bottom:7px; cursor:pointer; background:#fff;}
+.opt:hover{border-color:var(--teal-light);}
+.opt .jp{font-size:13.5px;}
+.opt .en{font-size:11.5px; color:var(--muted);}
+.q-card.answered .opt{cursor:default; pointer-events:none;}
+.q-card.answered .opt.correct{background:#E7F5EC; border-color:var(--good);}
+.q-card.answered .opt.wrong{background:#FBEAE9; border-color:var(--bad);}
+.explain{display:none; margin-top:10px; padding:10px 12px; background:#EEF3F7; border-left:3px solid var(--teal); border-radius:6px; font-size:12.5px;}
+.q-card.answered .explain{display:block;}
+.explain .jp{font-weight:600; margin-bottom:3px;}
+.explain .en{color:var(--muted);}
+
+.spk{flex-shrink:0; border:none; background:var(--caution); color:var(--teal-dark); border-radius:50%; width:24px;height:24px; font-size:11px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.2);}
+.spk:active{transform:scale(0.9);}
+
+.empty-msg{text-align:center; color:var(--muted); padding:40px 0; font-size:13.5px;}
+#quiz-summary{background:var(--card); border-radius:var(--radius); padding:18px 20px; margin-bottom:18px; box-shadow:var(--shadow); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
+#quiz-summary b{font-size:20px; color:var(--teal-dark);}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎣 Fishery SSW — Theory Practice</h1>
+  <p>Vocabulary flashcards and a self-graded knowledge quiz — companion to the full study guide</p>
+</header>
+<div id="tabs">
+  <button class="tab-btn active" data-tab="vocab">📇 Vocabulary</button>
+  <button class="tab-btn" data-tab="mcq">📝 Knowledge Quiz</button>
+</div>
+
+<div class="tab-panel active" id="panel-vocab">
+  <div class="stat-row">
+    <div class="stat-pill"><b id="vocab-total">0</b>Total terms</div>
+    <div class="stat-pill"><b id="vocab-pos">0</b>Current card</div>
+  </div>
+  <div class="filter-row" id="vocab-filters"></div>
+  <div id="flash-stage">
+    <div class="flashcard" id="flashcard">
+      <div class="badge" id="flash-badge">Ch.1</div>
+      <div id="flash-front">
+        <div class="term-jp"><span id="flash-jp"></span><button class="spk" id="flash-spk">🔊</button></div>
+        <div class="term-reading" id="flash-reading"></div>
+      </div>
+      <div id="flash-back" style="display:none;">
+        <div class="term-en" id="flash-en"></div>
+      </div>
+      <div class="hint">Tap card to flip / タップして裏返す</div>
+    </div>
+    <div id="flash-progress"></div>
+    <div class="flash-controls">
+      <button class="btn secondary" id="flash-prev">← Prev</button>
+      <button class="btn yellow" id="flash-shuffle">🔀 Shuffle</button>
+      <button class="btn" id="flash-next">Next →</button>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="panel-mcq">
+  <div id="quiz-summary">
+    <div><b id="mcq-score">0</b> / <span id="mcq-total-inline">0</span> correct</div>
+    <button class="btn secondary" id="mcq-reset">↺ Reset Quiz</button>
+  </div>
+  <div class="filter-row" id="mcq-filters"></div>
+  <div id="mcq-list"></div>
+</div>
+
+<script>
+var DATA = {"vocab": [{"jp": "漁業", "reading": "ぎょぎょう", "en": "fishing operations", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "養殖業", "reading": "ようしょくぎょう", "en": "aquaculture", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "漁獲", "reading": "ぎょかく", "en": "catch (of fish)", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "資源管理", "reading": "しげんかんり", "en": "resource management", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "救命胴衣", "reading": "きゅうめいどうい", "en": "life jacket", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "海難事故", "reading": "かいなんじこ", "en": "maritime accident", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "気象海象", "reading": "きしょうかいしょう", "en": "weather and sea conditions", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "甲板", "reading": "かんぱん", "en": "deck", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "漁具", "reading": "ぎょぐ", "en": "fishing gear", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "網", "reading": "あみ", "en": "net", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "釣り具", "reading": "つりぐ", "en": "fishing tackle", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "補修", "reading": "ほしゅう", "en": "repair", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "網漁業", "reading": "あみぎょぎょう", "en": "net fishing", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "投網", "reading": "とあみ", "en": "cast net", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "巻き網", "reading": "まきあみ", "en": "purse seine", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "刺し網", "reading": "さしあみ", "en": "gillnet", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "釣り漁業", "reading": "つりぎょぎょう", "en": "line fishing", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "はえ縄", "reading": "はえなわ", "en": "longline", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "一本釣り", "reading": "いっぽんづり", "en": "pole-and-line fishing", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "釣り針", "reading": "つりばり", "en": "fish hook", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "魚群探知機", "reading": "ぎょぐんたんちき", "en": "fish finder", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "漁獲物", "reading": "ぎょかくぶつ", "en": "the catch", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "鮮度", "reading": "せんど", "en": "freshness", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "選別", "reading": "せんべつ", "en": "sorting", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "養殖資材", "reading": "ようしょくしざい", "en": "aquaculture materials", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "いけす", "reading": "いけす", "en": "fish cage (ikesu)", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "給餌", "reading": "きゅうじ", "en": "feeding", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "水産動植物", "reading": "すいさんどうしょくぶつ", "en": "aquatic animals and plants", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "種苗", "reading": "しゅびょう", "en": "seed stock", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "稚魚", "reading": "ちぎょ", "en": "juvenile fish (fry)", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "餌料", "reading": "じりょう", "en": "feed", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "成長管理", "reading": "せいちょうかんり", "en": "growth management", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "収獲", "reading": "しゅうかく", "en": "harvesting", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "出荷", "reading": "しゅっか", "en": "shipping (to market)", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "加工", "reading": "かこう", "en": "processing", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "箱詰め", "reading": "はこづめ", "en": "packing (into boxes)", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "水質管理", "reading": "すいしつかんり", "en": "water quality management", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "魚病", "reading": "ぎょびょう", "en": "fish disease", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "溶存酸素", "reading": "ようぞんさんそ", "en": "dissolved oxygen", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "予防", "reading": "よぼう", "en": "prevention", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "報告", "reading": "ほうこく", "en": "report", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "連絡", "reading": "れんらく", "en": "contact", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "相談", "reading": "そうだん", "en": "consultation", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "判断", "reading": "はんだん", "en": "judgment", "chapter": "ch11", "chapter_label": "第11章"}], "mcq": [{"q_jp": "<ruby>特定技能<rt>とくていぎのう</rt></ruby>「<ruby>漁業<rt>ぎょぎょう</rt></ruby>」の<b>区分にあてはまらない</b>ものはどれですか。", "q_en": "Which of the following is NOT one of the categories under Specified Skilled Worker \"Fishery\"?", "options": [{"val": "A", "jp": "遠洋航海の船長業務", "en": "Serving as the captain of an ocean-going voyage"}, {"val": "B", "jp": "漁業", "en": "Fishing operations"}, {"val": "C", "jp": "養殖業", "en": "Aquaculture"}], "answer": "A", "explain_jp": "漁業分野の特定技能には、漁業と養殖業の二つの区分があります。船長業務はこの区分にはあてはまりません。", "explain_en": "The Fishery SSW field has two categories: fishing operations and aquaculture. Serving as a ship's captain is not one of these categories.", "chapter": "ch01", "chapter_label": "第1章"}, {"q_jp": "<ruby>甲板<rt>かんぱん</rt></ruby>で<ruby>作業<rt>さぎょう</rt></ruby>するときに<b>必ず着用する</b>ものはどれですか。", "q_en": "What must always be worn when working on deck?", "options": [{"val": "A", "jp": "救命胴衣", "en": "A life jacket"}, {"val": "B", "jp": "保護メガネ", "en": "Safety glasses"}, {"val": "C", "jp": "種苗", "en": "Seed stock"}], "answer": "A", "explain_jp": "甲板で作業するときは、必ず救命胴衣を着用し、波による転落に注意します。", "explain_en": "When working on deck, workers must always wear a life jacket and stay alert to the risk of falling overboard due to waves.", "chapter": "ch02", "chapter_label": "第2章"}, {"q_jp": "<ruby>破<rt>やぶ</rt></ruby>れた<ruby>網<rt>あみ</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけて<ruby>編<rt>あ</rt></ruby>み<ruby>直<rt>なお</rt></ruby>す<ruby>技術<rt>ぎじゅつ</rt></ruby>を<b>何といいますか</b>。", "q_en": "What is the skill of finding a torn net and reweaving it called?", "options": [{"val": "A", "jp": "補修", "en": "Repair"}, {"val": "B", "jp": "給餌", "en": "Feeding"}, {"val": "C", "jp": "収獲", "en": "Harvesting"}], "answer": "A", "explain_jp": "破れた部分を見つけて編み直す技術を補修といいます。", "explain_en": "The skill of finding a torn section and reweaving it is called repair (hoshu).", "chapter": "ch03", "chapter_label": "第3章"}, {"q_jp": "<ruby>魚群<rt>ぎょぐん</rt></ruby>を<ruby>大<rt>おお</rt></ruby>きな<ruby>網<rt>あみ</rt></ruby>で<ruby>取<rt>と</rt></ruby>り<ruby>囲<rt>かこ</rt></ruby>んでから<ruby>底<rt>そこ</rt></ruby>を<ruby>絞<rt>しぼ</rt></ruby>って<ruby>捕<rt>と</rt></ruby>らえる<ruby>漁法<rt>ぎょほう</rt></ruby>は<b>どれですか</b>。", "q_en": "Which fishing method surrounds a school of fish with a large net and then draws the bottom closed to trap them?", "options": [{"val": "A", "jp": "巻き網", "en": "Purse seining"}, {"val": "B", "jp": "投網", "en": "Cast netting"}, {"val": "C", "jp": "刺し網", "en": "Gillnetting"}], "answer": "A", "explain_jp": "巻き網は、魚群を大きな網で取り囲んでから、網の底を絞って魚を捕らえる方法です。", "explain_en": "Purse seining is a method where a school of fish is surrounded with a large net, and then the bottom of the net is drawn closed to trap the fish.", "chapter": "ch04", "chapter_label": "第4章"}, {"q_jp": "<ruby>長<rt>なが</rt></ruby>い<ruby>幹縄<rt>みきなわ</rt></ruby>にたくさんの<ruby>枝縄<rt>えだなわ</rt></ruby>と<ruby>釣<rt>つ</rt></ruby>り<ruby>針<rt>ばり</rt></ruby>を<ruby>付<rt>つ</rt></ruby>けて<ruby>沈<rt>しず</rt></ruby>める<ruby>漁法<rt>ぎょほう</rt></ruby>は<b>どれですか</b>。", "q_en": "Which fishing method attaches many branch lines and hooks to a long main line and sinks it into the sea?", "options": [{"val": "A", "jp": "はえ縄", "en": "Longlining"}, {"val": "B", "jp": "一本釣り", "en": "Pole-and-line fishing"}, {"val": "C", "jp": "巻き網", "en": "Purse seining"}], "answer": "A", "explain_jp": "はえ縄は、長い幹縄にたくさんの枝縄と釣り針を付けて海に沈める方法です。", "explain_en": "Longlining is a method of attaching many branch lines and hooks to a long main line and sinking it into the sea.", "chapter": "ch05", "chapter_label": "第5章"}, {"q_jp": "<ruby>魚群探知機<rt>ぎょぐんたんちき</rt></ruby>は<b>何を使って</b><ruby>魚<rt>さかな</rt></ruby>の<ruby>群<rt>む</rt></ruby>れを<ruby>探<rt>さが</rt></ruby>しますか。", "q_en": "What does a fish finder use to locate schools of fish?", "options": [{"val": "A", "jp": "音波", "en": "Sound waves"}, {"val": "B", "jp": "光", "en": "Light"}, {"val": "C", "jp": "におい", "en": "Smell"}], "answer": "A", "explain_jp": "魚群探知機は、音波を使って魚の群れを探します。", "explain_en": "A fish finder uses sound waves to locate schools of fish.", "chapter": "ch06", "chapter_label": "第6章"}, {"q_jp": "<ruby>養殖<rt>ようしょく</rt></ruby>で<ruby>使<rt>つか</rt></ruby>う、<ruby>網<rt>あみ</rt></ruby>でできた<ruby>生<rt>い</rt></ruby>け<ruby>簀<rt>す</rt></ruby>のことを<b>何といいますか</b>。", "q_en": "What is a net cage used in aquaculture called?", "options": [{"val": "A", "jp": "いけす", "en": "Ikesu (fish cage)"}, {"val": "B", "jp": "はえ縄", "en": "Longline"}, {"val": "C", "jp": "刺し網", "en": "Gillnet"}], "answer": "A", "explain_jp": "養殖で使う網でできた生け簀のことを「いけす」といいます。", "explain_en": "A net cage used in aquaculture is called \"ikesu.\"", "chapter": "ch07", "chapter_label": "第7章"}, {"q_jp": "<ruby>養殖<rt>ようしょく</rt></ruby>のもとになる<ruby>卵<rt>たまご</rt></ruby>や<ruby>稚魚<rt>ちぎょ</rt></ruby>のことを<b>何といいますか</b>。", "q_en": "What are the eggs or juvenile fish that form the starting point of aquaculture called?", "options": [{"val": "A", "jp": "種苗", "en": "Seed stock"}, {"val": "B", "jp": "漁具", "en": "Fishing gear"}, {"val": "C", "jp": "漁獲物", "en": "The catch"}], "answer": "A", "explain_jp": "養殖のもとになる卵や稚魚のことを種苗といいます。", "explain_en": "The eggs or juvenile fish that form the starting point of aquaculture are called seed stock (shubyo).", "chapter": "ch08", "chapter_label": "第8章"}, {"q_jp": "<ruby>収獲<rt>しゅうかく</rt></ruby>した<ruby>水産物<rt>すいさんぶつ</rt></ruby>を<ruby>洗浄<rt>せんじょう</rt></ruby>したり<ruby>選別<rt>せんべつ</rt></ruby>したりすることを<b>何といいますか</b>。", "q_en": "What is it called when harvested seafood is washed and sorted?", "options": [{"val": "A", "jp": "加工", "en": "Processing"}, {"val": "B", "jp": "給餌", "en": "Feeding"}, {"val": "C", "jp": "気象海象", "en": "Weather and sea conditions"}], "answer": "A", "explain_jp": "収獲した水産物を洗浄や選別することを加工といいます。", "explain_en": "Washing and sorting harvested seafood is called processing.", "chapter": "ch09", "chapter_label": "第9章"}, {"q_jp": "<ruby>水中<rt>すいちゅう</rt></ruby>の<ruby>溶存酸素<rt>ようぞんさんそ</rt></ruby>が<ruby>不足<rt>ふそく</rt></ruby>すると、<b>どうなることがありますか</b>。", "q_en": "What can happen if dissolved oxygen in the water becomes insufficient?", "options": [{"val": "A", "jp": "魚が弱ったり死んだりする", "en": "Fish can weaken or die"}, {"val": "B", "jp": "種苗の値段が下がる", "en": "The price of seed stock drops"}, {"val": "C", "jp": "漁具の補修が不要になる", "en": "Fishing gear no longer needs repair"}], "answer": "A", "explain_jp": "水中の溶存酸素が不足すると、魚が弱ったり死んだりすることがあります。", "explain_en": "If dissolved oxygen in the water becomes insufficient, fish can weaken or die.", "chapter": "ch10", "chapter_label": "第10章"}, {"q_jp": "<ruby>養殖<rt>ようしょく</rt></ruby>のいけすで、<ruby>普段<rt>ふだん</rt></ruby>と<ruby>違<rt>ちが</rt></ruby>う<ruby>様子<rt>ようす</rt></ruby>の<ruby>魚<rt>さかな</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけました。<b>もっとも適切な行動</b>はどれですか。", "q_en": "You notice fish behaving unusually in an aquaculture cage. What is the most appropriate action?", "options": [{"val": "A", "jp": "すぐに先輩に報告し、指示を受ける", "en": "Report it to a senior worker right away and receive instructions"}, {"val": "B", "jp": "自分の判断だけで薬を使う", "en": "Use medication based on your own judgment alone"}, {"val": "C", "jp": "気づかなかったことにする", "en": "Pretend you didn't notice"}], "answer": "A", "explain_jp": "普段と違う様子の魚を見つけたときは、自分だけで判断せず、すぐに先輩に報告して指示を受けます。", "explain_en": "When you notice fish behaving unusually, you should report it to a senior worker right away and receive instructions, rather than deciding on your own.", "chapter": "ch11", "chapter_label": "第11章"}, {"q_jp": "<ruby>出港<rt>しゅっこう</rt></ruby>する<ruby>前<rt>まえ</rt></ruby>に、<ruby>天候<rt>てんこう</rt></ruby>が<ruby>急<rt>きゅう</rt></ruby>に<ruby>悪<rt>わる</rt></ruby>くなりそうだと<ruby>気<rt>き</rt></ruby>づきました。<b>最初にすること</b>はどれですか。", "q_en": "Before setting out, you notice the weather looks like it might suddenly turn bad. What should you do first?", "options": [{"val": "A", "jp": "すぐに船長や先輩に連絡して指示を受ける", "en": "Contact the captain or a senior worker right away and receive instructions"}, {"val": "B", "jp": "そのまま予定どおり出港する", "en": "Set out as scheduled anyway"}, {"val": "C", "jp": "一人で判断して出港を中止する", "en": "Decide alone and cancel departure without telling anyone"}], "answer": "A", "explain_jp": "天候が急に悪化しそうなときは、早めに連絡して指示を受けることが大切です。", "explain_en": "When the weather looks like it might suddenly worsen, it's important to contact someone early and receive instructions.", "chapter": "ch11", "chapter_label": "第11章"}]};
+function esc(s){ return (s||'').toString(); }
+function speakJP(text){
+  if (!text) return;
+  if (!('speechSynthesis' in window)){ alert('Text-to-speech not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* FLASHCARDS */
+var vocabAll = DATA.vocab.slice();
+var vocabFiltered = vocabAll.slice();
+var flashIdx = 0, flashFlipped = false;
+var chLabels = Array.from(new Set(vocabAll.map(function(v){ return v.chapter_label; })));
+var chFilterEl = document.getElementById('vocab-filters');
+var allChip = document.createElement('div'); allChip.className='filter-chip active'; allChip.textContent='All'; allChip.dataset.ch='all';
+chFilterEl.appendChild(allChip);
+chLabels.forEach(function(ch){
+  var chip = document.createElement('div'); chip.className='filter-chip'; chip.textContent=ch; chip.dataset.ch=ch;
+  chFilterEl.appendChild(chip);
+});
+chFilterEl.addEventListener('click', function(e){
+  var chip = e.target.closest('.filter-chip'); if(!chip) return;
+  chFilterEl.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+  chip.classList.add('active');
+  var ch = chip.dataset.ch;
+  vocabFiltered = ch === 'all' ? vocabAll.slice() : vocabAll.filter(function(v){ return v.chapter_label === ch; });
+  flashIdx = 0; renderFlash();
+});
+document.getElementById('vocab-total').textContent = vocabAll.length;
+
+function renderFlash(){
+  if (!vocabFiltered.length){ document.getElementById('flash-jp').textContent='No cards'; return; }
+  if (flashIdx >= vocabFiltered.length) flashIdx = 0;
+  if (flashIdx < 0) flashIdx = vocabFiltered.length - 1;
+  var v = vocabFiltered[flashIdx];
+  flashFlipped = false;
+  document.getElementById('flash-front').style.display='block';
+  document.getElementById('flash-back').style.display='none';
+  document.getElementById('flash-badge').textContent = v.chapter_label;
+  document.getElementById('flash-jp').textContent = v.jp || '';
+  document.getElementById('flash-reading').textContent = v.reading || '';
+  document.getElementById('flash-en').textContent = v.en || '';
+  document.getElementById('flash-progress').textContent = (flashIdx+1)+' / '+vocabFiltered.length;
+  document.getElementById('vocab-pos').textContent = flashIdx+1;
+}
+document.getElementById('flashcard').addEventListener('click', function(e){
+  if (e.target.closest('.spk')) return;
+  flashFlipped = !flashFlipped;
+  document.getElementById('flash-front').style.display = flashFlipped ? 'none' : 'block';
+  document.getElementById('flash-back').style.display = flashFlipped ? 'block' : 'none';
+});
+document.getElementById('flash-spk').addEventListener('click', function(e){
+  e.stopPropagation();
+  var v = vocabFiltered[flashIdx];
+  speakJP(v ? v.jp : '');
+});
+document.getElementById('flash-next').addEventListener('click', function(){ flashIdx++; renderFlash(); });
+document.getElementById('flash-prev').addEventListener('click', function(){ flashIdx--; renderFlash(); });
+document.getElementById('flash-shuffle').addEventListener('click', function(){
+  for (var i = vocabFiltered.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i+1));
+    var tmp = vocabFiltered[i]; vocabFiltered[i] = vocabFiltered[j]; vocabFiltered[j] = tmp;
+  }
+  flashIdx = 0; renderFlash();
+});
+renderFlash();
+
+/* MCQ */
+var mcqAll = DATA.mcq.slice();
+var mcqScore = 0;
+document.getElementById('mcq-total-inline').textContent = mcqAll.length;
+var mcqChFilterEl = document.getElementById('mcq-filters');
+var mcqAllChip = document.createElement('div'); mcqAllChip.className='filter-chip active'; mcqAllChip.textContent='All'; mcqAllChip.dataset.ch='all';
+mcqChFilterEl.appendChild(mcqAllChip);
+Array.from(new Set(mcqAll.map(function(m){ return m.chapter_label; }))).forEach(function(ch){
+  var chip = document.createElement('div'); chip.className='filter-chip'; chip.textContent=ch; chip.dataset.ch=ch;
+  mcqChFilterEl.appendChild(chip);
+});
+mcqChFilterEl.addEventListener('click', function(e){
+  var chip = e.target.closest('.filter-chip'); if(!chip) return;
+  mcqChFilterEl.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+  chip.classList.add('active');
+  renderMCQ(chip.dataset.ch);
+});
+function renderMCQ(filterCh){
+  var list = document.getElementById('mcq-list');
+  list.innerHTML = '';
+  var items = (!filterCh || filterCh === 'all') ? mcqAll : mcqAll.filter(function(m){ return m.chapter_label === filterCh; });
+  if (!items.length){ list.innerHTML = '<div class="empty-msg">No questions in this filter.</div>'; return; }
+  items.forEach(function(m){
+    var card = document.createElement('div');
+    card.className = 'q-card';
+    card.dataset.answer = m.answer;
+    var optsHtml = '';
+    (m.options||[]).forEach(function(o){
+      optsHtml += '<div class="opt" data-val="'+o.val+'"><span class="jp">'+o.val+'. '+esc(o.jp)+'</span><span class="en">'+esc(o.en)+'</span></div>';
+    });
+    card.innerHTML =
+      '<div class="q-meta">'+esc(m.chapter_label)+'</div>'+
+      '<p class="q-jp"><button class="spk" data-jp="'+esc(m.q_jp).replace(/<[^>]+>/g,'').replace(/"/g,'&quot;')+'">🔊</button>'+esc(m.q_jp)+'</p>'+
+      '<p class="q-en">'+esc(m.q_en)+'</p>'+
+      optsHtml+
+      '<div class="explain"><div class="jp">'+esc(m.explain_jp)+'</div><div class="en">'+esc(m.explain_en)+'</div></div>';
+    list.appendChild(card);
+  });
+  mcqScore = 0;
+  document.getElementById('mcq-score').textContent = mcqScore;
+  document.getElementById('mcq-total-inline').textContent = items.length;
+}
+document.getElementById('mcq-reset').addEventListener('click', function(){
+  var activeChip = mcqChFilterEl.querySelector('.filter-chip.active');
+  renderMCQ(activeChip ? activeChip.dataset.ch : 'all');
+});
+renderMCQ('all');
+document.getElementById('mcq-list').addEventListener('click', function(e){
+  var opt = e.target.closest('.opt');
+  if (!opt) return;
+  var card = opt.closest('.q-card');
+  if (card.classList.contains('answered')) return;
+  var chosen = opt.dataset.val;
+  var answer = card.dataset.answer;
+  card.classList.add('answered');
+  card.querySelectorAll('.opt').forEach(function(o){
+    if (o.dataset.val === answer) o.classList.add('correct');
+    else if (o.dataset.val === chosen) o.classList.add('wrong');
+  });
+  if (chosen === answer){ mcqScore++; document.getElementById('mcq-score').textContent = mcqScore; }
+});
+
+document.addEventListener('click', function(e){
+  var spk = e.target.closest('.spk');
+  if (spk && spk.id !== 'flash-spk'){ speakJP(spk.getAttribute('data-jp')); }
+});
+</script>
+</body>
+</html>
