@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wood Industry SSW — Theory Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#12395d; --teal-dark:#0b2945; --teal-light:#315E7F;
+  --caution:#d62828; --caution-dark:#b91f1f;
+  --ink:#241A10; --muted:#6B5D4F; --border:#E3D9CC; --paper:#FAF6F0; --card:#FFFFFF;
+  --good:#1F7A4D; --bad:#B3261E; --radius:14px; --shadow:0 2px 10px rgba(107,30,60,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); line-height:1.55;}
+.jp{font-family:'Noto Sans JP','Inter',sans-serif;}
+ruby rt{font-size:0.55em; color:var(--muted);}
+
+header{background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%); color:#fff; padding:22px 24px; position:sticky; top:0; z-index:20; box-shadow:0 2px 10px rgba(0,0,0,0.15);}
+header h1{margin:0; font-size:19px; font-weight:800; display:flex; align-items:center; gap:10px;}
+header p{margin:4px 0 0 0; font-size:12.5px; color:#BFD6E6;}
+
+#tabs{display:flex; gap:6px; padding:14px 24px 0 24px; background:var(--card); border-bottom:1px solid var(--border); overflow-x:auto;}
+.tab-btn{padding:11px 18px; border:none; background:none; font-size:13.5px; font-weight:700; color:var(--muted); cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap;}
+.tab-btn.active{color:var(--teal-dark); border-bottom-color:var(--caution);}
+.tab-panel{display:none; max-width:820px; margin:0 auto; padding:24px 20px 80px 20px;}
+.tab-panel.active{display:block;}
+
+.stat-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;}
+.stat-pill{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px 16px; box-shadow:var(--shadow); font-size:12.5px; color:var(--muted);}
+.stat-pill b{color:var(--teal-dark); font-size:16px; display:block;}
+
+.filter-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+.filter-chip{padding:7px 14px; border-radius:20px; border:1.5px solid var(--border); background:var(--card); font-size:12px; font-weight:600; cursor:pointer; color:var(--muted);}
+.filter-chip.active{background:var(--teal); border-color:var(--teal); color:#fff;}
+
+#flash-stage{display:flex; flex-direction:column; align-items:center; gap:18px;}
+.flashcard{width:100%; max-width:480px; min-height:220px; background:var(--card); border-radius:20px; box-shadow:var(--shadow); border:1px solid var(--border); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 24px; cursor:pointer; text-align:center; position:relative;}
+.flashcard .badge{position:absolute; top:14px; left:16px; font-size:10.5px; color:var(--muted); background:#EEF3F7; padding:3px 9px; border-radius:20px;}
+.flashcard .term-jp{font-size:28px; font-weight:800; display:flex; align-items:center; gap:10px;}
+.flashcard .term-reading{font-size:13px; color:var(--muted); margin-top:6px;}
+.flashcard .term-en{font-size:17px; color:var(--teal-dark); font-weight:700; margin-top:14px;}
+.flashcard .hint{position:absolute; bottom:12px; font-size:11px; color:#9DB3C4;}
+.flash-controls{display:flex; gap:12px;}
+.btn{padding:11px 20px; border-radius:10px; border:none; font-size:13.5px; font-weight:700; cursor:pointer; background:var(--teal); color:#fff;}
+.btn.secondary{background:var(--card); color:var(--teal-dark); border:1.5px solid var(--border);}
+.btn.yellow{background:var(--caution); color:var(--teal-dark);}
+.btn:active{transform:scale(0.97);}
+#flash-progress{font-size:12.5px; color:var(--muted);}
+
+.q-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px; margin-bottom:16px; box-shadow:var(--shadow);}
+.q-card .q-meta{font-size:10.5px; color:var(--muted); background:#EEF3F7; display:inline-block; padding:2px 9px; border-radius:20px; margin-bottom:8px;}
+.q-jp{font-size:15px; font-weight:700; margin:0 0 2px 0;}
+.q-en{font-size:12.5px; color:var(--muted); margin:0 0 12px 0;}
+.opt{padding:10px 14px; border-radius:9px; border:1.5px solid var(--border); margin-bottom:7px; cursor:pointer; background:#fff;}
+.opt:hover{border-color:var(--teal-light);}
+.opt .jp{font-size:13.5px;}
+.opt .en{font-size:11.5px; color:var(--muted);}
+.q-card.answered .opt{cursor:default; pointer-events:none;}
+.q-card.answered .opt.correct{background:#E7F5EC; border-color:var(--good);}
+.q-card.answered .opt.wrong{background:#FBEAE9; border-color:var(--bad);}
+.explain{display:none; margin-top:10px; padding:10px 12px; background:#EEF3F7; border-left:3px solid var(--teal); border-radius:6px; font-size:12.5px;}
+.q-card.answered .explain{display:block;}
+.explain .jp{font-weight:600; margin-bottom:3px;}
+.explain .en{color:var(--muted);}
+
+.spk{flex-shrink:0; border:none; background:var(--caution); color:var(--teal-dark); border-radius:50%; width:24px;height:24px; font-size:11px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.2);}
+.spk:active{transform:scale(0.9);}
+
+.empty-msg{text-align:center; color:var(--muted); padding:40px 0; font-size:13.5px;}
+#quiz-summary{background:var(--card); border-radius:var(--radius); padding:18px 20px; margin-bottom:18px; box-shadow:var(--shadow); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
+#quiz-summary b{font-size:20px; color:var(--teal-dark);}
+</style>
+</head>
+<body>
+<header>
+  <h1>🪵 Wood Industry SSW — Theory Practice</h1>
+  <p>Vocabulary flashcards and a self-graded knowledge quiz — companion to the full study guide</p>
+</header>
+<div id="tabs">
+  <button class="tab-btn active" data-tab="vocab">📇 Vocabulary</button>
+  <button class="tab-btn" data-tab="mcq">📝 Knowledge Quiz</button>
+</div>
+
+<div class="tab-panel active" id="panel-vocab">
+  <div class="stat-row">
+    <div class="stat-pill"><b id="vocab-total">0</b>Total terms</div>
+    <div class="stat-pill"><b id="vocab-pos">0</b>Current card</div>
+  </div>
+  <div class="filter-row" id="vocab-filters"></div>
+  <div id="flash-stage">
+    <div class="flashcard" id="flashcard">
+      <div class="badge" id="flash-badge">Ch.1</div>
+      <div id="flash-front">
+        <div class="term-jp"><span id="flash-jp"></span><button class="spk" id="flash-spk">🔊</button></div>
+        <div class="term-reading" id="flash-reading"></div>
+      </div>
+      <div id="flash-back" style="display:none;">
+        <div class="term-en" id="flash-en"></div>
+      </div>
+      <div class="hint">Tap card to flip / タップして裏返す</div>
+    </div>
+    <div id="flash-progress"></div>
+    <div class="flash-controls">
+      <button class="btn secondary" id="flash-prev">← Prev</button>
+      <button class="btn yellow" id="flash-shuffle">🔀 Shuffle</button>
+      <button class="btn" id="flash-next">Next →</button>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="panel-mcq">
+  <div id="quiz-summary">
+    <div><b id="mcq-score">0</b> / <span id="mcq-total-inline">0</span> correct</div>
+    <button class="btn secondary" id="mcq-reset">↺ Reset Quiz</button>
+  </div>
+  <div class="filter-row" id="mcq-filters"></div>
+  <div id="mcq-list"></div>
+</div>
+
+<script>
+var DATA = {"vocab": [{"jp": "木材産業", "reading": "もくざいさんぎょう", "en": "wood industry", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "製材", "reading": "せいざい", "en": "sawmilling", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "合板", "reading": "ごうはん", "en": "plywood", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "木材加工", "reading": "もくざいかこう", "en": "wood processing", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "労働災害", "reading": "ろうどうさいがい", "en": "workplace accident", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "保護具", "reading": "ほごぐ", "en": "protective equipment", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "防じんマスク", "reading": "ぼうじんマスク", "en": "dust mask", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "安全靴", "reading": "あんぜんぐつ", "en": "safety shoes", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "丸のこ盤", "reading": "まるのこばん", "en": "circular saw", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "帯のこ盤", "reading": "おびのこばん", "en": "band saw", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "キックバック", "reading": "キックバック", "en": "kickback", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "歯の接触予防装置", "reading": "はのせっしょくよぼうそうち", "en": "blade-contact prevention guard", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "原木", "reading": "げんぼく", "en": "raw log", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "製材品", "reading": "せいざいひん", "en": "sawn wood product", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "寸法", "reading": "すんぽう", "en": "dimensions", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "木取り", "reading": "きどり", "en": "lumber layout planning", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "単板", "reading": "たんぱん", "en": "veneer", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "接着", "reading": "せっちゃく", "en": "gluing", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "プレス", "reading": "プレス", "en": "press (machine)", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "積層", "reading": "せきそう", "en": "layering / lamination", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "集成材", "reading": "しゅうせいざい", "en": "glued laminated timber", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "ラミナ", "reading": "ラミナ", "en": "lamina", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "接着剤", "reading": "せっちゃくざい", "en": "adhesive", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "強度", "reading": "きょうど", "en": "strength", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "加工", "reading": "かこう", "en": "processing", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "切断", "reading": "せつだん", "en": "cutting", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "穴あけ", "reading": "あなあけ", "en": "drilling", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "仕上げ", "reading": "しあげ", "en": "finishing", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "検査", "reading": "けんさ", "en": "inspection", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "含水率", "reading": "がんすいりつ", "en": "moisture content", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "等級", "reading": "とうきゅう", "en": "grade", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "不良品", "reading": "ふりょうひん", "en": "defective product", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "運搬", "reading": "うんぱん", "en": "transport", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "フォークリフト", "reading": "フォークリフト", "en": "forklift", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "積み込み", "reading": "つみこみ", "en": "loading", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "入荷", "reading": "にゅうか", "en": "receiving (goods)", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "清掃", "reading": "せいそう", "en": "cleaning", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "粉じん", "reading": "ふんじん", "en": "dust", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "火災予防", "reading": "かさいよぼう", "en": "fire prevention", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "集じん機", "reading": "しゅうじんき", "en": "dust collector", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "報告", "reading": "ほうこく", "en": "reporting", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "連絡", "reading": "れんらく", "en": "contacting", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "相談", "reading": "そうだん", "en": "consulting", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "判断", "reading": "はんだん", "en": "judgment / decision", "chapter": "ch11", "chapter_label": "第11章"}], "mcq": [{"q_jp": "<ruby>木材産業分野<rt>もくざいさんぎょうぶんや</rt></ruby>の<ruby>業務区分<rt>ぎょうむくぶん</rt></ruby>に<b>あてはまる</b>ものはどれですか。", "q_en": "Which of the following IS the Wood Industry field's work category?", "options": [{"val": "a", "jp": "木材の加工", "en": "Wood processing"}, {"val": "b", "jp": "育苗", "en": "Seedling cultivation"}, {"val": "c", "jp": "漁業", "en": "Fishery operations"}], "answer": "a", "explain_jp": "木材産業分野の業務区分は、製材・合板・集成材の製造を含む「木材の加工」です。", "explain_en": "The Wood Industry field's work category is \"wood processing,\" which includes sawmilling, plywood manufacturing, and glued laminated timber production.", "chapter": "ch01", "chapter_label": "第1章"}, {"q_jp": "<ruby>木<rt>き</rt></ruby>くずやほこりを<ruby>吸<rt>す</rt></ruby>い<ruby>込<rt>こ</rt></ruby>まないために<ruby>着用<rt>ちゃくよう</rt></ruby>するものは<b>どれですか</b>。", "q_en": "What is worn to avoid breathing in wood chips and dust?", "options": [{"val": "a", "jp": "防じんマスク", "en": "Dust mask"}, {"val": "b", "jp": "安全帯", "en": "Safety harness"}, {"val": "c", "jp": "フォークリフト", "en": "Forklift"}], "answer": "a", "explain_jp": "木くずやほこりを吸い込まないように、防じんマスクを着用します。", "explain_en": "To avoid breathing in wood chips and dust, workers wear a dust mask.", "chapter": "ch02", "chapter_label": "第2章"}, {"q_jp": "<ruby>木材<rt>もくざい</rt></ruby>が<ruby>刃<rt>は</rt></ruby>に<ruby>強<rt>つよ</rt></ruby>く<ruby>押<rt>お</rt></ruby>し<ruby>返<rt>かえ</rt></ruby>されて<ruby>飛<rt>と</rt></ruby>んでくることを<b>何といいますか</b>。", "q_en": "What is it called when wood is forcefully thrown back by the blade?", "options": [{"val": "a", "jp": "キックバック", "en": "Kickback"}, {"val": "b", "jp": "木取り", "en": "Lumber layout planning"}, {"val": "c", "jp": "集じん", "en": "Dust collection"}], "answer": "a", "explain_jp": "木材が刃に強く押し返されて飛んでくることをキックバックといいます。", "explain_en": "When wood is forcefully thrown back by the blade, this is called kickback.", "chapter": "ch03", "chapter_label": "第3章"}, {"q_jp": "1<ruby>本<rt>ぽん</rt></ruby>の<ruby>原木<rt>げんぼく</rt></ruby>から<ruby>無駄<rt>むだ</rt></ruby>なく<ruby>木材<rt>もくざい</rt></ruby>をとるための<ruby>切<rt>き</rt></ruby>り<ruby>方<rt>かた</rt></ruby>の<ruby>計画<rt>けいかく</rt></ruby>を<b>何といいますか</b>。", "q_en": "What is the plan for how to cut a log to obtain lumber with minimal waste called?", "options": [{"val": "a", "jp": "木取り", "en": "Lumber layout planning"}, {"val": "b", "jp": "集成材", "en": "Glued laminated timber"}, {"val": "c", "jp": "検査", "en": "Inspection"}], "answer": "a", "explain_jp": "1本の原木から無駄なく木材をとるための切り方の計画を木取りといいます。", "explain_en": "The plan for how to cut a log to obtain lumber with minimal waste is called lumber layout planning.", "chapter": "ch04", "chapter_label": "第4章"}, {"q_jp": "<ruby>原木<rt>げんぼく</rt></ruby>を<ruby>薄<rt>うす</rt></ruby>くむいた、<ruby>合板<rt>ごうはん</rt></ruby>の<ruby>材料<rt>ざいりょう</rt></ruby>になる<ruby>板<rt>いた</rt></ruby>を<b>何といいますか</b>。", "q_en": "What is a thin sheet peeled from a log, which becomes the material for plywood, called?", "options": [{"val": "a", "jp": "単板", "en": "Veneer"}, {"val": "b", "jp": "製材品", "en": "Sawn wood product"}, {"val": "c", "jp": "ラミナ", "en": "Lamina"}], "answer": "a", "explain_jp": "原木を薄くむいた板を単板といい、これが合板の材料になります。", "explain_en": "A thin sheet peeled from a log is called veneer, and it becomes the material for plywood.", "chapter": "ch05", "chapter_label": "第5章"}, {"q_jp": "<ruby>小<rt>ちい</rt></ruby>さな<ruby>木材<rt>もくざい</rt></ruby>のひき<ruby>板<rt>いた</rt></ruby>を<ruby>接着剤<rt>せっちゃくざい</rt></ruby>で<ruby>接着<rt>せっちゃく</rt></ruby>して<ruby>作<rt>つく</rt></ruby>る<ruby>木材<rt>もくざい</rt></ruby>を<b>何といいますか</b>。", "q_en": "What is lumber made by gluing together small sawn strips of wood called?", "options": [{"val": "a", "jp": "集成材", "en": "Glued laminated timber"}, {"val": "b", "jp": "合板", "en": "Plywood"}, {"val": "c", "jp": "原木", "en": "Raw log"}], "answer": "a", "explain_jp": "小さな木材のひき板であるラミナを接着して作る木材を集成材といいます。", "explain_en": "Lumber made by gluing together small sawn strips of wood called lamina is called glued laminated timber.", "chapter": "ch06", "chapter_label": "第6章"}, {"q_jp": "<ruby>表面<rt>ひょうめん</rt></ruby>を<ruby>研磨<rt>けんま</rt></ruby>したり<ruby>塗装<rt>とそう</rt></ruby>したりする<ruby>作業<rt>さぎょう</rt></ruby>を<b>何といいますか</b>。", "q_en": "What is the work of sanding and coating a surface called?", "options": [{"val": "a", "jp": "仕上げ", "en": "Finishing"}, {"val": "b", "jp": "木取り", "en": "Lumber layout planning"}, {"val": "c", "jp": "積層", "en": "Layering"}], "answer": "a", "explain_jp": "表面を研磨したり塗装したりする作業を仕上げといいます。", "explain_en": "The work of sanding and coating a surface is called finishing.", "chapter": "ch07", "chapter_label": "第7章"}, {"q_jp": "<ruby>木材<rt>もくざい</rt></ruby>に<ruby>含<rt>ふく</rt></ruby>まれる<ruby>水分<rt>すいぶん</rt></ruby>の<ruby>割合<rt>わりあい</rt></ruby>を<b>何といいますか</b>。", "q_en": "What is the proportion of water contained in wood called?", "options": [{"val": "a", "jp": "含水率", "en": "Moisture content"}, {"val": "b", "jp": "等級", "en": "Grade"}, {"val": "c", "jp": "強度", "en": "Strength"}], "answer": "a", "explain_jp": "木材に含まれる水分の割合を含水率といいます。", "explain_en": "The proportion of water contained in wood is called moisture content.", "chapter": "ch08", "chapter_label": "第8章"}, {"q_jp": "<ruby>重<rt>おも</rt></ruby>い<ruby>木材<rt>もくざい</rt></ruby>や<ruby>製品<rt>せいひん</rt></ruby>を<ruby>安全<rt>あんぜん</rt></ruby>に<ruby>運<rt>はこ</rt></ruby>ぶために<ruby>使<rt>つか</rt></ruby>う<ruby>機械<rt>きかい</rt></ruby>は<b>どれですか</b>。", "q_en": "What machine is used to safely transport heavy wood and products?", "options": [{"val": "a", "jp": "フォークリフト", "en": "Forklift"}, {"val": "b", "jp": "帯のこ盤", "en": "Band saw"}, {"val": "c", "jp": "プレス機", "en": "Press machine"}], "answer": "a", "explain_jp": "重い木材や製品を運ぶときは、フォークリフトなどの機械を使って安全に運搬します。", "explain_en": "When moving heavy wood or products, workers use machinery such as a forklift to transport them safely.", "chapter": "ch09", "chapter_label": "第9章"}, {"q_jp": "<ruby>木<rt>き</rt></ruby>くずや<ruby>粉<rt>ふん</rt></ruby>じんについて<b>正しい</b>ものはどれですか。", "q_en": "Which of the following is correct about wood chips and dust?", "options": [{"val": "a", "jp": "燃えやすいため火災予防が必要", "en": "They catch fire easily, so fire prevention is necessary"}, {"val": "b", "jp": "燃えにくいため気にしなくてよい", "en": "They don't catch fire easily, so no concern is needed"}, {"val": "c", "jp": "集じん機は使わなくてよい", "en": "There is no need to use a dust collector"}], "answer": "a", "explain_jp": "木くずや粉じんは燃えやすいため、火災予防の意識を常に持つ必要があります。", "explain_en": "Because wood chips and dust catch fire easily, workers must always keep fire prevention in mind.", "chapter": "ch10", "chapter_label": "第10章"}, {"q_jp": "<ruby>作業中<rt>さぎょうちゅう</rt></ruby>に、<ruby>丸<rt>まる</rt></ruby>のこ<ruby>盤<rt>ばん</rt></ruby>からいつもと<ruby>違<rt>ちが</rt></ruby>う<ruby>音<rt>おと</rt></ruby>がしました。<b>もっとも適切な行動</b>はどれですか。", "q_en": "While working, you notice an unusual sound coming from the circular saw. What is the most appropriate action?", "options": [{"val": "a", "jp": "すぐに機械を止めて先輩に報告する", "en": "Stop the machine immediately and report it to a senior worker"}, {"val": "b", "jp": "気にせずそのまま作業を続ける", "en": "Ignore it and keep working as usual"}, {"val": "c", "jp": "自分で分解して修理してみる", "en": "Try to take it apart and repair it yourself"}], "answer": "a", "explain_jp": "機械の異音や異常に気づいたときは、自分だけで判断せず、すぐに機械を止めて先輩に報告します。", "explain_en": "When you notice an unusual noise or abnormality in a machine, you should not judge the situation on your own — stop the machine immediately and report it to a senior worker.", "chapter": "ch11", "chapter_label": "第11章"}, {"q_jp": "<ruby>検査<rt>けんさ</rt></ruby>で<ruby>基準<rt>きじゅん</rt></ruby>を<ruby>満<rt>み</rt></ruby>たさない<ruby>不良品<rt>ふりょうひん</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけました。<b>最初にすること</b>はどれですか。", "q_en": "During inspection, you find a defective product that does not meet the standard. What should you do first?", "options": [{"val": "a", "jp": "すぐに連絡して指示を受ける", "en": "Contact someone right away and receive instructions"}, {"val": "b", "jp": "気づかなかったことにして出荷する", "en": "Pretend you didn't notice and ship it anyway"}, {"val": "c", "jp": "自分の判断だけで廃棄する", "en": "Discard it based solely on your own judgment"}], "answer": "a", "explain_jp": "不良品を見つけたときは、そのままにせず、すぐに連絡して指示を受けます。", "explain_en": "When a defective product is found, don't leave it as is — contact someone right away and receive instructions.", "chapter": "ch11", "chapter_label": "第11章"}]};
+function esc(s){ return (s||'').toString(); }
+function speakJP(text){
+  if (!text) return;
+  if (!('speechSynthesis' in window)){ alert('Text-to-speech not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* FLASHCARDS */
+var vocabAll = DATA.vocab.slice();
+var vocabFiltered = vocabAll.slice();
+var flashIdx = 0, flashFlipped = false;
+var chLabels = Array.from(new Set(vocabAll.map(function(v){ return v.chapter_label; })));
+var chFilterEl = document.getElementById('vocab-filters');
+var allChip = document.createElement('div'); allChip.className='filter-chip active'; allChip.textContent='All'; allChip.dataset.ch='all';
+chFilterEl.appendChild(allChip);
+chLabels.forEach(function(ch){
+  var chip = document.createElement('div'); chip.className='filter-chip'; chip.textContent=ch; chip.dataset.ch=ch;
+  chFilterEl.appendChild(chip);
+});
+chFilterEl.addEventListener('click', function(e){
+  var chip = e.target.closest('.filter-chip'); if(!chip) return;
+  chFilterEl.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+  chip.classList.add('active');
+  var ch = chip.dataset.ch;
+  vocabFiltered = ch === 'all' ? vocabAll.slice() : vocabAll.filter(function(v){ return v.chapter_label === ch; });
+  flashIdx = 0; renderFlash();
+});
+document.getElementById('vocab-total').textContent = vocabAll.length;
+
+function renderFlash(){
+  if (!vocabFiltered.length){ document.getElementById('flash-jp').textContent='No cards'; return; }
+  if (flashIdx >= vocabFiltered.length) flashIdx = 0;
+  if (flashIdx < 0) flashIdx = vocabFiltered.length - 1;
+  var v = vocabFiltered[flashIdx];
+  flashFlipped = false;
+  document.getElementById('flash-front').style.display='block';
+  document.getElementById('flash-back').style.display='none';
+  document.getElementById('flash-badge').textContent = v.chapter_label;
+  document.getElementById('flash-jp').textContent = v.jp || '';
+  document.getElementById('flash-reading').textContent = v.reading || '';
+  document.getElementById('flash-en').textContent = v.en || '';
+  document.getElementById('flash-progress').textContent = (flashIdx+1)+' / '+vocabFiltered.length;
+  document.getElementById('vocab-pos').textContent = flashIdx+1;
+}
+document.getElementById('flashcard').addEventListener('click', function(e){
+  if (e.target.closest('.spk')) return;
+  flashFlipped = !flashFlipped;
+  document.getElementById('flash-front').style.display = flashFlipped ? 'none' : 'block';
+  document.getElementById('flash-back').style.display = flashFlipped ? 'block' : 'none';
+});
+document.getElementById('flash-spk').addEventListener('click', function(e){
+  e.stopPropagation();
+  var v = vocabFiltered[flashIdx];
+  speakJP(v ? v.jp : '');
+});
+document.getElementById('flash-next').addEventListener('click', function(){ flashIdx++; renderFlash(); });
+document.getElementById('flash-prev').addEventListener('click', function(){ flashIdx--; renderFlash(); });
+document.getElementById('flash-shuffle').addEventListener('click', function(){
+  for (var i = vocabFiltered.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i+1));
+    var tmp = vocabFiltered[i]; vocabFiltered[i] = vocabFiltered[j]; vocabFiltered[j] = tmp;
+  }
+  flashIdx = 0; renderFlash();
+});
+renderFlash();
+
+/* MCQ */
+var mcqAll = DATA.mcq.slice();
+var mcqScore = 0;
+document.getElementById('mcq-total-inline').textContent = mcqAll.length;
+var mcqChFilterEl = document.getElementById('mcq-filters');
+var mcqAllChip = document.createElement('div'); mcqAllChip.className='filter-chip active'; mcqAllChip.textContent='All'; mcqAllChip.dataset.ch='all';
+mcqChFilterEl.appendChild(mcqAllChip);
+Array.from(new Set(mcqAll.map(function(m){ return m.chapter_label; }))).forEach(function(ch){
+  var chip = document.createElement('div'); chip.className='filter-chip'; chip.textContent=ch; chip.dataset.ch=ch;
+  mcqChFilterEl.appendChild(chip);
+});
+mcqChFilterEl.addEventListener('click', function(e){
+  var chip = e.target.closest('.filter-chip'); if(!chip) return;
+  mcqChFilterEl.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+  chip.classList.add('active');
+  renderMCQ(chip.dataset.ch);
+});
+function renderMCQ(filterCh){
+  var list = document.getElementById('mcq-list');
+  list.innerHTML = '';
+  var items = (!filterCh || filterCh === 'all') ? mcqAll : mcqAll.filter(function(m){ return m.chapter_label === filterCh; });
+  if (!items.length){ list.innerHTML = '<div class="empty-msg">No questions in this filter.</div>'; return; }
+  items.forEach(function(m){
+    var card = document.createElement('div');
+    card.className = 'q-card';
+    card.dataset.answer = m.answer;
+    var optsHtml = '';
+    (m.options||[]).forEach(function(o){
+      optsHtml += '<div class="opt" data-val="'+o.val+'"><span class="jp">'+o.val+'. '+esc(o.jp)+'</span><span class="en">'+esc(o.en)+'</span></div>';
+    });
+    card.innerHTML =
+      '<div class="q-meta">'+esc(m.chapter_label)+'</div>'+
+      '<p class="q-jp"><button class="spk" data-jp="'+esc(m.q_jp).replace(/<[^>]+>/g,'').replace(/"/g,'&quot;')+'">🔊</button>'+esc(m.q_jp)+'</p>'+
+      '<p class="q-en">'+esc(m.q_en)+'</p>'+
+      optsHtml+
+      '<div class="explain"><div class="jp">'+esc(m.explain_jp)+'</div><div class="en">'+esc(m.explain_en)+'</div></div>';
+    list.appendChild(card);
+  });
+  mcqScore = 0;
+  document.getElementById('mcq-score').textContent = mcqScore;
+  document.getElementById('mcq-total-inline').textContent = items.length;
+}
+document.getElementById('mcq-reset').addEventListener('click', function(){
+  var activeChip = mcqChFilterEl.querySelector('.filter-chip.active');
+  renderMCQ(activeChip ? activeChip.dataset.ch : 'all');
+});
+renderMCQ('all');
+document.getElementById('mcq-list').addEventListener('click', function(e){
+  var opt = e.target.closest('.opt');
+  if (!opt) return;
+  var card = opt.closest('.q-card');
+  if (card.classList.contains('answered')) return;
+  var chosen = opt.dataset.val;
+  var answer = card.dataset.answer;
+  card.classList.add('answered');
+  card.querySelectorAll('.opt').forEach(function(o){
+    if (o.dataset.val === answer) o.classList.add('correct');
+    else if (o.dataset.val === chosen) o.classList.add('wrong');
+  });
+  if (chosen === answer){ mcqScore++; document.getElementById('mcq-score').textContent = mcqScore; }
+});
+
+document.addEventListener('click', function(e){
+  var spk = e.target.closest('.spk');
+  if (spk && spk.id !== 'flash-spk'){ speakJP(spk.getAttribute('data-jp')); }
+});
+</script>
+</body>
+</html>
