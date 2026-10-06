@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automobile Maintenance SSW — Japanese with Raza Sensei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#153B5D; --navy-dark:#10314F; --navy-light:#315E7F;
+  --steel:#7A8490; --rust:#E3262B; --rust-dark:#B91C22;
+  --ink:#24364B; --muted:#65758B; --border:#DCE6EF; --paper:#F2F7FC; --card:#FFFFFF;
+  --good:#2F9E44; --bad:#C92A2A; --radius:14px; --shadow:0 2px 10px rgba(16,49,79,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); line-height:1.55;}
+.jp{font-family:'Noto Sans JP','Inter',sans-serif;}
+ruby rt{font-size:0.55em; color:var(--muted);}
+
+#app{display:flex; min-height:100vh;}
+#sidebar{width:290px; flex-shrink:0; background:var(--navy-dark); color:#fff; height:100vh; position:sticky; top:0; overflow-y:auto; padding-bottom:30px;}
+.brand{display:flex; align-items:center; gap:10px; padding:20px 18px 16px 18px; border-bottom:1px solid rgba(255,255,255,0.12); cursor:pointer;}
+.brand .logo{width:40px;height:40px;border-radius:10px;background:var(--rust); display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.brand-text{font-weight:800;font-size:13.5px;line-height:1.25;}
+.brand-text small{display:block;font-weight:500;font-size:11px;color:#A8C2D6;}
+#toc{padding:10px 8px 0 8px;}
+.toc-link{display:flex; align-items:center; gap:8px; padding:10px 12px; margin:3px 2px; font-size:12.5px; color:#C9DBE9; border-radius:9px; cursor:pointer;}
+.toc-icon{font-size:15px;}
+.toc-link:hover{background:rgba(255,255,255,0.08); color:#fff;}
+.toc-link.active{background:var(--rust); color:#fff; font-weight:700;}
+#sidebar-footer{padding:16px 18px; font-size:10.5px; color:#87A2B8; border-top:1px solid rgba(255,255,255,0.1); margin-top:14px;}
+
+#menu-toggle{display:none; position:fixed; top:14px; left:14px; z-index:50; width:42px;height:42px;border-radius:10px;background:var(--navy-dark);color:#fff; border:none; font-size:18px; box-shadow:var(--shadow); cursor:pointer;}
+
+#main{flex:1; min-width:0;}
+#topbar{position:sticky; top:0; z-index:20; background:var(--card); border-bottom:1px solid var(--border); padding:14px 32px; display:flex; align-items:center; justify-content:space-between;}
+#mobile-title{font-weight:800; font-size:14px; color:var(--navy-dark);}
+#progress-wrap{display:flex; align-items:center; gap:10px; font-size:12px; color:var(--muted);}
+#progress-track{width:130px; height:7px; background:var(--border); border-radius:5px; overflow:hidden;}
+#progress-fill{height:100%; background:linear-gradient(90deg,var(--rust),var(--navy-light)); width:0%; transition:width .3s;}
+
+#content{max-width:880px; margin:0 auto; padding:0 32px 100px 32px;}
+
+.home-hero{background:linear-gradient(135deg,var(--navy) 0%, var(--navy-dark) 100%); color:#fff; border-radius:20px; padding:44px 38px; margin:32px 0 28px 0; position:relative; overflow:hidden;}
+.home-hero::after{content:"🚗"; position:absolute; right:24px; bottom:-16px; font-size:130px; opacity:0.15; transform:rotate(-8deg);}
+.home-hero h2{margin:0 0 10px 0; font-size:23px; font-weight:800;}
+.home-hero p{margin:0; color:#D3E2ED; max-width:560px; font-size:14.5px;}
+.home-stats{display:flex; gap:14px; margin-top:24px; flex-wrap:wrap;}
+.home-stat{background:rgba(255,255,255,0.1); border-radius:12px; padding:12px 18px; min-width:100px;}
+.home-stat b{display:block; font-size:22px;}
+.home-stat span{font-size:11px; color:#BBD3E4;}
+.chapter-cards{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px;}
+@media(max-width:700px){.chapter-cards{grid-template-columns:1fr;}}
+.chapter-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; cursor:pointer; box-shadow:var(--shadow); border-top:4px solid var(--rust); transition:transform .15s;}
+.chapter-card:hover{transform:translateY(-2px);}
+.card-icon{font-size:26px;}
+.chapter-card h3{margin:8px 0 4px 0; font-size:14.5px;}
+.chapter-card p{margin:0; font-size:12px; color:var(--muted);}
+.footer-credit{text-align:center; color:var(--muted); font-size:12px; margin:40px 0 10px 0;}
+
+.chapter-section{padding-top:8px;}
+.chapter-banner{background:var(--navy-dark); color:#fff; border-radius:16px; padding:24px 26px; margin:28px 0 20px 0; border-left:6px solid var(--rust);}
+.chapter-banner-eyebrow{font-size:11px; letter-spacing:.05em; color:var(--rust); font-weight:700; text-transform:uppercase;}
+.chapter-banner-title{margin:6px 0 0 0; display:flex; flex-direction:column; gap:2px;}
+.chapter-banner-title .jp{font-size:19px; font-weight:800;}
+.chapter-banner-title .en{font-size:12.5px; color:#BFD6E6; font-weight:500;}
+
+.sec{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:22px 24px; margin-bottom:18px; box-shadow:var(--shadow);}
+.sec-title{display:flex; flex-direction:column; gap:2px; margin-bottom:14px; padding-bottom:12px; border-bottom:2px solid #EAEEF2;}
+.sec-title .jp{font-weight:800; font-size:15.5px; color:var(--navy-dark);}
+.sec-title .en{font-size:12px; color:var(--muted); font-weight:600;}
+
+.para{margin-bottom:14px;}
+.para .jp{font-size:15px; display:flex; align-items:flex-start; gap:8px; margin:0 0 4px 0;}
+.para .en{font-size:13px; color:var(--muted); margin:0; padding-left:34px;}
+
+.spk{flex-shrink:0; border:none; background:var(--rust); color:#fff; border-radius:50%; width:26px;height:26px; font-size:12px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.2); margin-top:1px;}
+.spk:hover{background:var(--rust-dark);}
+.spk:active{transform:scale(0.92);}
+
+.steps{margin:10px 0 16px 0; padding:14px 16px; background:#EEF4F8; border-radius:12px;}
+.step{margin-bottom:9px;}
+.step:last-child{margin-bottom:0;}
+.step-jp{font-size:14px;}
+.step-en{font-size:12px; color:var(--muted); margin-top:1px;}
+
+.icon-card{background:#EEF4F8; border:1px dashed var(--border); border-radius:12px; padding:20px; text-align:center; margin:16px 0;}
+.icon-visual{font-size:50px; line-height:1; margin-bottom:10px; letter-spacing:4px;}
+.icon-caption{display:flex; flex-direction:column; gap:2px;}
+.icon-caption .jp{font-size:12.5px; font-weight:600; color:var(--navy-dark);}
+.icon-caption .en{font-size:11px; color:var(--muted);}
+
+.q-block{background:#EEF4F8; border-radius:12px; padding:16px 18px; margin:14px 0; border:1px solid var(--border);}
+.q-jp{font-size:14.5px; font-weight:700; margin:0 0 2px 0;}
+.q-en{font-size:12px; color:var(--muted); margin:0 0 12px 0;}
+.opt{padding:10px 14px; border-radius:9px; border:1.5px solid var(--border); margin-bottom:7px; cursor:pointer; background:#fff; display:flex; flex-direction:column; gap:1px;}
+.opt:hover{border-color:var(--navy-light);}
+.opt .jp{font-size:13.5px;}
+.opt .en{font-size:11.5px; color:var(--muted);}
+.q-block.answered .opt{cursor:default; pointer-events:none;}
+.q-block.answered .opt.correct{background:#E7F5EC; border-color:var(--good);}
+.q-block.answered .opt.wrong{background:#FBEAE9; border-color:var(--bad);}
+.explain{display:none; margin-top:10px; padding:10px 12px; background:#fff; border-left:3px solid var(--navy); border-radius:6px; font-size:12.5px;}
+.q-block.answered .explain{display:block;}
+.explain .jp{font-weight:600; margin-bottom:3px;}
+.explain .en{color:var(--muted);}
+.section-score-inline{background:var(--navy); color:#fff; padding:2px 9px; border-radius:20px; font-size:11px !important;}
+
+@media(max-width:980px){
+  #sidebar{position:fixed; left:-310px; top:0; z-index:40; transition:left .2s; width:270px; box-shadow:4px 0 20px rgba(0,0,0,0.3);}
+  #sidebar.open{left:0;}
+  #menu-toggle{display:flex; align-items:center; justify-content:center;}
+  #content{padding:0 16px 100px 16px;}
+  #topbar{padding:14px 16px 14px 64px;}
+  .home-hero{padding:30px 22px;}
+}
+</style>
+</head>
+<body>
+<button id="menu-toggle">☰</button>
+<div id="app">
+  <aside id="sidebar">
+    <div class="brand"><div class="logo">🔧</div><div class="brand-text">Automobile<br>Maintenance SSW<small>Japanese with Raza Sensei</small></div></div>
+    <div id="toc">
+    <div class="toc-link" data-target="ch01"><span class="toc-icon">🚗</span>第1章　自動車整備の仕事</div>
+    <div class="toc-link" data-target="ch02"><span class="toc-icon">🦺</span>第2章　整備工場の安全衛生</div>
+    <div class="toc-link" data-target="ch03"><span class="toc-icon">🔧</span>第3章　工具と測定器具</div>
+    <div class="toc-link" data-target="ch04"><span class="toc-icon">🚙</span>第4章　日常点検整備</div>
+    <div class="toc-link" data-target="ch05"><span class="toc-icon">🗓</span>第5章　定期点検整備</div>
+    <div class="toc-link" data-target="ch06"><span class="toc-icon">🔩</span>第6章　分解整備の基礎</div>
+    <div class="toc-link" data-target="ch07"><span class="toc-icon">🏎</span>第7章　エンジンの構造と整備</div>
+    <div class="toc-link" data-target="ch08"><span class="toc-icon">🛑</span>第8章　ブレーキとシャシの整備</div>
+    <div class="toc-link" data-target="ch09"><span class="toc-icon">🔋</span>第9章　電気装置と故障診断</div>
+    <div class="toc-link" data-target="ch10"><span class="toc-icon">⛽</span>第10章　材料と燃料油脂の知識</div>
+    <div class="toc-link" data-target="ch11"><span class="toc-icon">💬</span>第11章　報連相と判断練習</div>
+    </div>
+    <div id="sidebar-footer">特定技能「自動車整備分野」<br>Bilingual Study Guide · Ruby Furigana · Audio<br><br>Original study material — not affiliated with or reproducing any official test-prep publisher's text.</div>
+  </aside>
+  <main id="main">
+    <div id="topbar">
+      <div id="mobile-title">Automobile Maintenance SSW</div>
+      <div id="progress-wrap"><div id="progress-track"><div id="progress-fill"></div></div><span id="progress-text">0 / 11 read</span></div>
+    </div>
+    <div id="content">
+      <div id="view-home">
+        <div class="home-hero">
+          <h2>特定技能「自動車整備分野」<br>Automobile Maintenance — SSW Exam Prep</h2>
+          <p>An original bilingual study guide covering this field's core work — daily inspection, periodic (legal) inspection, and certified disassembly maintenance — plus engines, brakes and chassis, electrical systems, tools and measuring instruments, materials and fuels, and workshop safety — with furigana and tap-to-listen audio.</p>
+          <div class="home-stats">
+            <div class="home-stat"><b>11</b><span>Chapters</span></div>
+            <div class="home-stat"><b>🔊</b><span>Audio</span></div>
+            <div class="home-stat" id="home-progress-stat"><b>0%</b><span>Completed</span></div>
+          </div>
+        </div>
+        <div class="chapter-cards" id="chapter-cards">
+<div class="chapter-card" data-target="ch01"><div class="card-icon">🚗🔧</div><h3>第1章　自動車整備の仕事</h3><p>What Automobile Maintenance Work Involves</p></div>
+<div class="chapter-card" data-target="ch02"><div class="card-icon">🦺🧯</div><h3>第2章　整備工場の安全衛生</h3><p>Workshop Safety and Health Basics</p></div>
+<div class="chapter-card" data-target="ch03"><div class="card-icon">🔧📏</div><h3>第3章　工具と測定器具</h3><p>Tools and Measuring Instruments</p></div>
+<div class="chapter-card" data-target="ch04"><div class="card-icon">🚙🔍</div><h3>第4章　日常点検整備</h3><p>Daily Inspection and Maintenance</p></div>
+<div class="chapter-card" data-target="ch05"><div class="card-icon">🗓️🔩</div><h3>第5章　定期点検整備</h3><p>Periodic Inspection and Maintenance</p></div>
+<div class="chapter-card" data-target="ch06"><div class="card-icon">🔩🛠️</div><h3>第6章　分解整備の基礎</h3><p>Basics of Certified (Disassembly) Maintenance</p></div>
+<div class="chapter-card" data-target="ch07"><div class="card-icon">🏎️⚙️</div><h3>第7章　エンジンの構造と整備</h3><p>Engine Structure and Maintenance Basics</p></div>
+<div class="chapter-card" data-target="ch08"><div class="card-icon">🛑🛞</div><h3>第8章　ブレーキとシャシの整備</h3><p>Brakes and Chassis Maintenance</p></div>
+<div class="chapter-card" data-target="ch09"><div class="card-icon">🔋🩺</div><h3>第9章　電気装置と故障診断</h3><p>Electrical Systems and Basic Diagnostics</p></div>
+<div class="chapter-card" data-target="ch10"><div class="card-icon">⛽🧪</div><h3>第10章　材料と燃料油脂の知識</h3><p>Materials, Fuels, and Lubricants</p></div>
+<div class="chapter-card" data-target="ch11"><div class="card-icon">💬🤝</div><h3>第11章　報連相と判断練習</h3><p>Workplace Communication and Judgment Practice</p></div>
+        </div>
+        <p class="footer-credit">Japanese with Raza Sensei · SSW Automobile Maintenance System · Original bilingual study guide, icons &amp; text independently authored</p>
+      </div>
+      <div id="view-content" style="display:none;">
+<section class="chapter-section" id="ch01" data-chapter="ch01">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第1章　自動車整備の仕事</span><span class="en">What Automobile Maintenance Work Involves</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="自動車整備は、車が安全に走れるように点検・整備・修理をする仕事です。">🔊</button><ruby>自動車整備<rt>じどうしゃせいび</rt></ruby>は、<ruby>車<rt>くるま</rt></ruby>が<ruby>安全<rt>あんぜん</rt></ruby>に<ruby>走<rt>はし</rt></ruby>れるように<ruby>点検<rt>てんけん</rt></ruby>・<ruby>整備<rt>せいび</rt></ruby>・<ruby>修理<rt>しゅうり</rt></ruby>をする<ruby>仕事<rt>しごと</rt></ruby>です。</p>
+    <p class="en">Automobile maintenance is the job of inspecting, servicing, and repairing cars so they can run safely.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="特定技能「自動車整備」では、日常点検整備、定期点検整備、分解整備の三つの業務を行うことができます。">🔊</button><ruby>特定技能<rt>とくていぎのう</rt></ruby>「<ruby>自動車整備<rt>じどうしゃせいび</rt></ruby>」では、<ruby>日常点検整備<rt>にちじょうてんけんせいび</rt></ruby>、<ruby>定期点検整備<rt>ていきてんけんせいび</rt></ruby>、<ruby>分解整備<rt>ぶんかいせいび</rt></ruby>の<ruby>三<rt>みっ</rt></ruby>つの<ruby>業務<rt>ぎょうむ</rt></ruby>を<ruby>行<rt>おこな</rt></ruby>うことができます。</p>
+    <p class="en">Under the Specified Skilled Worker "Automobile Maintenance" category, workers may perform three kinds of work: daily inspection maintenance, periodic inspection maintenance, and certified (disassembly) maintenance.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="そのほかに、整備の説明や部品の販売、洗車、車内清掃などの付随業務も担当することがあります。">🔊</button>そのほかに、<ruby>整備<rt>せいび</rt></ruby>の<ruby>説明<rt>せつめい</rt></ruby>や<ruby>部品<rt>ぶひん</rt></ruby>の<ruby>販売<rt>はんばい</rt></ruby>、<ruby>洗車<rt>せんしゃ</rt></ruby>、<ruby>車内清掃<rt>しゃないせいそう</rt></ruby>などの<ruby>付随業務<rt>ふずいぎょうむ</rt></ruby>も<ruby>担当<rt>たんとう</rt></ruby>することがあります。</p>
+    <p class="en">In addition, workers may also be responsible for related tasks such as explaining maintenance work, selling parts, washing cars, and cleaning vehicle interiors.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="整備士は一人で作業することが多いですが、先輩やお客様との報告・連絡・相談もとても大切です。">🔊</button><ruby>整備士<rt>せいびし</rt></ruby>は<ruby>一人<rt>ひとり</rt></ruby>で<ruby>作業<rt>さぎょう</rt></ruby>することが<ruby>多<rt>おお</rt></ruby>いですが、<ruby>先輩<rt>せんぱい</rt></ruby>やお<ruby>客様<rt>きゃくさま</rt></ruby>との<ruby>報告<rt>ほうこく</rt></ruby>・<ruby>連絡<rt>れんらく</rt></ruby>・<ruby>相談<rt>そうだん</rt></ruby>もとても<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">Mechanics often work alone, but reporting, contacting, and consulting with senior staff and customers is also very important.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🚗🔧</div>
+    <div class="icon-caption"><span class="jp">自動車整備士の仕事</span><span class="en">The work of an automobile maintenance mechanic</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>特定技能<rt>とくていぎのう</rt></ruby>「<ruby>自動車整備<rt>じどうしゃせいび</rt></ruby>」の<ruby>業務<rt>ぎょうむ</rt></ruby>に<b>あてはまらない</b>ものはどれですか。</p>
+    <p class="q-en">Which of the following is NOT one of the categories of work under Specified Skilled Worker "Automobile Maintenance"?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 日常点検整備</span><span class="en">Daily inspection maintenance</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 定期点検整備</span><span class="en">Periodic inspection maintenance</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 新車の設計</span><span class="en">Designing new cars</span></div>
+    <div class="explain"><div class="jp">この分野の業務は、日常点検整備、定期点検整備、分解整備の三つです。新車の設計はこの分野の業務ではありません。</div><div class="en">This field's work consists of three categories: daily inspection maintenance, periodic inspection maintenance, and certified (disassembly) maintenance. Designing new cars is not part of this field.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch02" data-chapter="ch02">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第2章　整備工場の安全衛生</span><span class="en">Workshop Safety and Health Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="整備工場では、油や燃料で床が滑りやすいので、作業服と安全靴を着用します。">🔊</button><ruby>整備工場<rt>せいびこうじょう</rt></ruby>では、<ruby>油<rt>あぶら</rt></ruby>や<ruby>燃料<rt>ねんりょう</rt></ruby>で<ruby>床<rt>ゆか</rt></ruby>が<ruby>滑<rt>すべ</rt></ruby>りやすいので、<ruby>作業服<rt>さぎょうふく</rt></ruby>と<ruby>安全靴<rt>あんぜんぐつ</rt></ruby>を<ruby>着用<rt>ちゃくよう</rt></ruby>します。</p>
+    <p class="en">In a maintenance workshop, the floor can be slippery from oil and fuel, so workers wear work clothes and safety shoes.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="車を持ち上げるときは、リフトやジャッキを正しい位置に掛けて、ゆっくり上げ下ろしします。">🔊</button><ruby>車<rt>くるま</rt></ruby>を<ruby>持<rt>も</rt></ruby>ち<ruby>上<rt>あ</rt></ruby>げるときは、リフトやジャッキを<ruby>正<rt>ただ</rt></ruby>しい<ruby>位置<rt>いち</rt></ruby>に<ruby>掛<rt>か</rt></ruby>けて、ゆっくり<ruby>上<rt>あ</rt></ruby>げ<ruby>下<rt>お</rt></ruby>ろしします。</p>
+    <p class="en">When lifting a car, position the lift or jack correctly and raise or lower it slowly.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="エンジンをかけたまま作業すると排気ガスがたまって危険なので、換気をしながら作業します。">🔊</button>エンジンをかけたまま<ruby>作業<rt>さぎょう</rt></ruby>すると<ruby>排気<rt>はいき</rt></ruby>ガスがたまって<ruby>危険<rt>きけん</rt></ruby>なので、<ruby>換気<rt>かんき</rt></ruby>をしながら<ruby>作業<rt>さぎょう</rt></ruby>します。</p>
+    <p class="en">Working with the engine running can allow dangerous exhaust gas to build up, so mechanics ventilate the area while they work.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="保護メガネや手袋を使って、油や薬品、熱い部品から目と手を守ります。">🔊</button><ruby>保護<rt>ほご</rt></ruby>メガネや<ruby>手袋<rt>てぶくろ</rt></ruby>を<ruby>使<rt>つか</rt></ruby>って、<ruby>油<rt>あぶら</rt></ruby>や<ruby>薬品<rt>やくひん</rt></ruby>、<ruby>熱<rt>あつ</rt></ruby>い<ruby>部品<rt>ぶひん</rt></ruby>から<ruby>目<rt>め</rt></ruby>と<ruby>手<rt>て</rt></ruby>を<ruby>守<rt>まも</rt></ruby>ります。</p>
+    <p class="en">Wearing safety glasses and gloves protects the eyes and hands from oil, chemicals, and hot parts.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🦺🧯</div>
+    <div class="icon-caption"><span class="jp">安全な作業のための装備</span><span class="en">Protective gear for safe work</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>整備工場<rt>せいびこうじょう</rt></ruby>で<b>もっとも</b><ruby>正<rt>ただ</rt></ruby>しい<ruby>安全対策<rt>あんぜんたいさく</rt></ruby>はどれですか。</p>
+    <p class="q-en">Which is the most correct safety practice in a maintenance workshop?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 車を持ち上げるときはリフトを正しい位置に掛ける</span><span class="en">Position the lift correctly before raising a car</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. エンジンをかけたまま換気せずに作業する</span><span class="en">Work with the engine running without ventilating the area</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 保護メガネや安全靴は使わない</span><span class="en">Don't bother wearing safety glasses or safety shoes</span></div>
+    <div class="explain"><div class="jp">車を持ち上げるときはリフトやジャッキを正しい位置に掛け、保護具を着用することが安全な作業の基本です。</div><div class="en">Positioning the lift or jack correctly when raising a car, and wearing protective equipment, are the basics of safe work.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch03" data-chapter="ch03">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第3章　工具と測定器具</span><span class="en">Tools and Measuring Instruments</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="整備士は作業の内容に合わせて、たくさんの工具を使い分けます。">🔊</button><ruby>整備士<rt>せいびし</rt></ruby>は<ruby>作業<rt>さぎょう</rt></ruby>の<ruby>内容<rt>ないよう</rt></ruby>に<ruby>合<rt>あ</rt></ruby>わせて、たくさんの<ruby>工具<rt>こうぐ</rt></ruby>を<ruby>使<rt>つか</rt></ruby>い<ruby>分<rt>わ</rt></ruby>けます。</p>
+    <p class="en">Mechanics choose from many different tools depending on the work they are doing.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="ボルトを決められた強さで締めるときは、トルクレンチを使って正確な力で締め付けます。">🔊</button>ボルトを<ruby>決<rt>き</rt></ruby>められた<ruby>強<rt>つよ</rt></ruby>さで<ruby>締<rt>し</rt></ruby>めるときは、トルクレンチを<ruby>使<rt>つか</rt></ruby>って<ruby>正確<rt>せいかく</rt></ruby>な<ruby>力<rt>ちから</rt></ruby>で<ruby>締<rt>し</rt></ruby>め<ruby>付<rt>つ</rt></ruby>けます。</p>
+    <p class="en">When tightening a bolt to a specified strength, mechanics use a torque wrench to apply the exact force required.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="部品の厚さや直径を細かく測るときはノギスを、タイヤの空気圧を調べるときはタイヤゲージを使います。">🔊</button><ruby>部品<rt>ぶひん</rt></ruby>の<ruby>厚<rt>あつ</rt></ruby>さや<ruby>直径<rt>ちょっけい</rt></ruby>を<ruby>細<rt>こま</rt></ruby>かく<ruby>測<rt>はか</rt></ruby>るときはノギスを、タイヤの<ruby>空気圧<rt>くうきあつ</rt></ruby>を<ruby>調<rt>しら</rt></ruby>べるときはタイヤゲージを<ruby>使<rt>つか</rt></ruby>います。</p>
+    <p class="en">Calipers are used to precisely measure a part's thickness or diameter, and a tire gauge is used to check tire air pressure.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="工具を使った後は、いつも同じ場所に片付けて、こわれていないか点検します。">🔊</button><ruby>工具<rt>こうぐ</rt></ruby>を<ruby>使<rt>つか</rt></ruby>った<ruby>後<rt>あと</rt></ruby>は、いつも<ruby>同<rt>おな</rt></ruby>じ<ruby>場所<rt>ばしょ</rt></ruby>に<ruby>片付<rt>かたづ</rt></ruby>けて、こわれていないか<ruby>点検<rt>てんけん</rt></ruby>します。</p>
+    <p class="en">After using a tool, mechanics always put it back in the same place and check that it is not damaged.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-jp">①<ruby>作業<rt>さぎょう</rt></ruby>に<ruby>合<rt>あ</rt></ruby>った<ruby>工具<rt>こうぐ</rt></ruby>を<ruby>選<rt>えら</rt></ruby>ぶ</div>
+      <div class="step-en">① Choose the tool suited to the task</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">②トルクレンチなどで<ruby>正確<rt>せいかく</rt></ruby>に<ruby>作業<rt>さぎょう</rt></ruby>する</div>
+      <div class="step-en">② Work precisely, using tools such as a torque wrench</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">③<ruby>使用後<rt>しようご</rt></ruby>は<ruby>点検<rt>てんけん</rt></ruby>して、もとの<ruby>場所<rt>ばしょ</rt></ruby>に<ruby>戻<rt>もど</rt></ruby>す</div>
+      <div class="step-en">③ After use, inspect the tool and return it to its place</div>
+    </div>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🔧📏</div>
+    <div class="icon-caption"><span class="jp">工具と測定器具</span><span class="en">Tools and measuring instruments</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp">タイヤの<ruby>空気圧<rt>くうきあつ</rt></ruby>を<ruby>調<rt>しら</rt></ruby>べるときに<ruby>使<rt>つか</rt></ruby>う<ruby>道具<rt>どうぐ</rt></ruby>はどれですか。</p>
+    <p class="q-en">Which tool is used to check a tire's air pressure?</p>
+      <div class="opt" data-val="A"><span class="jp">A. タイヤゲージ</span><span class="en">Tire gauge</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. トルクレンチ</span><span class="en">Torque wrench</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. ノギス</span><span class="en">Calipers</span></div>
+    <div class="explain"><div class="jp">タイヤの空気圧を調べるときはタイヤゲージを使います。トルクレンチはボルトを締める力を、ノギスは部品の厚さや直径を測るための工具です。</div><div class="en">A tire gauge is used to check tire air pressure. A torque wrench measures the tightening force on a bolt, and calipers measure a part's thickness or diameter.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch04" data-chapter="ch04">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第4章　日常点検整備</span><span class="en">Daily Inspection and Maintenance</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="日常点検整備は、車を使う前や後に簡単な点検をして、異常を早く見つける仕事です。">🔊</button><ruby>日常点検整備<rt>にちじょうてんけんせいび</rt></ruby>は、<ruby>車<rt>くるま</rt></ruby>を<ruby>使<rt>つか</rt></ruby>う<ruby>前<rt>まえ</rt></ruby>や<ruby>後<rt>あと</rt></ruby>に<ruby>簡単<rt>かんたん</rt></ruby>な<ruby>点検<rt>てんけん</rt></ruby>をして、<ruby>異常<rt>いじょう</rt></ruby>を<ruby>早<rt>はや</rt></ruby>く<ruby>見<rt>み</rt></ruby>つける<ruby>仕事<rt>しごと</rt></ruby>です。</p>
+    <p class="en">Daily inspection maintenance means doing simple checks before or after using a car, to catch problems early.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="点検項目には、エンジンオイルの量、タイヤの空気圧と溝の深さ、灯火類の点灯などがあります。">🔊</button><ruby>点検項目<rt>てんけんこうもく</rt></ruby>には、エンジンオイルの<ruby>量<rt>りょう</rt></ruby>、タイヤの<ruby>空気圧<rt>くうきあつ</rt></ruby>と<ruby>溝<rt>みぞ</rt></ruby>の<ruby>深<rt>ふか</rt></ruby>さ、<ruby>灯火類<rt>とうかるい</rt></ruby>の<ruby>点灯<rt>てんとう</rt></ruby>などがあります。</p>
+    <p class="en">Inspection items include the engine oil level, tire air pressure and tread depth, and whether the lights are working.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="冷却水やブレーキ液の量が足りているかも、よく確認する項目です。">🔊</button><ruby>冷却水<rt>れいきゃくすい</rt></ruby>やブレーキ<ruby>液<rt>えき</rt></ruby>の<ruby>量<rt>りょう</rt></ruby>が<ruby>足<rt>た</rt></ruby>りているかも、よく<ruby>確認<rt>かくにん</rt></ruby>する<ruby>項目<rt>こうもく</rt></ruby>です。</p>
+    <p class="en">Whether there is enough coolant and brake fluid is also an item that is carefully checked.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="タイヤ交換や空気圧の調整など、簡単な整備の作業も日常点検整備に含まれます。">🔊</button>タイヤ<ruby>交換<rt>こうかん</rt></ruby>や<ruby>空気圧<rt>くうきあつ</rt></ruby>の<ruby>調整<rt>ちょうせい</rt></ruby>など、<ruby>簡単<rt>かんたん</rt></ruby>な<ruby>整備<rt>せいび</rt></ruby>の<ruby>作業<rt>さぎょう</rt></ruby>も<ruby>日常点検整備<rt>にちじょうてんけんせいび</rt></ruby>に<ruby>含<rt>ふく</rt></ruby>まれます。</p>
+    <p class="en">Simple maintenance tasks such as changing tires or adjusting air pressure are also part of daily inspection maintenance.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-jp">①エンジンオイルの<ruby>量<rt>りょう</rt></ruby>と<ruby>汚<rt>よご</rt></ruby>れを<ruby>見<rt>み</rt></ruby>る</div>
+      <div class="step-en">① Check the engine oil level and condition</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">②タイヤの<ruby>空気圧<rt>くうきあつ</rt></ruby>と<ruby>溝<rt>みぞ</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>する</div>
+      <div class="step-en">② Check tire air pressure and tread</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">③<ruby>灯火類<rt>とうかるい</rt></ruby>がすべて<ruby>点<rt>つ</rt></ruby>くか<ruby>確認<rt>かくにん</rt></ruby>する</div>
+      <div class="step-en">③ Check that all lights turn on</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">④<ruby>冷却水<rt>れいきゃくすい</rt></ruby>とブレーキ<ruby>液<rt>えき</rt></ruby>の<ruby>量<rt>りょう</rt></ruby>を<ruby>見<rt>み</rt></ruby>る</div>
+      <div class="step-en">④ Check coolant and brake fluid levels</div>
+    </div>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🚙🔍</div>
+    <div class="icon-caption"><span class="jp">日常点検のチェック項目</span><span class="en">Daily inspection checklist items</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>日常点検整備<rt>にちじょうてんけんせいび</rt></ruby>の<ruby>点検項目<rt>てんけんこうもく</rt></ruby>に<b>あてはまらない</b>ものはどれですか。</p>
+    <p class="q-en">Which of the following is NOT a daily inspection item?</p>
+      <div class="opt" data-val="A"><span class="jp">A. ホイールアライメントの調整</span><span class="en">Wheel alignment adjustment</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. タイヤの空気圧と溝の深さ</span><span class="en">Tire air pressure and tread depth</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. エンジンオイルの量</span><span class="en">Engine oil level</span></div>
+    <div class="explain"><div class="jp">ホイールアライメントの調整は分解整備や専門的な整備で行う作業で、日常点検整備には含まれません。</div><div class="en">Wheel alignment adjustment is a task performed as certified/disassembly maintenance or specialized work, and is not part of daily inspection maintenance.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch05" data-chapter="ch05">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第5章　定期点検整備</span><span class="en">Periodic Inspection and Maintenance</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="定期点検整備は、決められた期間ごとに車全体を詳しく点検し、必要な整備を行うことです。">🔊</button><ruby>定期点検整備<rt>ていきてんけんせいび</rt></ruby>は、<ruby>決<rt>き</rt></ruby>められた<ruby>期間<rt>きかん</rt></ruby>ごとに<ruby>車<rt>くるま</rt></ruby><ruby>全体<rt>ぜんたい</rt></ruby>を<ruby>詳<rt>くわ</rt></ruby>しく<ruby>点検<rt>てんけん</rt></ruby>し、<ruby>必要<rt>ひつよう</rt></ruby>な<ruby>整備<rt>せいび</rt></ruby>を<ruby>行<rt>おこな</rt></ruby>うことです。</p>
+    <p class="en">Periodic inspection maintenance means thoroughly inspecting the whole car at fixed intervals and carrying out any maintenance that is needed.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="法律で、自家用乗用車は12か月ごとの点検が決められています。">🔊</button><ruby>法律<rt>ほうりつ</rt></ruby>で、<ruby>自家用乗用車<rt>じかようじょうようしゃ</rt></ruby>は12か<ruby>月<rt>げつ</rt></ruby>ごとの<ruby>点検<rt>てんけん</rt></ruby>が<ruby>決<rt>き</rt></ruby>められています。</p>
+    <p class="en">By law, privately owned passenger cars must be inspected every 12 months.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="点検では、ブレーキやエンジン、足回りなど数十の項目を一つずつ確認していきます。">🔊</button><ruby>点検<rt>てんけん</rt></ruby>では、ブレーキやエンジン、<ruby>足回<rt>あしまわ</rt></ruby>りなど<ruby>数十<rt>すうじゅう</rt></ruby>の<ruby>項目<rt>こうもく</rt></ruby>を<ruby>一<rt>ひと</rt></ruby>つずつ<ruby>確認<rt>かくにん</rt></ruby>していきます。</p>
+    <p class="en">During the inspection, mechanics check dozens of items one by one, including the brakes, engine, and undercarriage.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="車検は、国が決めた安全基準に合っているかを確認する検査で、定期点検とあわせて行われることが多いです。">🔊</button><ruby>車検<rt>しゃけん</rt></ruby>は、<ruby>国<rt>くに</rt></ruby>が<ruby>決<rt>き</rt></ruby>めた<ruby>安全基準<rt>あんぜんきじゅん</rt></ruby>に<ruby>合<rt>あ</rt></ruby>っているかを<ruby>確認<rt>かくにん</rt></ruby>する<ruby>検査<rt>けんさ</rt></ruby>で、<ruby>定期点検<rt>ていきてんけん</rt></ruby>とあわせて<ruby>行<rt>おこな</rt></ruby>われることが<ruby>多<rt>おお</rt></ruby>いです。</p>
+    <p class="en">The shaken (statutory vehicle inspection) checks whether a car meets the government's safety standards, and is often carried out together with periodic inspection.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-jp">①<ruby>点検表<rt>てんけんひょう</rt></ruby>にそって<ruby>項目<rt>こうもく</rt></ruby>を<ruby>一<rt>ひと</rt></ruby>つずつ<ruby>確認<rt>かくにん</rt></ruby>する</div>
+      <div class="step-en">① Check each item one by one, following the inspection checklist</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">②<ruby>異常<rt>いじょう</rt></ruby>が<ruby>見<rt>み</rt></ruby>つかったら<ruby>調整<rt>ちょうせい</rt></ruby>や<ruby>部品交換<rt>ぶひんこうかん</rt></ruby>をする</div>
+      <div class="step-en">② If a problem is found, adjust or replace the part</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">③<ruby>点検<rt>てんけん</rt></ruby>の<ruby>結果<rt>けっか</rt></ruby>を<ruby>記録<rt>きろく</rt></ruby>する</div>
+      <div class="step-en">③ Record the results of the inspection</div>
+    </div>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🗓️🔩</div>
+    <div class="icon-caption"><span class="jp">定期点検と車検</span><span class="en">Periodic inspection and shaken</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>自家用乗用車<rt>じかようじょうようしゃ</rt></ruby>の<ruby>定期点検<rt>ていきてんけん</rt></ruby>は、どのくらいの<ruby>間隔<rt>かんかく</rt></ruby>で<ruby>行<rt>おこな</rt></ruby>うことが<ruby>法律<rt>ほうりつ</rt></ruby>で<ruby>決<rt>き</rt></ruby>められていますか。</p>
+    <p class="q-en">How often does the law require periodic inspection for privately owned passenger cars?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 12か月ごと</span><span class="en">Every 12 months</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 1か月ごと</span><span class="en">Every 1 month</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 5年ごと</span><span class="en">Every 5 years</span></div>
+    <div class="explain"><div class="jp">自家用乗用車の定期点検は、法律で12か月ごとに行うことが決められています。</div><div class="en">The law requires privately owned passenger cars to undergo periodic inspection every 12 months.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch06" data-chapter="ch06">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第6章　分解整備の基礎</span><span class="en">Basics of Certified (Disassembly) Maintenance</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="分解整備とは、ブレーキやエンジンなど安全に関わる重要な装置を分解して整備することです。">🔊</button><ruby>分解整備<rt>ぶんかいせいび</rt></ruby>とは、ブレーキやエンジンなど<ruby>安全<rt>あんぜん</rt></ruby>に<ruby>関<rt>かか</rt></ruby>わる<ruby>重要<rt>じゅうよう</rt></ruby>な<ruby>装置<rt>そうち</rt></ruby>を<ruby>分解<rt>ぶんかい</rt></ruby>して<ruby>整備<rt>せいび</rt></ruby>することです。</p>
+    <p class="en">Certified (disassembly) maintenance means disassembling important safety-related systems, such as the brakes or engine, in order to service them.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="分解整備は専門的な知識と技術が必要なため、資格を持つ整備士の指導や確認のもとで行います。">🔊</button><ruby>分解整備<rt>ぶんかいせいび</rt></ruby>は<ruby>専門的<rt>せんもんてき</rt></ruby>な<ruby>知識<rt>ちしき</rt></ruby>と<ruby>技術<rt>ぎじゅつ</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>なため、<ruby>資格<rt>しかく</rt></ruby>を<ruby>持<rt>も</rt></ruby>つ<ruby>整備士<rt>せいびし</rt></ruby>の<ruby>指導<rt>しどう</rt></ruby>や<ruby>確認<rt>かくにん</rt></ruby>のもとで<ruby>行<rt>おこな</rt></ruby>います。</p>
+    <p class="en">Because certified maintenance requires specialized knowledge and skill, it is carried out under the guidance and check of a qualified mechanic.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="例えば、ブレーキパッドの交換や、バッテリーの点検・交換なども分解整備にあたります。">🔊</button><ruby>例<rt>たと</rt></ruby>えば、ブレーキパッドの<ruby>交換<rt>こうかん</rt></ruby>や、バッテリーの<ruby>点検<rt>てんけん</rt></ruby>・<ruby>交換<rt>こうかん</rt></ruby>なども<ruby>分解整備<rt>ぶんかいせいび</rt></ruby>にあたります。</p>
+    <p class="en">For example, replacing brake pads, or inspecting and replacing the battery, also count as certified maintenance.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="作業が終わったら、整備記録簿に作業内容を記入して、あとで確認できるようにします。">🔊</button><ruby>作業<rt>さぎょう</rt></ruby>が<ruby>終<rt>お</rt></ruby>わったら、<ruby>整備記録簿<rt>せいびきろくぼ</rt></ruby>に<ruby>作業内容<rt>さぎょうないよう</rt></ruby>を<ruby>記入<rt>きにゅう</rt></ruby>して、あとで<ruby>確認<rt>かくにん</rt></ruby>できるようにします。</p>
+    <p class="en">After the work is finished, the details are written in the maintenance record book so they can be checked later.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🔩🛠️</div>
+    <div class="icon-caption"><span class="jp">分解整備の作業</span><span class="en">Certified (disassembly) maintenance work</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>分解整備<rt>ぶんかいせいび</rt></ruby>について、<b><ruby>正<rt>ただ</rt></ruby>しい</b><ruby>説明<rt>せつめい</rt></ruby>はどれですか。</p>
+    <p class="q-en">Which statement about certified (disassembly) maintenance is correct?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 資格を持つ整備士の指導や確認のもとで行う</span><span class="en">It is carried out under the guidance and check of a qualified mechanic</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. だれでも自由に一人で行ってよい</span><span class="en">Anyone may perform it alone, without any oversight</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 整備記録簿に記入する必要はない</span><span class="en">There is no need to record it in the maintenance record book</span></div>
+    <div class="explain"><div class="jp">分解整備は安全に関わる重要な作業のため、資格を持つ整備士の指導や確認のもとで行い、整備記録簿に記入します。</div><div class="en">Because certified maintenance is important work related to safety, it is carried out under a qualified mechanic's guidance and check, and recorded in the maintenance record book.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch07" data-chapter="ch07">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第7章　エンジンの構造と整備</span><span class="en">Engine Structure and Maintenance Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="エンジンは、燃料を燃やして車を動かす力を作る装置です。">🔊</button>エンジンは、<ruby>燃料<rt>ねんりょう</rt></ruby>を<ruby>燃<rt>も</rt></ruby>やして<ruby>車<rt>くるま</rt></ruby>を<ruby>動<rt>うご</rt></ruby>かす<ruby>力<rt>ちから</rt></ruby>を<ruby>作<rt>つく</rt></ruby>る<ruby>装置<rt>そうち</rt></ruby>です。</p>
+    <p class="en">The engine is the device that burns fuel to create the power that moves the car.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="エンジンの中には円筒形のシリンダーがあり、内部をピストンが上下に動いて力を生み出します。">🔊</button>エンジンの<ruby>中<rt>なか</rt></ruby>には<ruby>円筒形<rt>えんとうけい</rt></ruby>のシリンダーがあり、<ruby>内部<rt>ないぶ</rt></ruby>をピストンが<ruby>上下<rt>じょうげ</rt></ruby>に<ruby>動<rt>うご</rt></ruby>いて<ruby>力<rt>ちから</rt></ruby>を<ruby>生<rt>う</rt></ruby>み<ruby>出<rt>だ</rt></ruby>します。</p>
+    <p class="en">Inside the engine are cylindrical cylinders, and a piston moves up and down within each one to generate power.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="タイミングベルトは、エンジンの部品どうしの動きを合わせる重要な部品で、決められた時期に交換します。">🔊</button>タイミングベルトは、エンジンの<ruby>部品<rt>ぶひん</rt></ruby>どうしの<ruby>動<rt>うご</rt></ruby>きを<ruby>合<rt>あ</rt></ruby>わせる<ruby>重要<rt>じゅうよう</rt></ruby>な<ruby>部品<rt>ぶひん</rt></ruby>で、<ruby>決<rt>き</rt></ruby>められた<ruby>時期<rt>じき</rt></ruby>に<ruby>交換<rt>こうかん</rt></ruby>します。</p>
+    <p class="en">The timing belt is an important part that synchronizes the movement of other engine parts, and it is replaced at a set interval.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="エンジンは熱くなりすぎないように、冷却装置で冷やされています。">🔊</button>エンジンは<ruby>熱<rt>あつ</rt></ruby>くなりすぎないように、<ruby>冷却装置<rt>れいきゃくそうち</rt></ruby>で<ruby>冷<rt>ひ</rt></ruby>やされています。</p>
+    <p class="en">To prevent it from getting too hot, the engine is cooled by the cooling system.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="エンジンオイルは部品どうしの摩擦を減らす役割があるため、定期的に交換することが大切です。">🔊</button>エンジンオイルは<ruby>部品<rt>ぶひん</rt></ruby>どうしの<ruby>摩擦<rt>まさつ</rt></ruby>を<ruby>減<rt>へ</rt></ruby>らす<ruby>役割<rt>やくわり</rt></ruby>があるため、<ruby>定期的<rt>ていきてき</rt></ruby>に<ruby>交換<rt>こうかん</rt></ruby>することが<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">Because engine oil reduces friction between moving parts, it is important to change it on a regular basis.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🏎️⚙️</div>
+    <div class="icon-caption"><span class="jp">エンジンの主な部品</span><span class="en">Main engine parts</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp">エンジンの<ruby>中<rt>なか</rt></ruby>で<ruby>上下<rt>じょうげ</rt></ruby>に<ruby>動<rt>うご</rt></ruby>いて<ruby>力<rt>ちから</rt></ruby>を<ruby>生<rt>う</rt></ruby>み<ruby>出<rt>だ</rt></ruby>す<ruby>部品<rt>ぶひん</rt></ruby>はどれですか。</p>
+    <p class="q-en">Which part moves up and down inside the engine's cylinder to generate power?</p>
+      <div class="opt" data-val="A"><span class="jp">A. ピストン</span><span class="en">Piston</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. タイミングベルト</span><span class="en">Timing belt</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. バッテリー</span><span class="en">Battery</span></div>
+    <div class="explain"><div class="jp">シリンダーの内部をピストンが上下に動いて、エンジンの力を生み出します。</div><div class="en">The piston moves up and down inside the cylinder, generating the engine's power.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch08" data-chapter="ch08">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第8章　ブレーキとシャシの整備</span><span class="en">Brakes and Chassis Maintenance</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="ブレーキは、車を止めるための最も重要な装置で、少しの不具合も事故につながります。">🔊</button>ブレーキは、<ruby>車<rt>くるま</rt></ruby>を<ruby>止<rt>と</rt></ruby>めるための<ruby>最<rt>もっと</rt></ruby>も<ruby>重要<rt>じゅうよう</rt></ruby>な<ruby>装置<rt>そうち</rt></ruby>で、<ruby>少<rt>すこ</rt></ruby>しの<ruby>不具合<rt>ふぐあい</rt></ruby>も<ruby>事故<rt>じこ</rt></ruby>につながります。</p>
+    <p class="en">The brakes are the most important system for stopping the car, and even a small problem can lead to an accident.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="ブレーキパッドが薄くなると制動力が下がるため、厚さを点検して早めに交換します。">🔊</button>ブレーキパッドが<ruby>薄<rt>うす</rt></ruby>くなると<ruby>制動力<rt>せいどうりょく</rt></ruby>が<ruby>下<rt>さ</rt></ruby>がるため、<ruby>厚<rt>あつ</rt></ruby>さを<ruby>点検<rt>てんけん</rt></ruby>して<ruby>早<rt>はや</rt></ruby>めに<ruby>交換<rt>こうかん</rt></ruby>します。</p>
+    <p class="en">When brake pads become thin, braking power decreases, so mechanics check their thickness and replace them early.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="シャシとは、車体を支える骨組みや、サスペンションなどの足回りの部分のことです。">🔊</button>シャシとは、<ruby>車体<rt>しゃたい</rt></ruby>を<ruby>支<rt>ささ</rt></ruby>える<ruby>骨組<rt>ほねぐ</rt></ruby>みや、サスペンションなどの<ruby>足回<rt>あしまわ</rt></ruby>りの<ruby>部分<rt>ぶぶん</rt></ruby>のことです。</p>
+    <p class="en">The chassis refers to the frame that supports the car body, and to the undercarriage parts such as the suspension.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="サスペンションは路面からの衝撃を吸収し、ホイールアライメントはタイヤの向きを正しく調整する作業です。">🔊</button>サスペンションは<ruby>路面<rt>ろめん</rt></ruby>からの<ruby>衝撃<rt>しょうげき</rt></ruby>を<ruby>吸収<rt>きゅうしゅう</rt></ruby>し、ホイールアライメントはタイヤの<ruby>向<rt>む</rt></ruby>きを<ruby>正<rt>ただ</rt></ruby>しく<ruby>調整<rt>ちょうせい</rt></ruby>する<ruby>作業<rt>さぎょう</rt></ruby>です。</p>
+    <p class="en">The suspension absorbs shocks from the road surface, and wheel alignment is the work of correctly adjusting the direction the tires point.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🛑🛞</div>
+    <div class="icon-caption"><span class="jp">ブレーキとシャシ</span><span class="en">Brakes and chassis</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp">ブレーキパッドが<ruby>薄<rt>うす</rt></ruby>くなると、どうなりますか。</p>
+    <p class="q-en">What happens when brake pads become thin?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 制動力が下がる</span><span class="en">Braking power decreases</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. タイヤの空気圧が上がる</span><span class="en">Tire air pressure increases</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. エンジンの力が強くなる</span><span class="en">The engine becomes more powerful</span></div>
+    <div class="explain"><div class="jp">ブレーキパッドが薄くなると制動力が下がるため、厚さを点検して早めに交換する必要があります。</div><div class="en">When brake pads become thin, braking power decreases, so their thickness must be checked and they must be replaced early.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch09" data-chapter="ch09">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第9章　電気装置と故障診断</span><span class="en">Electrical Systems and Basic Diagnostics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="現在の車には、ライトやエアコン、エンジンを制御するコンピューターなど、たくさんの電気装置が使われています。">🔊</button><ruby>現在<rt>げんざい</rt></ruby>の<ruby>車<rt>くるま</rt></ruby>には、ライトやエアコン、エンジンを<ruby>制御<rt>せいぎょ</rt></ruby>するコンピューターなど、たくさんの<ruby>電気装置<rt>でんきそうち</rt></ruby>が<ruby>使<rt>つか</rt></ruby>われています。</p>
+    <p class="en">Modern cars use many electrical systems, including lights, air conditioning, and the computer that controls the engine.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="配線が傷ついたり、バッテリーが弱ったりすると、電気装置が正常に動かなくなることがあります。">🔊</button><ruby>配線<rt>はいせん</rt></ruby>が<ruby>傷<rt>きず</rt></ruby>ついたり、バッテリーが<ruby>弱<rt>よわ</rt></ruby>ったりすると、<ruby>電気装置<rt>でんきそうち</rt></ruby>が<ruby>正常<rt>せいじょう</rt></ruby>に<ruby>動<rt>うご</rt></ruby>かなくなることがあります。</p>
+    <p class="en">If the wiring is damaged or the battery becomes weak, electrical systems may stop working normally.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="故障診断では、診断機を車に接続して、コンピューターが記録した異常の情報を読み取ります。">🔊</button><ruby>故障診断<rt>こしょうしんだん</rt></ruby>では、<ruby>診断機<rt>しんだんき</rt></ruby>を<ruby>車<rt>くるま</rt></ruby>に<ruby>接続<rt>せつぞく</rt></ruby>して、コンピューターが<ruby>記録<rt>きろく</rt></ruby>した<ruby>異常<rt>いじょう</rt></ruby>の<ruby>情報<rt>じょうほう</rt></ruby>を<ruby>読<rt>よ</rt></ruby>み<ruby>取<rt>と</rt></ruby>ります。</p>
+    <p class="en">For fault diagnosis, mechanics connect a diagnostic machine to the car and read the abnormality information recorded by its computer.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="診断機の情報だけでなく、実際に目で見て耳で聞いて確認することも大切です。">🔊</button><ruby>診断機<rt>しんだんき</rt></ruby>の<ruby>情報<rt>じょうほう</rt></ruby>だけでなく、<ruby>実際<rt>じっさい</rt></ruby>に<ruby>目<rt>め</rt></ruby>で<ruby>見<rt>み</rt></ruby>て<ruby>耳<rt>みみ</rt></ruby>で<ruby>聞<rt>き</rt></ruby>いて<ruby>確認<rt>かくにん</rt></ruby>することも<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">In addition to the diagnostic machine's information, it is also important to check with your own eyes and ears.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-jp">①お<ruby>客様<rt>きゃくさま</rt></ruby>から<ruby>症状<rt>しょうじょう</rt></ruby>を<ruby>聞<rt>き</rt></ruby>く</div>
+      <div class="step-en">① Ask the customer about the symptoms</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">②<ruby>診断機<rt>しんだんき</rt></ruby>を<ruby>接続<rt>せつぞく</rt></ruby>して<ruby>情報<rt>じょうほう</rt></ruby>を<ruby>読<rt>よ</rt></ruby>み<ruby>取<rt>と</rt></ruby>る</div>
+      <div class="step-en">② Connect the diagnostic machine and read the information</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">③<ruby>配線<rt>はいせん</rt></ruby>や<ruby>部品<rt>ぶひん</rt></ruby>を<ruby>目<rt>め</rt></ruby>で<ruby>見<rt>み</rt></ruby>て<ruby>点検<rt>てんけん</rt></ruby>する</div>
+      <div class="step-en">③ Visually inspect the wiring and parts</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">④<ruby>原因<rt>げんいん</rt></ruby>を<ruby>特定<rt>とくてい</rt></ruby>して<ruby>修理<rt>しゅうり</rt></ruby>する</div>
+      <div class="step-en">④ Identify the cause and repair it</div>
+    </div>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🔋🩺</div>
+    <div class="icon-caption"><span class="jp">電気装置と故障診断</span><span class="en">Electrical systems and fault diagnosis</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>故障診断<rt>こしょうしんだん</rt></ruby>で、<ruby>車<rt>くるま</rt></ruby>のコンピューターが<ruby>記録<rt>きろく</rt></ruby>した<ruby>情報<rt>じょうほう</rt></ruby>を<ruby>読<rt>よ</rt></ruby>み<ruby>取<rt>と</rt></ruby>るために<ruby>使<rt>つか</rt></ruby>う<ruby>機械<rt>きかい</rt></ruby>はどれですか。</p>
+    <p class="q-en">Which machine is used in fault diagnosis to read the information recorded by a car's computer?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 診断機</span><span class="en">Diagnostic machine</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. トルクレンチ</span><span class="en">Torque wrench</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. タイヤゲージ</span><span class="en">Tire gauge</span></div>
+    <div class="explain"><div class="jp">故障診断では、診断機を車に接続してコンピューターが記録した異常の情報を読み取ります。</div><div class="en">In fault diagnosis, a diagnostic machine is connected to the car to read the abnormality information recorded by its computer.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch10" data-chapter="ch10">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第10章　材料と燃料油脂の知識</span><span class="en">Materials, Fuels, and Lubricants</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="車の燃料には、ガソリンを使うガソリン車と、軽油を使うディーゼル車があります。">🔊</button><ruby>車<rt>くるま</rt></ruby>の<ruby>燃料<rt>ねんりょう</rt></ruby>には、ガソリンを<ruby>使<rt>つか</rt></ruby>うガソリン<ruby>車<rt>しゃ</rt></ruby>と、<ruby>軽油<rt>けいゆ</rt></ruby>を<ruby>使<rt>つか</rt></ruby>うディーゼル<ruby>車<rt>しゃ</rt></ruby>があります。</p>
+    <p class="en">Cars can use gasoline (gasoline vehicles) or diesel fuel, called keiyu in Japanese (diesel vehicles).</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="ガソリンと軽油を間違えて入れると、エンジンが故障することがあるため、給油のときは十分に注意します。">🔊</button>ガソリンと<ruby>軽油<rt>けいゆ</rt></ruby>を<ruby>間違<rt>まちが</rt></ruby>えて<ruby>入<rt>い</rt></ruby>れると、エンジンが<ruby>故障<rt>こしょう</rt></ruby>することがあるため、<ruby>給油<rt>きゅうゆ</rt></ruby>のときは<ruby>十分<rt>じゅうぶん</rt></ruby>に<ruby>注意<rt>ちゅうい</rt></ruby>します。</p>
+    <p class="en">Putting the wrong fuel in a car can cause the engine to break down, so mechanics are very careful when refueling a vehicle.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="潤滑油は、エンジンオイルやギアオイルのように部品どうしの摩擦を減らし、部品を守る役割があります。">🔊</button><ruby>潤滑油<rt>じゅんかつゆ</rt></ruby>は、エンジンオイルやギアオイルのように<ruby>部品<rt>ぶひん</rt></ruby>どうしの<ruby>摩擦<rt>まさつ</rt></ruby>を<ruby>減<rt>へ</rt></ruby>らし、<ruby>部品<rt>ぶひん</rt></ruby>を<ruby>守<rt>まも</rt></ruby>る<ruby>役割<rt>やくわり</rt></ruby>があります。</p>
+    <p class="en">Lubricating oils, such as engine oil and gear oil, reduce friction between parts and protect them.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="整備士は、金属やゴムなど車に使われる材料の性質も知っておく必要があります。">🔊</button><ruby>整備士<rt>せいびし</rt></ruby>は、<ruby>金属<rt>きんぞく</rt></ruby>やゴムなど<ruby>車<rt>くるま</rt></ruby>に<ruby>使<rt>つか</rt></ruby>われる<ruby>材料<rt>ざいりょう</rt></ruby>の<ruby>性質<rt>せいしつ</rt></ruby>も<ruby>知<rt>し</rt></ruby>っておく<ruby>必要<rt>ひつよう</rt></ruby>があります。</p>
+    <p class="en">Mechanics also need to know the properties of the materials used in cars, such as metal and rubber.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">⛽🧪</div>
+    <div class="icon-caption"><span class="jp">燃料と潤滑油</span><span class="en">Fuels and lubricating oils</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp">ガソリンと<ruby>軽油<rt>けいゆ</rt></ruby>を<ruby>間違<rt>まちが</rt></ruby>えて<ruby>給油<rt>きゅうゆ</rt></ruby>すると、どうなる<ruby>可能性<rt>かのうせい</rt></ruby>がありますか。</p>
+    <p class="q-en">What can happen if the wrong fuel is put into a car?</p>
+      <div class="opt" data-val="A"><span class="jp">A. エンジンが故障する</span><span class="en">The engine can break down</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. タイヤの溝が深くなる</span><span class="en">The tire tread becomes deeper</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. ブレーキパッドが厚くなる</span><span class="en">The brake pads become thicker</span></div>
+    <div class="explain"><div class="jp">ガソリンと軽油を間違えて入れるとエンジンが故障することがあるため、給油のときは十分に注意します。</div><div class="en">Putting the wrong fuel in a car can cause the engine to break down, so mechanics are very careful when refueling.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch11" data-chapter="ch11">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第11章　報連相と判断練習</span><span class="en">Workplace Communication and Judgment Practice</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="整備の現場では、報告・連絡・相談、いわゆる「報連相」がとても大切です。">🔊</button><ruby>整備<rt>せいび</rt></ruby>の<ruby>現場<rt>げんば</rt></ruby>では、<ruby>報告<rt>ほうこく</rt></ruby>・<ruby>連絡<rt>れんらく</rt></ruby>・<ruby>相談<rt>そうだん</rt></ruby>、いわゆる「<ruby>報連相<rt>ほうれんそう</rt></ruby>」がとても<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">In a maintenance workshop, "reporting, contacting, and consulting" — known as horenso — is extremely important.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="作業中に予想していなかった不具合を見つけたときは、自分だけで判断せず、すぐに先輩に報告します。">🔊</button><ruby>作業中<rt>さぎょうちゅう</rt></ruby>に<ruby>予想<rt>よそう</rt></ruby>していなかった<ruby>不具合<rt>ふぐあい</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけたときは、<ruby>自分<rt>じぶん</rt></ruby>だけで<ruby>判断<rt>はんだん</rt></ruby>せず、すぐに<ruby>先輩<rt>せんぱい</rt></ruby>に<ruby>報告<rt>ほうこく</rt></ruby>します。</p>
+    <p class="en">If you find an unexpected problem while working, don't judge the situation on your own — report it to a senior staff member right away.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="作業の予定が変わりそうなときや、部品が足りないときは、早めに連絡して指示を受けます。">🔊</button><ruby>作業<rt>さぎょう</rt></ruby>の<ruby>予定<rt>よてい</rt></ruby>が<ruby>変<rt>か</rt></ruby>わりそうなときや、<ruby>部品<rt>ぶひん</rt></ruby>が<ruby>足<rt>た</rt></ruby>りないときは、<ruby>早<rt>はや</rt></ruby>めに<ruby>連絡<rt>れんらく</rt></ruby>して<ruby>指示<rt>しじ</rt></ruby>を<ruby>受<rt>う</rt></ruby>けます。</p>
+    <p class="en">When the work schedule looks like it will change, or when a part is missing, contact your supervisor early and receive instructions.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="判断に迷ったときは、一人で決めずに、まわりの整備士に相談することが安全な作業につながります。">🔊</button><ruby>判断<rt>はんだん</rt></ruby>に<ruby>迷<rt>まよ</rt></ruby>ったときは、<ruby>一人<rt>ひとり</rt></ruby>で<ruby>決<rt>き</rt></ruby>めずに、まわりの<ruby>整備士<rt>せいびし</rt></ruby>に<ruby>相談<rt>そうだん</rt></ruby>することが<ruby>安全<rt>あんぜん</rt></ruby>な<ruby>作業<rt>さぎょう</rt></ruby>につながります。</p>
+    <p class="en">When you are unsure what to do, consulting with other mechanics instead of deciding alone leads to safer work.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">💬🤝</div>
+    <div class="icon-caption"><span class="jp">報連相と判断力</span><span class="en">Workplace communication and good judgment</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>分解整備中<rt>ぶんかいせいびちゅう</rt></ruby>に、<ruby>予想<rt>よそう</rt></ruby>していなかった<ruby>部品<rt>ぶひん</rt></ruby>の<ruby>破損<rt>はそん</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけました。<b>もっとも<ruby>適切<rt>てきせつ</rt></ruby>な</b><ruby>行動<rt>こうどう</rt></ruby>はどれですか。</p>
+    <p class="q-en">While performing certified (disassembly) maintenance, you find unexpected damage to a part. What is the most appropriate action?</p>
+      <div class="opt" data-val="A"><span class="jp">A. すぐに先輩整備士に報告し、指示を受ける</span><span class="en">Report it to a senior mechanic right away and receive instructions</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 自分の判断だけで部品を交換して作業を続ける</span><span class="en">Replace the part based on your own judgment alone and continue working</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 気づかなかったふりをして、そのまま作業を終える</span><span class="en">Pretend you didn't notice and finish the job as is</span></div>
+    <div class="explain"><div class="jp">予想していなかった不具合を見つけたときは、自分だけで判断せず、すぐに先輩整備士に報告して指示を受けることが安全な作業につながります。</div><div class="en">When you find an unexpected problem, reporting it to a senior mechanic right away and receiving instructions — rather than deciding alone — leads to safe work.</div></div>
+  </div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>必要<rt>ひつよう</rt></ruby>な<ruby>部品<rt>ぶひん</rt></ruby>の<ruby>在庫<rt>ざいこ</rt></ruby>がなく、<ruby>作業<rt>さぎょう</rt></ruby>の<ruby>予定<rt>よてい</rt></ruby>どおりに<ruby>終<rt>お</rt></ruby>わらせられないとわかりました。<b><ruby>最初<rt>さいしょ</rt></ruby>に</b>することはどれですか。</p>
+    <p class="q-en">You realize a needed part is out of stock and the job cannot be finished on schedule. What should you do first?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 早めに先輩や担当者に連絡して指示を受ける</span><span class="en">Contact a senior staff member or the person in charge early and receive instructions</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 何も言わずに作業をゆっくり進める</span><span class="en">Say nothing and just work more slowly</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. お客様に自分だけの判断で新しい料金を伝える</span><span class="en">Tell the customer a new price based on your own judgment alone</span></div>
+    <div class="explain"><div class="jp">作業の予定が変わりそうなときは、早めに連絡して指示を受けることが大切です。自分だけの判断でお客様に対応してはいけません。</div><div class="en">When the work schedule looks like it will change, it's important to contact someone early and receive instructions. You should not handle the situation with the customer based on your own judgment alone.</div></div>
+  </div>
+</div>
+</section>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+function safeGet(key){ try{ return JSON.parse(localStorage.getItem(key) || '{}'); }catch(e){ return {}; } }
+function safeSet(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+var readChapters = safeGet('automaintssw_read');
+
+document.querySelectorAll('.chapter-card').forEach(function(c){
+  c.addEventListener('click', function(){ goToTarget(this.dataset.target); });
+});
+
+var allTocLinks = document.querySelectorAll('.toc-link');
+
+function showHome(){
+  document.getElementById('view-home').style.display = 'block';
+  document.getElementById('view-content').style.display = 'none';
+  document.getElementById('mobile-title').textContent = 'Automobile Maintenance SSW';
+  clearActiveTOC();
+}
+function showContent(){
+  document.getElementById('view-home').style.display = 'none';
+  document.getElementById('view-content').style.display = 'block';
+}
+function clearActiveTOC(){ allTocLinks.forEach(function(l){ l.classList.remove('active'); }); }
+function goToTarget(id){
+  showContent();
+  var el = document.getElementById(id);
+  if (el){ el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  setActiveTOC(id);
+  if (window.innerWidth <= 980) closeSidebar();
+  markRead(id);
+}
+function setActiveTOC(id){
+  clearActiveTOC();
+  var link = document.querySelector('.toc-link[data-target="'+id+'"]');
+  if (link) link.classList.add('active');
+}
+function markRead(id){
+  if (!readChapters[id]){ readChapters[id] = true; safeSet('automaintssw_read', readChapters); updateProgress(); }
+}
+function updateProgress(){
+  var total = document.querySelectorAll('.toc-link').length;
+  var n = Object.keys(readChapters).length;
+  if (n > total) n = total;
+  var pct = total ? Math.round(n/total*100) : 0;
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-text').textContent = n+' / '+total+' read';
+  var hs = document.getElementById('home-progress-stat');
+  if (hs) hs.querySelector('b').textContent = pct+'%';
+}
+document.querySelectorAll('.toc-link').forEach(function(el){
+  el.addEventListener('click', function(){ goToTarget(this.dataset.target); });
+});
+document.querySelector('.brand').addEventListener('click', showHome);
+document.querySelector('.brand').style.cursor = 'pointer';
+
+function speakJP(text){
+  if (!text) return;
+  if (!('speechSynthesis' in window)){ alert('Text-to-speech is not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+function injectScoreBadges(){
+  document.querySelectorAll('.sec').forEach(function(sec){
+    var qblocks = sec.querySelectorAll('.q-block');
+    if (!qblocks.length) return;
+    var title = sec.querySelector('.sec-title');
+    if (!title || title.querySelector('.section-score-inline')) return;
+    var span = document.createElement('span');
+    span.className = 'section-score-inline';
+    span.style.marginLeft = 'auto';
+    span.dataset.total = qblocks.length;
+    span.dataset.correct = '0';
+    span.textContent = '0 / ' + qblocks.length;
+    title.style.flexDirection = 'row';
+    title.style.alignItems = 'center';
+    title.appendChild(span);
+  });
+}
+injectScoreBadges();
+
+document.addEventListener('click', function(e){
+  var spk = e.target.closest('.spk');
+  if (spk){ e.stopPropagation(); speakJP(spk.getAttribute('data-jp')); return; }
+
+  var opt = e.target.closest('.opt');
+  if (opt){
+    var qblock = opt.closest('.q-block');
+    if (!qblock || qblock.classList.contains('answered')) return;
+    var chosen = opt.getAttribute('data-val');
+    var answer = qblock.getAttribute('data-answer');
+    qblock.classList.add('answered');
+    qblock.querySelectorAll('.opt').forEach(function(o){
+      var v = o.getAttribute('data-val');
+      if (v === answer) o.classList.add('correct');
+      else if (v === chosen) o.classList.add('wrong');
+    });
+    var sec = qblock.closest('.sec');
+    if (sec){
+      var badge = sec.querySelector('.section-score-inline');
+      if (badge && chosen === answer){ badge.dataset.correct = (parseInt(badge.dataset.correct,10) + 1); }
+      if (badge) badge.textContent = badge.dataset.correct + ' / ' + badge.dataset.total;
+    }
+    return;
+  }
+});
+
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); }
+document.getElementById('menu-toggle').addEventListener('click', function(){
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+updateProgress();
+showHome();
+</script>
+</body>
+</html>

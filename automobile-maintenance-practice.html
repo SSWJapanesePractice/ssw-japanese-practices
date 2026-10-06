@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automobile Maintenance SSW — Theory Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#153B5D; --teal-dark:#10314F; --teal-light:#315E7F;
+  --caution:#E3262B; --caution-dark:#B91C22;
+  --ink:#24364B; --muted:#65758B; --border:#DCE6EF; --paper:#F2F7FC; --card:#FFFFFF;
+  --good:#2F9E44; --bad:#C92A2A; --radius:14px; --shadow:0 2px 10px rgba(16,49,79,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); line-height:1.55;}
+.jp{font-family:'Noto Sans JP','Inter',sans-serif;}
+ruby rt{font-size:0.55em; color:var(--muted);}
+
+header{background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%); color:#fff; padding:22px 24px; position:sticky; top:0; z-index:20; box-shadow:0 2px 10px rgba(0,0,0,0.15);}
+header h1{margin:0; font-size:19px; font-weight:800; display:flex; align-items:center; gap:10px;}
+header p{margin:4px 0 0 0; font-size:12.5px; color:#BFD6E6;}
+
+#tabs{display:flex; gap:6px; padding:14px 24px 0 24px; background:var(--card); border-bottom:1px solid var(--border); overflow-x:auto;}
+.tab-btn{padding:11px 18px; border:none; background:none; font-size:13.5px; font-weight:700; color:var(--muted); cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap;}
+.tab-btn.active{color:var(--teal-dark); border-bottom-color:var(--caution);}
+.tab-panel{display:none; max-width:820px; margin:0 auto; padding:24px 20px 80px 20px;}
+.tab-panel.active{display:block;}
+
+.stat-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;}
+.stat-pill{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px 16px; box-shadow:var(--shadow); font-size:12.5px; color:var(--muted);}
+.stat-pill b{color:var(--teal-dark); font-size:16px; display:block;}
+
+.filter-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+.filter-chip{padding:7px 14px; border-radius:20px; border:1.5px solid var(--border); background:var(--card); font-size:12px; font-weight:600; cursor:pointer; color:var(--muted);}
+.filter-chip.active{background:var(--teal); border-color:var(--teal); color:#fff;}
+
+#flash-stage{display:flex; flex-direction:column; align-items:center; gap:18px;}
+.flashcard{width:100%; max-width:480px; min-height:220px; background:var(--card); border-radius:20px; box-shadow:var(--shadow); border:1px solid var(--border); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 24px; cursor:pointer; text-align:center; position:relative;}
+.flashcard .badge{position:absolute; top:14px; left:16px; font-size:10.5px; color:var(--muted); background:#EEF4F8; padding:3px 9px; border-radius:20px;}
+.flashcard .term-jp{font-size:28px; font-weight:800; display:flex; align-items:center; gap:10px;}
+.flashcard .term-reading{font-size:13px; color:var(--muted); margin-top:6px;}
+.flashcard .term-en{font-size:17px; color:var(--teal-dark); font-weight:700; margin-top:14px;}
+.flashcard .hint{position:absolute; bottom:12px; font-size:11px; color:#7D94AA;}
+.flash-controls{display:flex; gap:12px;}
+.btn{padding:11px 20px; border-radius:10px; border:none; font-size:13.5px; font-weight:700; cursor:pointer; background:var(--teal); color:#fff;}
+.btn.secondary{background:var(--card); color:var(--teal-dark); border:1.5px solid var(--border);}
+.btn.yellow{background:var(--caution); color:var(--teal-dark);}
+.btn:active{transform:scale(0.97);}
+#flash-progress{font-size:12.5px; color:var(--muted);}
+
+.q-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px; margin-bottom:16px; box-shadow:var(--shadow);}
+.q-card .q-meta{font-size:10.5px; color:var(--muted); background:#EEF4F8; display:inline-block; padding:2px 9px; border-radius:20px; margin-bottom:8px;}
+.q-jp{font-size:15px; font-weight:700; margin:0 0 2px 0;}
+.q-en{font-size:12.5px; color:var(--muted); margin:0 0 12px 0;}
+.opt{padding:10px 14px; border-radius:9px; border:1.5px solid var(--border); margin-bottom:7px; cursor:pointer; background:#fff;}
+.opt:hover{border-color:var(--teal-light);}
+.opt .jp{font-size:13.5px;}
+.opt .en{font-size:11.5px; color:var(--muted);}
+.q-card.answered .opt{cursor:default; pointer-events:none;}
+.q-card.answered .opt.correct{background:#E7F5EC; border-color:var(--good);}
+.q-card.answered .opt.wrong{background:#FBEAE9; border-color:var(--bad);}
+.explain{display:none; margin-top:10px; padding:10px 12px; background:#EEF4F8; border-left:3px solid var(--teal); border-radius:6px; font-size:12.5px;}
+.q-card.answered .explain{display:block;}
+.explain .jp{font-weight:600; margin-bottom:3px;}
+.explain .en{color:var(--muted);}
+
+.spk{flex-shrink:0; border:none; background:var(--caution); color:var(--teal-dark); border-radius:50%; width:24px;height:24px; font-size:11px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.2);}
+.spk:active{transform:scale(0.9);}
+
+.empty-msg{text-align:center; color:var(--muted); padding:40px 0; font-size:13.5px;}
+#quiz-summary{background:var(--card); border-radius:var(--radius); padding:18px 20px; margin-bottom:18px; box-shadow:var(--shadow); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
+#quiz-summary b{font-size:20px; color:var(--teal-dark);}
+</style>
+</head>
+<body>
+<header>
+  <h1>🔧 Automobile Maintenance SSW — Theory Practice</h1>
+  <p>Vocabulary flashcards and a self-graded knowledge quiz — companion to the full study guide</p>
+</header>
+<div id="tabs">
+  <button class="tab-btn active" data-tab="vocab">📇 Vocabulary</button>
+  <button class="tab-btn" data-tab="mcq">📝 Knowledge Quiz</button>
+</div>
+
+<div class="tab-panel active" id="panel-vocab">
+  <div class="stat-row">
+    <div class="stat-pill"><b id="vocab-total">0</b>Total terms</div>
+    <div class="stat-pill"><b id="vocab-pos">0</b>Current card</div>
+  </div>
+  <div class="filter-row" id="vocab-filters"></div>
+  <div id="flash-stage">
+    <div class="flashcard" id="flashcard">
+      <div class="badge" id="flash-badge">Ch.1</div>
+      <div id="flash-front">
+        <div class="term-jp"><span id="flash-jp"></span><button class="spk" id="flash-spk">🔊</button></div>
+        <div class="term-reading" id="flash-reading"></div>
+      </div>
+      <div id="flash-back" style="display:none;">
+        <div class="term-en" id="flash-en"></div>
+      </div>
+      <div class="hint">Tap card to flip / タップして裏返す</div>
+    </div>
+    <div id="flash-progress"></div>
+    <div class="flash-controls">
+      <button class="btn secondary" id="flash-prev">← Prev</button>
+      <button class="btn yellow" id="flash-shuffle">🔀 Shuffle</button>
+      <button class="btn" id="flash-next">Next →</button>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="panel-mcq">
+  <div id="quiz-summary">
+    <div><b id="mcq-score">0</b> / <span id="mcq-total-inline">0</span> correct</div>
+    <button class="btn secondary" id="mcq-reset">↺ Reset Quiz</button>
+  </div>
+  <div class="filter-row" id="mcq-filters"></div>
+  <div id="mcq-list"></div>
+</div>
+
+<script>
+var DATA = {"vocab": [{"jp": "自動車整備", "reading": "じどうしゃせいび", "en": "automobile maintenance", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "整備士", "reading": "せいびし", "en": "maintenance mechanic", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "お客様", "reading": "おきゃくさま", "en": "customer", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "修理", "reading": "しゅうり", "en": "repair", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "安全靴", "reading": "あんぜんぐつ", "en": "safety shoes", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "保護メガネ", "reading": "ほごめがね", "en": "safety glasses", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "リフト", "reading": "りふと", "en": "(vehicle) lift", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "ジャッキ", "reading": "じゃっき", "en": "jack", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "工具", "reading": "こうぐ", "en": "tool", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "トルクレンチ", "reading": "とるくれんち", "en": "torque wrench", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "ノギス", "reading": "のぎす", "en": "calipers (vernier caliper)", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "タイヤゲージ", "reading": "たいやげーじ", "en": "tire pressure gauge", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "日常点検", "reading": "にちじょうてんけん", "en": "daily inspection", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "エンジンオイル", "reading": "えんじんおいる", "en": "engine oil", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "タイヤ交換", "reading": "たいやこうかん", "en": "tire change", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "冷却水", "reading": "れいきゃくすい", "en": "coolant", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "定期点検", "reading": "ていきてんけん", "en": "periodic inspection", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "車検", "reading": "しゃけん", "en": "statutory vehicle inspection (shaken)", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "点検", "reading": "てんけん", "en": "inspection", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "調整", "reading": "ちょうせい", "en": "adjustment", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "分解整備", "reading": "ぶんかいせいび", "en": "certified (disassembly) maintenance", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "ブレーキパッド", "reading": "ぶれーきぱっど", "en": "brake pad", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "バッテリー", "reading": "ばってりー", "en": "battery", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "整備記録簿", "reading": "せいびきろくぼ", "en": "maintenance record book", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "エンジン", "reading": "えんじん", "en": "engine", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "シリンダー", "reading": "しりんだー", "en": "cylinder", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "ピストン", "reading": "ぴすとん", "en": "piston", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "タイミングベルト", "reading": "たいみんぐべると", "en": "timing belt", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "ブレーキ", "reading": "ぶれーき", "en": "brake", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "シャシ", "reading": "しゃし", "en": "chassis", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "サスペンション", "reading": "さすぺんしょん", "en": "suspension", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "ホイールアライメント", "reading": "ほいーるあらいめんと", "en": "wheel alignment", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "電気装置", "reading": "でんきそうち", "en": "electrical system", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "配線", "reading": "はいせん", "en": "wiring", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "故障診断", "reading": "こしょうしんだん", "en": "fault diagnosis", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "診断機", "reading": "しんだんき", "en": "diagnostic machine (scanner)", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "燃料", "reading": "ねんりょう", "en": "fuel", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "潤滑油", "reading": "じゅんかつゆ", "en": "lubricating oil", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "ガソリン", "reading": "がそりん", "en": "gasoline", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "軽油", "reading": "けいゆ", "en": "diesel fuel", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "報告", "reading": "ほうこく", "en": "report", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "連絡", "reading": "れんらく", "en": "contact", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "相談", "reading": "そうだん", "en": "consultation", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "判断", "reading": "はんだん", "en": "judgment", "chapter": "ch11", "chapter_label": "第11章"}], "mcq": [{"q_jp": "<ruby>特定技能<rt>とくていぎのう</rt></ruby>「<ruby>自動車整備<rt>じどうしゃせいび</rt></ruby>」の<ruby>業務<rt>ぎょうむ</rt></ruby>に<b>あてはまらない</b>ものはどれですか。", "q_en": "Which of the following is NOT one of the categories of work under Specified Skilled Worker \"Automobile Maintenance\"?", "options": [{"val": "A", "jp": "日常点検整備", "en": "Daily inspection maintenance"}, {"val": "B", "jp": "定期点検整備", "en": "Periodic inspection maintenance"}, {"val": "C", "jp": "新車の設計", "en": "Designing new cars"}], "answer": "A", "explain_jp": "この分野の業務は、日常点検整備、定期点検整備、分解整備の三つです。新車の設計はこの分野の業務ではありません。", "explain_en": "This field's work consists of three categories: daily inspection maintenance, periodic inspection maintenance, and certified (disassembly) maintenance. Designing new cars is not part of this field.", "chapter": "ch01", "chapter_label": "第1章"}, {"q_jp": "<ruby>整備工場<rt>せいびこうじょう</rt></ruby>で<b>もっとも</b><ruby>正<rt>ただ</rt></ruby>しい<ruby>安全対策<rt>あんぜんたいさく</rt></ruby>はどれですか。", "q_en": "Which is the most correct safety practice in a maintenance workshop?", "options": [{"val": "A", "jp": "車を持ち上げるときはリフトを正しい位置に掛ける", "en": "Position the lift correctly before raising a car"}, {"val": "B", "jp": "エンジンをかけたまま換気せずに作業する", "en": "Work with the engine running without ventilating the area"}, {"val": "C", "jp": "保護メガネや安全靴は使わない", "en": "Don't bother wearing safety glasses or safety shoes"}], "answer": "A", "explain_jp": "車を持ち上げるときはリフトやジャッキを正しい位置に掛け、保護具を着用することが安全な作業の基本です。", "explain_en": "Positioning the lift or jack correctly when raising a car, and wearing protective equipment, are the basics of safe work.", "chapter": "ch02", "chapter_label": "第2章"}, {"q_jp": "タイヤの<ruby>空気圧<rt>くうきあつ</rt></ruby>を<ruby>調<rt>しら</rt></ruby>べるときに<ruby>使<rt>つか</rt></ruby>う<ruby>道具<rt>どうぐ</rt></ruby>はどれですか。", "q_en": "Which tool is used to check a tire's air pressure?", "options": [{"val": "A", "jp": "タイヤゲージ", "en": "Tire gauge"}, {"val": "B", "jp": "トルクレンチ", "en": "Torque wrench"}, {"val": "C", "jp": "ノギス", "en": "Calipers"}], "answer": "A", "explain_jp": "タイヤの空気圧を調べるときはタイヤゲージを使います。トルクレンチはボルトを締める力を、ノギスは部品の厚さや直径を測るための工具です。", "explain_en": "A tire gauge is used to check tire air pressure. A torque wrench measures the tightening force on a bolt, and calipers measure a part's thickness or diameter.", "chapter": "ch03", "chapter_label": "第3章"}, {"q_jp": "<ruby>日常点検整備<rt>にちじょうてんけんせいび</rt></ruby>の<ruby>点検項目<rt>てんけんこうもく</rt></ruby>に<b>あてはまらない</b>ものはどれですか。", "q_en": "Which of the following is NOT a daily inspection item?", "options": [{"val": "A", "jp": "ホイールアライメントの調整", "en": "Wheel alignment adjustment"}, {"val": "B", "jp": "タイヤの空気圧と溝の深さ", "en": "Tire air pressure and tread depth"}, {"val": "C", "jp": "エンジンオイルの量", "en": "Engine oil level"}], "answer": "A", "explain_jp": "ホイールアライメントの調整は分解整備や専門的な整備で行う作業で、日常点検整備には含まれません。", "explain_en": "Wheel alignment adjustment is a task performed as certified/disassembly maintenance or specialized work, and is not part of daily inspection maintenance.", "chapter": "ch04", "chapter_label": "第4章"}, {"q_jp": "<ruby>自家用乗用車<rt>じかようじょうようしゃ</rt></ruby>の<ruby>定期点検<rt>ていきてんけん</rt></ruby>は、どのくらいの<ruby>間隔<rt>かんかく</rt></ruby>で<ruby>行<rt>おこな</rt></ruby>うことが<ruby>法律<rt>ほうりつ</rt></ruby>で<ruby>決<rt>き</rt></ruby>められていますか。", "q_en": "How often does the law require periodic inspection for privately owned passenger cars?", "options": [{"val": "A", "jp": "12か月ごと", "en": "Every 12 months"}, {"val": "B", "jp": "1か月ごと", "en": "Every 1 month"}, {"val": "C", "jp": "5年ごと", "en": "Every 5 years"}], "answer": "A", "explain_jp": "自家用乗用車の定期点検は、法律で12か月ごとに行うことが決められています。", "explain_en": "The law requires privately owned passenger cars to undergo periodic inspection every 12 months.", "chapter": "ch05", "chapter_label": "第5章"}, {"q_jp": "<ruby>分解整備<rt>ぶんかいせいび</rt></ruby>について、<b><ruby>正<rt>ただ</rt></ruby>しい</b><ruby>説明<rt>せつめい</rt></ruby>はどれですか。", "q_en": "Which statement about certified (disassembly) maintenance is correct?", "options": [{"val": "A", "jp": "資格を持つ整備士の指導や確認のもとで行う", "en": "It is carried out under the guidance and check of a qualified mechanic"}, {"val": "B", "jp": "だれでも自由に一人で行ってよい", "en": "Anyone may perform it alone, without any oversight"}, {"val": "C", "jp": "整備記録簿に記入する必要はない", "en": "There is no need to record it in the maintenance record book"}], "answer": "A", "explain_jp": "分解整備は安全に関わる重要な作業のため、資格を持つ整備士の指導や確認のもとで行い、整備記録簿に記入します。", "explain_en": "Because certified maintenance is important work related to safety, it is carried out under a qualified mechanic's guidance and check, and recorded in the maintenance record book.", "chapter": "ch06", "chapter_label": "第6章"}, {"q_jp": "エンジンの<ruby>中<rt>なか</rt></ruby>で<ruby>上下<rt>じょうげ</rt></ruby>に<ruby>動<rt>うご</rt></ruby>いて<ruby>力<rt>ちから</rt></ruby>を<ruby>生<rt>う</rt></ruby>み<ruby>出<rt>だ</rt></ruby>す<ruby>部品<rt>ぶひん</rt></ruby>はどれですか。", "q_en": "Which part moves up and down inside the engine's cylinder to generate power?", "options": [{"val": "A", "jp": "ピストン", "en": "Piston"}, {"val": "B", "jp": "タイミングベルト", "en": "Timing belt"}, {"val": "C", "jp": "バッテリー", "en": "Battery"}], "answer": "A", "explain_jp": "シリンダーの内部をピストンが上下に動いて、エンジンの力を生み出します。", "explain_en": "The piston moves up and down inside the cylinder, generating the engine's power.", "chapter": "ch07", "chapter_label": "第7章"}, {"q_jp": "ブレーキパッドが<ruby>薄<rt>うす</rt></ruby>くなると、どうなりますか。", "q_en": "What happens when brake pads become thin?", "options": [{"val": "A", "jp": "制動力が下がる", "en": "Braking power decreases"}, {"val": "B", "jp": "タイヤの空気圧が上がる", "en": "Tire air pressure increases"}, {"val": "C", "jp": "エンジンの力が強くなる", "en": "The engine becomes more powerful"}], "answer": "A", "explain_jp": "ブレーキパッドが薄くなると制動力が下がるため、厚さを点検して早めに交換する必要があります。", "explain_en": "When brake pads become thin, braking power decreases, so their thickness must be checked and they must be replaced early.", "chapter": "ch08", "chapter_label": "第8章"}, {"q_jp": "<ruby>故障診断<rt>こしょうしんだん</rt></ruby>で、<ruby>車<rt>くるま</rt></ruby>のコンピューターが<ruby>記録<rt>きろく</rt></ruby>した<ruby>情報<rt>じょうほう</rt></ruby>を<ruby>読<rt>よ</rt></ruby>み<ruby>取<rt>と</rt></ruby>るために<ruby>使<rt>つか</rt></ruby>う<ruby>機械<rt>きかい</rt></ruby>はどれですか。", "q_en": "Which machine is used in fault diagnosis to read the information recorded by a car's computer?", "options": [{"val": "A", "jp": "診断機", "en": "Diagnostic machine"}, {"val": "B", "jp": "トルクレンチ", "en": "Torque wrench"}, {"val": "C", "jp": "タイヤゲージ", "en": "Tire gauge"}], "answer": "A", "explain_jp": "故障診断では、診断機を車に接続してコンピューターが記録した異常の情報を読み取ります。", "explain_en": "In fault diagnosis, a diagnostic machine is connected to the car to read the abnormality information recorded by its computer.", "chapter": "ch09", "chapter_label": "第9章"}, {"q_jp": "ガソリンと<ruby>軽油<rt>けいゆ</rt></ruby>を<ruby>間違<rt>まちが</rt></ruby>えて<ruby>給油<rt>きゅうゆ</rt></ruby>すると、どうなる<ruby>可能性<rt>かのうせい</rt></ruby>がありますか。", "q_en": "What can happen if the wrong fuel is put into a car?", "options": [{"val": "A", "jp": "エンジンが故障する", "en": "The engine can break down"}, {"val": "B", "jp": "タイヤの溝が深くなる", "en": "The tire tread becomes deeper"}, {"val": "C", "jp": "ブレーキパッドが厚くなる", "en": "The brake pads become thicker"}], "answer": "A", "explain_jp": "ガソリンと軽油を間違えて入れるとエンジンが故障することがあるため、給油のときは十分に注意します。", "explain_en": "Putting the wrong fuel in a car can cause the engine to break down, so mechanics are very careful when refueling.", "chapter": "ch10", "chapter_label": "第10章"}, {"q_jp": "<ruby>分解整備中<rt>ぶんかいせいびちゅう</rt></ruby>に、<ruby>予想<rt>よそう</rt></ruby>していなかった<ruby>部品<rt>ぶひん</rt></ruby>の<ruby>破損<rt>はそん</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけました。<b>もっとも<ruby>適切<rt>てきせつ</rt></ruby>な</b><ruby>行動<rt>こうどう</rt></ruby>はどれですか。", "q_en": "While performing certified (disassembly) maintenance, you find unexpected damage to a part. What is the most appropriate action?", "options": [{"val": "A", "jp": "すぐに先輩整備士に報告し、指示を受ける", "en": "Report it to a senior mechanic right away and receive instructions"}, {"val": "B", "jp": "自分の判断だけで部品を交換して作業を続ける", "en": "Replace the part based on your own judgment alone and continue working"}, {"val": "C", "jp": "気づかなかったふりをして、そのまま作業を終える", "en": "Pretend you didn't notice and finish the job as is"}], "answer": "A", "explain_jp": "予想していなかった不具合を見つけたときは、自分だけで判断せず、すぐに先輩整備士に報告して指示を受けることが安全な作業につながります。", "explain_en": "When you find an unexpected problem, reporting it to a senior mechanic right away and receiving instructions — rather than deciding alone — leads to safe work.", "chapter": "ch11", "chapter_label": "第11章"}, {"q_jp": "<ruby>必要<rt>ひつよう</rt></ruby>な<ruby>部品<rt>ぶひん</rt></ruby>の<ruby>在庫<rt>ざいこ</rt></ruby>がなく、<ruby>作業<rt>さぎょう</rt></ruby>の<ruby>予定<rt>よてい</rt></ruby>どおりに<ruby>終<rt>お</rt></ruby>わらせられないとわかりました。<b><ruby>最初<rt>さいしょ</rt></ruby>に</b>することはどれですか。", "q_en": "You realize a needed part is out of stock and the job cannot be finished on schedule. What should you do first?", "options": [{"val": "A", "jp": "早めに先輩や担当者に連絡して指示を受ける", "en": "Contact a senior staff member or the person in charge early and receive instructions"}, {"val": "B", "jp": "何も言わずに作業をゆっくり進める", "en": "Say nothing and just work more slowly"}, {"val": "C", "jp": "お客様に自分だけの判断で新しい料金を伝える", "en": "Tell the customer a new price based on your own judgment alone"}], "answer": "A", "explain_jp": "作業の予定が変わりそうなときは、早めに連絡して指示を受けることが大切です。自分だけの判断でお客様に対応してはいけません。", "explain_en": "When the work schedule looks like it will change, it's important to contact someone early and receive instructions. You should not handle the situation with the customer based on your own judgment alone.", "chapter": "ch11", "chapter_label": "第11章"}]};
+function esc(s){ return (s||'').toString(); }
+function speakJP(text){
+  if (!text) return;
+  if (!('speechSynthesis' in window)){ alert('Text-to-speech not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* FLASHCARDS */
+var vocabAll = DATA.vocab.slice();
+var vocabFiltered = vocabAll.slice();
+var flashIdx = 0, flashFlipped = false;
+var chLabels = Array.from(new Set(vocabAll.map(function(v){ return v.chapter_label; })));
+var chFilterEl = document.getElementById('vocab-filters');
+var allChip = document.createElement('div'); allChip.className='filter-chip active'; allChip.textContent='All'; allChip.dataset.ch='all';
+chFilterEl.appendChild(allChip);
+chLabels.forEach(function(ch){
+  var chip = document.createElement('div'); chip.className='filter-chip'; chip.textContent=ch; chip.dataset.ch=ch;
+  chFilterEl.appendChild(chip);
+});
+chFilterEl.addEventListener('click', function(e){
+  var chip = e.target.closest('.filter-chip'); if(!chip) return;
+  chFilterEl.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+  chip.classList.add('active');
+  var ch = chip.dataset.ch;
+  vocabFiltered = ch === 'all' ? vocabAll.slice() : vocabAll.filter(function(v){ return v.chapter_label === ch; });
+  flashIdx = 0; renderFlash();
+});
+document.getElementById('vocab-total').textContent = vocabAll.length;
+
+function renderFlash(){
+  if (!vocabFiltered.length){ document.getElementById('flash-jp').textContent='No cards'; return; }
+  if (flashIdx >= vocabFiltered.length) flashIdx = 0;
+  if (flashIdx < 0) flashIdx = vocabFiltered.length - 1;
+  var v = vocabFiltered[flashIdx];
+  flashFlipped = false;
+  document.getElementById('flash-front').style.display='block';
+  document.getElementById('flash-back').style.display='none';
+  document.getElementById('flash-badge').textContent = v.chapter_label;
+  document.getElementById('flash-jp').textContent = v.jp || '';
+  document.getElementById('flash-reading').textContent = v.reading || '';
+  document.getElementById('flash-en').textContent = v.en || '';
+  document.getElementById('flash-progress').textContent = (flashIdx+1)+' / '+vocabFiltered.length;
+  document.getElementById('vocab-pos').textContent = flashIdx+1;
+}
+document.getElementById('flashcard').addEventListener('click', function(e){
+  if (e.target.closest('.spk')) return;
+  flashFlipped = !flashFlipped;
+  document.getElementById('flash-front').style.display = flashFlipped ? 'none' : 'block';
+  document.getElementById('flash-back').style.display = flashFlipped ? 'block' : 'none';
+});
+document.getElementById('flash-spk').addEventListener('click', function(e){
+  e.stopPropagation();
+  var v = vocabFiltered[flashIdx];
+  speakJP(v ? v.jp : '');
+});
+document.getElementById('flash-next').addEventListener('click', function(){ flashIdx++; renderFlash(); });
+document.getElementById('flash-prev').addEventListener('click', function(){ flashIdx--; renderFlash(); });
+document.getElementById('flash-shuffle').addEventListener('click', function(){
+  for (var i = vocabFiltered.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i+1));
+    var tmp = vocabFiltered[i]; vocabFiltered[i] = vocabFiltered[j]; vocabFiltered[j] = tmp;
+  }
+  flashIdx = 0; renderFlash();
+});
+renderFlash();
+
+/* MCQ */
+var mcqAll = DATA.mcq.slice();
+var mcqScore = 0;
+document.getElementById('mcq-total-inline').textContent = mcqAll.length;
+var mcqChFilterEl = document.getElementById('mcq-filters');
+var mcqAllChip = document.createElement('div'); mcqAllChip.className='filter-chip active'; mcqAllChip.textContent='All'; mcqAllChip.dataset.ch='all';
+mcqChFilterEl.appendChild(mcqAllChip);
+Array.from(new Set(mcqAll.map(function(m){ return m.chapter_label; }))).forEach(function(ch){
+  var chip = document.createElement('div'); chip.className='filter-chip'; chip.textContent=ch; chip.dataset.ch=ch;
+  mcqChFilterEl.appendChild(chip);
+});
+mcqChFilterEl.addEventListener('click', function(e){
+  var chip = e.target.closest('.filter-chip'); if(!chip) return;
+  mcqChFilterEl.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+  chip.classList.add('active');
+  renderMCQ(chip.dataset.ch);
+});
+function renderMCQ(filterCh){
+  var list = document.getElementById('mcq-list');
+  list.innerHTML = '';
+  var items = (!filterCh || filterCh === 'all') ? mcqAll : mcqAll.filter(function(m){ return m.chapter_label === filterCh; });
+  if (!items.length){ list.innerHTML = '<div class="empty-msg">No questions in this filter.</div>'; return; }
+  items.forEach(function(m){
+    var card = document.createElement('div');
+    card.className = 'q-card';
+    card.dataset.answer = m.answer;
+    var optsHtml = '';
+    (m.options||[]).forEach(function(o){
+      optsHtml += '<div class="opt" data-val="'+o.val+'"><span class="jp">'+o.val+'. '+esc(o.jp)+'</span><span class="en">'+esc(o.en)+'</span></div>';
+    });
+    card.innerHTML =
+      '<div class="q-meta">'+esc(m.chapter_label)+'</div>'+
+      '<p class="q-jp"><button class="spk" data-jp="'+esc(m.q_jp).replace(/<[^>]+>/g,'').replace(/"/g,'&quot;')+'">🔊</button>'+esc(m.q_jp)+'</p>'+
+      '<p class="q-en">'+esc(m.q_en)+'</p>'+
+      optsHtml+
+      '<div class="explain"><div class="jp">'+esc(m.explain_jp)+'</div><div class="en">'+esc(m.explain_en)+'</div></div>';
+    list.appendChild(card);
+  });
+  mcqScore = 0;
+  document.getElementById('mcq-score').textContent = mcqScore;
+  document.getElementById('mcq-total-inline').textContent = items.length;
+}
+document.getElementById('mcq-reset').addEventListener('click', function(){
+  var activeChip = mcqChFilterEl.querySelector('.filter-chip.active');
+  renderMCQ(activeChip ? activeChip.dataset.ch : 'all');
+});
+renderMCQ('all');
+document.getElementById('mcq-list').addEventListener('click', function(e){
+  var opt = e.target.closest('.opt');
+  if (!opt) return;
+  var card = opt.closest('.q-card');
+  if (card.classList.contains('answered')) return;
+  var chosen = opt.dataset.val;
+  var answer = card.dataset.answer;
+  card.classList.add('answered');
+  card.querySelectorAll('.opt').forEach(function(o){
+    if (o.dataset.val === answer) o.classList.add('correct');
+    else if (o.dataset.val === chosen) o.classList.add('wrong');
+  });
+  if (chosen === answer){ mcqScore++; document.getElementById('mcq-score').textContent = mcqScore; }
+});
+
+document.addEventListener('click', function(e){
+  var spk = e.target.closest('.spk');
+  if (spk && spk.id !== 'flash-spk'){ speakJP(spk.getAttribute('data-jp')); }
+});
+</script>
+</body>
+</html>
