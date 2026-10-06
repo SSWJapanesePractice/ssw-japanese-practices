@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shipbuilding and Ship Machinery SSW — Japanese with Raza Sensei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#12395d; --navy-dark:#0b2945; --navy-light:#315E7F;
+  --steel:#6C7A89; --rust:#d62828; --rust-dark:#b91f1f;
+  --ink:#16232E; --muted:#5A6B79; --border:#DCE4EA; --paper:#F5F7F9; --card:#FFFFFF;
+  --good:#1F7A4D; --bad:#B3261E; --radius:14px; --shadow:0 2px 10px rgba(11,61,98,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); line-height:1.55;}
+.jp{font-family:'Noto Sans JP','Inter',sans-serif;}
+ruby rt{font-size:0.55em; color:var(--muted);}
+
+#app{display:flex; min-height:100vh;}
+#sidebar{width:290px; flex-shrink:0; background:var(--navy-dark); color:#fff; height:100vh; position:sticky; top:0; overflow-y:auto; padding-bottom:30px;}
+.brand{display:flex; align-items:center; gap:10px; padding:20px 18px 16px 18px; border-bottom:1px solid rgba(255,255,255,0.12); cursor:pointer;}
+.brand .logo{width:40px;height:40px;border-radius:10px;background:var(--rust); display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.brand-text{font-weight:800;font-size:13.5px;line-height:1.25;}
+.brand-text small{display:block;font-weight:500;font-size:11px;color:#A8C2D6;}
+#toc{padding:10px 8px 0 8px;}
+.toc-link{display:flex; align-items:center; gap:8px; padding:10px 12px; margin:3px 2px; font-size:12.5px; color:#C9DBE9; border-radius:9px; cursor:pointer;}
+.toc-icon{font-size:15px;}
+.toc-link:hover{background:rgba(255,255,255,0.08); color:#fff;}
+.toc-link.active{background:var(--rust); color:#fff; font-weight:700;}
+#sidebar-footer{padding:16px 18px; font-size:10.5px; color:#87A2B8; border-top:1px solid rgba(255,255,255,0.1); margin-top:14px;}
+
+#menu-toggle{display:none; position:fixed; top:14px; left:14px; z-index:50; width:42px;height:42px;border-radius:10px;background:var(--navy-dark);color:#fff; border:none; font-size:18px; box-shadow:var(--shadow); cursor:pointer;}
+
+#main{flex:1; min-width:0;}
+#topbar{position:sticky; top:0; z-index:20; background:var(--card); border-bottom:1px solid var(--border); padding:14px 32px; display:flex; align-items:center; justify-content:space-between;}
+#mobile-title{font-weight:800; font-size:14px; color:var(--navy-dark);}
+#progress-wrap{display:flex; align-items:center; gap:10px; font-size:12px; color:var(--muted);}
+#progress-track{width:130px; height:7px; background:var(--border); border-radius:5px; overflow:hidden;}
+#progress-fill{height:100%; background:linear-gradient(90deg,var(--rust),var(--navy-light)); width:0%; transition:width .3s;}
+
+#content{max-width:880px; margin:0 auto; padding:0 32px 100px 32px;}
+
+.home-hero{background:linear-gradient(135deg,var(--navy) 0%, var(--navy-dark) 100%); color:#fff; border-radius:20px; padding:44px 38px; margin:32px 0 28px 0; position:relative; overflow:hidden;}
+.home-hero::after{content:"🚢"; position:absolute; right:24px; bottom:-16px; font-size:130px; opacity:0.15; transform:rotate(-8deg);}
+.home-hero h2{margin:0 0 10px 0; font-size:23px; font-weight:800;}
+.home-hero p{margin:0; color:#D3E2ED; max-width:560px; font-size:14.5px;}
+.home-stats{display:flex; gap:14px; margin-top:24px; flex-wrap:wrap;}
+.home-stat{background:rgba(255,255,255,0.1); border-radius:12px; padding:12px 18px; min-width:100px;}
+.home-stat b{display:block; font-size:22px;}
+.home-stat span{font-size:11px; color:#BBD3E4;}
+.chapter-cards{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px;}
+@media(max-width:700px){.chapter-cards{grid-template-columns:1fr;}}
+.chapter-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; cursor:pointer; box-shadow:var(--shadow); border-top:4px solid var(--rust); transition:transform .15s;}
+.chapter-card:hover{transform:translateY(-2px);}
+.card-icon{font-size:26px;}
+.chapter-card h3{margin:8px 0 4px 0; font-size:14.5px;}
+.chapter-card p{margin:0; font-size:12px; color:var(--muted);}
+.footer-credit{text-align:center; color:var(--muted); font-size:12px; margin:40px 0 10px 0;}
+
+.chapter-section{padding-top:8px;}
+.chapter-banner{background:var(--navy-dark); color:#fff; border-radius:16px; padding:24px 26px; margin:28px 0 20px 0; border-left:6px solid var(--rust);}
+.chapter-banner-eyebrow{font-size:11px; letter-spacing:.05em; color:var(--rust); font-weight:700; text-transform:uppercase;}
+.chapter-banner-title{margin:6px 0 0 0; display:flex; flex-direction:column; gap:2px;}
+.chapter-banner-title .jp{font-size:19px; font-weight:800;}
+.chapter-banner-title .en{font-size:12.5px; color:#BFD6E6; font-weight:500;}
+
+.sec{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:22px 24px; margin-bottom:18px; box-shadow:var(--shadow);}
+.sec-title{display:flex; flex-direction:column; gap:2px; margin-bottom:14px; padding-bottom:12px; border-bottom:2px solid #EAEEF2;}
+.sec-title .jp{font-weight:800; font-size:15.5px; color:var(--navy-dark);}
+.sec-title .en{font-size:12px; color:var(--muted); font-weight:600;}
+
+.para{margin-bottom:14px;}
+.para .jp{font-size:15px; display:flex; align-items:flex-start; gap:8px; margin:0 0 4px 0;}
+.para .en{font-size:13px; color:var(--muted); margin:0; padding-left:34px;}
+
+.spk{flex-shrink:0; border:none; background:var(--rust); color:#fff; border-radius:50%; width:26px;height:26px; font-size:12px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.2); margin-top:1px;}
+.spk:hover{background:var(--rust-dark);}
+.spk:active{transform:scale(0.92);}
+
+.steps{margin:10px 0 16px 0; padding:14px 16px; background:#EEF3F7; border-radius:12px;}
+.step{margin-bottom:9px;}
+.step:last-child{margin-bottom:0;}
+.step-jp{font-size:14px;}
+.step-en{font-size:12px; color:var(--muted); margin-top:1px;}
+
+.icon-card{background:#EEF3F7; border:1px dashed var(--border); border-radius:12px; padding:20px; text-align:center; margin:16px 0;}
+.icon-visual{font-size:50px; line-height:1; margin-bottom:10px; letter-spacing:4px;}
+.icon-caption{display:flex; flex-direction:column; gap:2px;}
+.icon-caption .jp{font-size:12.5px; font-weight:600; color:var(--navy-dark);}
+.icon-caption .en{font-size:11px; color:var(--muted);}
+
+.q-block{background:#EEF3F7; border-radius:12px; padding:16px 18px; margin:14px 0; border:1px solid var(--border);}
+.q-jp{font-size:14.5px; font-weight:700; margin:0 0 2px 0;}
+.q-en{font-size:12px; color:var(--muted); margin:0 0 12px 0;}
+.opt{padding:10px 14px; border-radius:9px; border:1.5px solid var(--border); margin-bottom:7px; cursor:pointer; background:#fff; display:flex; flex-direction:column; gap:1px;}
+.opt:hover{border-color:var(--navy-light);}
+.opt .jp{font-size:13.5px;}
+.opt .en{font-size:11.5px; color:var(--muted);}
+.q-block.answered .opt{cursor:default; pointer-events:none;}
+.q-block.answered .opt.correct{background:#E7F5EC; border-color:var(--good);}
+.q-block.answered .opt.wrong{background:#FBEAE9; border-color:var(--bad);}
+.explain{display:none; margin-top:10px; padding:10px 12px; background:#fff; border-left:3px solid var(--navy); border-radius:6px; font-size:12.5px;}
+.q-block.answered .explain{display:block;}
+.explain .jp{font-weight:600; margin-bottom:3px;}
+.explain .en{color:var(--muted);}
+.section-score-inline{background:var(--navy); color:#fff; padding:2px 9px; border-radius:20px; font-size:11px !important;}
+
+@media(max-width:980px){
+  #sidebar{position:fixed; left:-310px; top:0; z-index:40; transition:left .2s; width:270px; box-shadow:4px 0 20px rgba(0,0,0,0.3);}
+  #sidebar.open{left:0;}
+  #menu-toggle{display:flex; align-items:center; justify-content:center;}
+  #content{padding:0 16px 100px 16px;}
+  #topbar{padding:14px 16px 14px 64px;}
+  .home-hero{padding:30px 22px;}
+}
+</style>
+</head>
+<body>
+<button id="menu-toggle">☰</button>
+<div id="app">
+  <aside id="sidebar">
+    <div class="brand"><div class="logo">⚓</div><div class="brand-text">Shipbuilding &amp; Ship<br>Machinery SSW<small>Japanese with Raza Sensei</small></div></div>
+    <div id="toc">
+    <div class="toc-link" data-target="ch01"><span class="toc-icon">🚢</span>第1章　造船・舶用工業という仕事</div>
+    <div class="toc-link" data-target="ch02"><span class="toc-icon">🦺</span>第2章　安全衛生の基礎知識</div>
+    <div class="toc-link" data-target="ch03"><span class="toc-icon">🔍</span>第3章　品質管理と検査の基礎</div>
+    <div class="toc-link" data-target="ch04"><span class="toc-icon">📏</span>第4章　測定・けがきの基礎知識</div>
+    <div class="toc-link" data-target="ch05"><span class="toc-icon">📐</span>第5章　図面の読み方の基礎</div>
+    <div class="toc-link" data-target="ch06"><span class="toc-icon">🔩</span>第6章　鋼材と溶接材料の基礎知識</div>
+    <div class="toc-link" data-target="ch07"><span class="toc-icon">🔥</span>第7章　溶接作業の基本</div>
+    <div class="toc-link" data-target="ch08"><span class="toc-icon">🎨</span>第8章　塗装と鉄工の基本</div>
+    <div class="toc-link" data-target="ch09"><span class="toc-icon">🔧</span>第9章　配管と舶用機関整備の基礎知識</div>
+    <div class="toc-link" data-target="ch10"><span class="toc-icon">🗣</span>第10章　職場のコミュニケーションと報連相</div>
+    <div class="toc-link" data-target="ch11"><span class="toc-icon">🖥</span>第11章　実技試験対策：判断問題の練習</div>
+    </div>
+    <div id="sidebar-footer">特定技能「造船・舶用工業分野」<br>Bilingual Study Guide · Ruby Furigana · Audio<br><br>Original study material — not affiliated with or reproducing any official test-prep publisher's text.</div>
+  </aside>
+  <main id="main">
+    <div id="topbar">
+      <div id="mobile-title">Shipbuilding &amp; Ship Machinery SSW</div>
+      <div id="progress-wrap"><div id="progress-track"><div id="progress-fill"></div></div><span id="progress-text">0 / 11 read</span></div>
+    </div>
+    <div id="content">
+      <div id="view-home">
+        <div class="home-hero">
+          <h2>特定技能「造船・舶用工業分野」<br>Shipbuilding &amp; Ship Machinery — SSW Exam Prep</h2>
+          <p>An original bilingual study guide covering this field's three lines of work — shipbuilding, ship machinery, and ship electrical/electronic equipment — and its core skills: welding, painting, ironwork, measuring &amp; marking-off, drawing reading, piping, and shipyard safety — with furigana and tap-to-listen audio.</p>
+          <div class="home-stats">
+            <div class="home-stat"><b>11</b><span>Chapters</span></div>
+            <div class="home-stat"><b>🔊</b><span>Audio</span></div>
+            <div class="home-stat" id="home-progress-stat"><b>0%</b><span>Completed</span></div>
+          </div>
+        </div>
+        <div class="chapter-cards" id="chapter-cards">
+<div class="chapter-card" data-target="ch01"><div class="card-icon">🚢⚓</div><h3>第1章　造船・舶用工業という仕事</h3><p>Chapter 1: What Shipbuilding and Ship Machinery Work Involves</p></div>
+<div class="chapter-card" data-target="ch02"><div class="card-icon">🦺⚠️</div><h3>第2章　安全衛生の基礎知識</h3><p>Chapter 2: Shipyard Safety and Health Basics</p></div>
+<div class="chapter-card" data-target="ch03"><div class="card-icon">🔍✅</div><h3>第3章　品質管理と検査の基礎</h3><p>Chapter 3: Quality Control and Inspection Basics</p></div>
+<div class="chapter-card" data-target="ch04"><div class="card-icon">📏✏️</div><h3>第4章　測定・けがきの基礎知識</h3><p>Chapter 4: Measuring and Marking-Off Basics</p></div>
+<div class="chapter-card" data-target="ch05"><div class="card-icon">📐📄</div><h3>第5章　図面の読み方の基礎</h3><p>Chapter 5: Basics of Reading Shipbuilding Drawings</p></div>
+<div class="chapter-card" data-target="ch06"><div class="card-icon">🔩🧪</div><h3>第6章　鋼材と溶接材料の基礎知識</h3><p>Chapter 6: Steel and Welding Material Basics</p></div>
+<div class="chapter-card" data-target="ch07"><div class="card-icon">🔥⚡</div><h3>第7章　溶接作業の基本</h3><p>Chapter 7: Welding Work Basics</p></div>
+<div class="chapter-card" data-target="ch08"><div class="card-icon">🎨🔨</div><h3>第8章　塗装と鉄工の基本</h3><p>Chapter 8: Painting and Ironwork Basics</p></div>
+<div class="chapter-card" data-target="ch09"><div class="card-icon">🔧⚙️</div><h3>第9章　配管と舶用機関整備の基礎知識</h3><p>Chapter 9: Piping and Marine Engine Maintenance Basics</p></div>
+<div class="chapter-card" data-target="ch10"><div class="card-icon">🗣️🤝</div><h3>第10章　職場のコミュニケーションと報連相</h3><p>Chapter 10: Workplace Communication and Hourensou</p></div>
+<div class="chapter-card" data-target="ch11"><div class="card-icon">🖥️✅</div><h3>第11章　実技試験対策：判断問題の練習</h3><p>Chapter 11: Practical-Test Prep — Judgment Practice</p></div>
+        </div>
+        <p class="footer-credit">Japanese with Raza Sensei · SSW Shipbuilding &amp; Ship Machinery System · Original bilingual study guide, icons &amp; text independently authored</p>
+      </div>
+      <div id="view-content" style="display:none;">
+<section class="chapter-section" id="ch01" data-chapter="ch01">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第1章　造船・舶用工業という仕事</span><span class="en">Chapter 1: What Shipbuilding and Ship Machinery Work Involves</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="造船・舶用工業分野は、船体を造る造船、船の機械を造る舶用工業、船の電気電子機器を造る舶用電気電子機器という3つの仕事に分かれています。">🔊</button>「<ruby>造船<rt>ぞうせん</rt></ruby>・<ruby>舶用工業<rt>はくようこうぎょう</rt></ruby>」<ruby>分野<rt>ぶんや</rt></ruby>は、<ruby>船体<rt>せんたい</rt></ruby>そのものを<ruby>造<rt>つく</rt></ruby>る「<ruby>造船<rt>ぞうせん</rt></ruby>」、<ruby>船<rt>ふね</rt></ruby>に<ruby>搭載<rt>とうさい</rt></ruby>するエンジンやポンプなどの<ruby>機械<rt>きかい</rt></ruby>を<ruby>造<rt>つく</rt></ruby>る「<ruby>舶用工業<rt>はくようこうぎょう</rt></ruby>」、そして<ruby>船<rt>ふね</rt></ruby>の<ruby>電気<rt>でんき</rt></ruby>・<ruby>電子<rt>でんし</rt></ruby><ruby>機器<rt>きき</rt></ruby>を<ruby>造<rt>つく</rt></ruby>る「<ruby>舶用<rt>はくよう</rt></ruby><ruby>電気<rt>でんき</rt></ruby><ruby>電子<rt>でんし</rt></ruby><ruby>機器<rt>きき</rt></ruby>」という、<ruby>大<rt>おお</rt></ruby>きく3つの<ruby>仕事<rt>しごと</rt></ruby>に<ruby>分<rt>わ</rt></ruby>かれています。</p>
+    <p class="en">The Shipbuilding and Ship Machinery Industry field is broadly divided into three lines of work: "shipbuilding," which builds the hull of the ship itself; "ship machinery," which manufactures the engines, pumps, and other machinery installed on board; and "ship electrical and electronic equipment," which produces the ship's electrical and electronic systems.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="特定技能1号の評価試験では、溶接・塗装・鉄工・仕上げ・機械加工・電気機器組立てという6つの作業区分から一つを選んで受験します。">🔊</button><ruby>特定技能<rt>とくていぎのう</rt></ruby>1<ruby>号<rt>ごう</rt></ruby>の<ruby>評価<rt>ひょうか</rt></ruby><ruby>試験<rt>しけん</rt></ruby>では、<ruby>溶接<rt>ようせつ</rt></ruby>・<ruby>塗装<rt>とそう</rt></ruby>・<ruby>鉄工<rt>てっこう</rt></ruby>・<ruby>仕上<rt>しあ</rt></ruby>げ・<ruby>機械<rt>きかい</rt></ruby><ruby>加工<rt>かこう</rt></ruby>・<ruby>電気<rt>でんき</rt></ruby><ruby>機器<rt>きき</rt></ruby><ruby>組立<rt>くみた</rt></ruby>てという6つの<ruby>作業<rt>さぎょう</rt></ruby><ruby>区分<rt>くぶん</rt></ruby>の<ruby>中<rt>なか</rt></ruby>から、<ruby>自分<rt>じぶん</rt></ruby>が<ruby>働<rt>はたら</rt></ruby>く<ruby>区分<rt>くぶん</rt></ruby>を<ruby>選<rt>えら</rt></ruby>んで<ruby>受験<rt>じゅけん</rt></ruby>します。<ruby>特定技能<rt>とくていぎのう</rt></ruby>2<ruby>号<rt>ごう</rt></ruby>では、<ruby>溶接<rt>ようせつ</rt></ruby>・<ruby>塗装<rt>とそう</rt></ruby>・<ruby>鉄工<rt>てっこう</rt></ruby>の3<ruby>区分<rt>くぶん</rt></ruby>のみが<ruby>対象<rt>たいしょう</rt></ruby>です。</p>
+    <p class="en">The Specified Skilled Worker (i) evaluation test lets candidates choose from six work categories — welding, painting, ironwork, finishing, machining, and electrical equipment assembly — and sit for the one matching their job. Specified Skilled Worker (ii) covers only three of these: welding, painting, and ironwork.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="造船・舶用工業の現場は、大きな鋼板や重い部品を扱いながら、屋外や高所での作業も多くあるため、強い安全意識が求められます。">🔊</button><ruby>造船<rt>ぞうせん</rt></ruby>・<ruby>舶用工業<rt>はくようこうぎょう</rt></ruby>の<ruby>現場<rt>げんば</rt></ruby>は、<ruby>広<rt>ひろ</rt></ruby>い<ruby>造船所<rt>ぞうせんじょ</rt></ruby>や<ruby>工場<rt>こうじょう</rt></ruby>の<ruby>中<rt>なか</rt></ruby>で、<ruby>大<rt>おお</rt></ruby>きな<ruby>鋼板<rt>こうはん</rt></ruby>や<ruby>重<rt>おも</rt></ruby>い<ruby>部品<rt>ぶひん</rt></ruby>を<ruby>扱<rt>あつか</rt></ruby>いながら、<ruby>屋外<rt>おくがい</rt></ruby>での<ruby>作業<rt>さぎょう</rt></ruby>や<ruby>高所<rt>こうしょ</rt></ruby>での<ruby>作業<rt>さぎょう</rt></ruby>も<ruby>多<rt>おお</rt></ruby>くあります。そのため、<ruby>他<rt>ほか</rt></ruby>の<ruby>製造業<rt>せいぞうぎょう</rt></ruby><ruby>以上<rt>いじょう</rt></ruby>に、<ruby>安全<rt>あんぜん</rt></ruby>に<ruby>対<rt>たい</rt></ruby>する<ruby>意識<rt>いしき</rt></ruby>が<ruby>強<rt>つよ</rt></ruby>く<ruby>求<rt>もと</rt></ruby>められます。</p>
+    <p class="en">Shipbuilding and ship-machinery worksites are large shipyards and factories where workers handle large steel plates and heavy parts, often working outdoors and at height. For this reason, an even stronger safety awareness is required here than in many other manufacturing fields.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="この分野で働く特定技能外国人には、指示を正確に理解し、安全ルールを守りながら仲間と協力して船を完成させる姿勢が求められます。">🔊</button>この<ruby>分野<rt>ぶんや</rt></ruby>で<ruby>働<rt>はたら</rt></ruby>く<ruby>特定技能<rt>とくていぎのう</rt></ruby><ruby>外国人<rt>がいこくじん</rt></ruby>には、<ruby>上司<rt>じょうし</rt></ruby>や<ruby>先輩<rt>せんぱい</rt></ruby>の<ruby>指示<rt>しじ</rt></ruby>を<ruby>正確<rt>せいかく</rt></ruby>に<ruby>理解<rt>りかい</rt></ruby>し、<ruby>決<rt>き</rt></ruby>められた<ruby>手順<rt>てじゅん</rt></ruby>や<ruby>安全<rt>あんぜん</rt></ruby>ルールを<ruby>守<rt>まも</rt></ruby>りながら、<ruby>大<rt>おお</rt></ruby>きな<ruby>船<rt>ふね</rt></ruby>を<ruby>仲間<rt>なかま</rt></ruby>と<ruby>協力<rt>きょうりょく</rt></ruby>して<ruby>完成<rt>かんせい</rt></ruby>させていく<ruby>姿勢<rt>しせい</rt></ruby>が<ruby>求<rt>もと</rt></ruby>められます。<ruby>試験<rt>しけん</rt></ruby>でも、<ruby>知識<rt>ちしき</rt></ruby>だけでなく、<ruby>現場<rt>げんば</rt></ruby>での<ruby>正<rt>ただ</rt></ruby>しい<ruby>判断力<rt>はんだんりょく</rt></ruby>が<ruby>重視<rt>じゅうし</rt></ruby>されます。</p>
+    <p class="en">Specified skilled workers in this field are expected to correctly understand instructions from supervisors and senior staff, follow established procedures and safety rules, and work together with teammates to complete a large ship. The test places heavy emphasis not just on knowledge but on sound on-the-job judgment.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🚢⚓</div>
+    <div class="icon-caption"><span class="jp">造船所でクレーンを使い船体を組み立てるイメージ</span><span class="en">Image: assembling a ship's hull with a crane at a shipyard</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="B">
+    <p class="q-jp"><ruby>造船<rt>ぞうせん</rt></ruby>・<ruby>舶用工業<rt>はくようこうぎょう</rt></ruby><ruby>分野<rt>ぶんや</rt></ruby>の<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。</p>
+    <p class="q-en">Which statement correctly describes the Shipbuilding and Ship Machinery Industry field?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 特定技能2号は6つすべての作業区分が対象である</span><span class="en">Specified Skilled Worker (ii) covers all six work categories</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 特定技能1号の評価試験では6つの作業区分から一つを選んで受験する</span><span class="en">The SSW (i) evaluation test lets candidates choose one of six work categories</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 造船・舶用工業の作業には屋外や高所での作業は含まれない</span><span class="en">Shipbuilding and ship-machinery work never involves outdoor or at-height work</span></div>
+      <div class="opt" data-val="D"><span class="jp">D. 舶用工業とは船の電気機器だけを指す言葉である</span><span class="en">"Ship machinery" refers only to a ship's electrical equipment</span></div>
+    <div class="explain"><div class="jp">特定技能1号の評価試験は溶接・塗装・鉄工・仕上げ・機械加工・電気機器組立ての6区分に分かれており、受験者は自分の職種に合う区分を一つ選んで受験します。2号は溶接・塗装・鉄工の3区分のみが対象です。</div><div class="en">The SSW (i) evaluation test is divided into six categories — welding, painting, ironwork, finishing, machining, and electrical equipment assembly — and each candidate selects the one matching their job. SSW (ii) covers only three: welding, painting, and ironwork.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch02" data-chapter="ch02">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第2章　安全衛生の基礎知識</span><span class="en">Chapter 2: Shipyard Safety and Health Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="造船所や舶用工業の現場では、高所での作業や重い鋼材の運搬、溶接など危険を伴う作業が数多くあります。">🔊</button><ruby>造船所<rt>ぞうせんじょ</rt></ruby>や<ruby>舶用工業<rt>はくようこうぎょう</rt></ruby>の<ruby>現場<rt>げんば</rt></ruby>では、<ruby>高所<rt>こうしょ</rt></ruby>での<ruby>作業<rt>さぎょう</rt></ruby>、<ruby>重<rt>おも</rt></ruby>い<ruby>鋼材<rt>こうざい</rt></ruby>の<ruby>運搬<rt>うんぱん</rt></ruby>、<ruby>火気<rt>かき</rt></ruby>を<ruby>使<rt>つか</rt></ruby>う<ruby>溶接<rt>ようせつ</rt></ruby>など、<ruby>危険<rt>きけん</rt></ruby>を<ruby>伴<rt>ともな</rt></ruby>う<ruby>作業<rt>さぎょう</rt></ruby>が<ruby>数多<rt>かずおお</rt></ruby>くあります。そのため、<ruby>安全衛生<rt>あんぜんえいせい</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>基礎知識<rt>きそちしき</rt></ruby>は、この<ruby>分野<rt>ぶんや</rt></ruby>で<ruby>働<rt>はたら</rt></ruby>くうえで<ruby>最<rt>もっと</rt></ruby>も<ruby>重要<rt>じゅうよう</rt></ruby>な<ruby>知識<rt>ちしき</rt></ruby>のひとつです。</p>
+    <p class="en">Shipyards and ship-machinery worksites involve many hazardous tasks — working at height, moving heavy steel materials, and welding with open flame among them. Because of this, basic knowledge of workplace safety and health is one of the most important things to know in this field.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="高所で作業するときは、必ず安全帯を足場やフックにかけ、足場が不安定だと感じたときはすぐに責任者に報告します。">🔊</button><ruby>高所<rt>こうしょ</rt></ruby>で<ruby>作業<rt>さぎょう</rt></ruby>するときは、<ruby>必<rt>かなら</rt></ruby>ず<ruby>安全帯<rt>あんぜんたい</rt></ruby>（<ruby>命綱<rt>いのちづな</rt></ruby>）を<ruby>足場<rt>あしば</rt></ruby>やフックにかけ、<ruby>単独<rt>たんどく</rt></ruby>で<ruby>無理<rt>むり</rt></ruby>な<ruby>体勢<rt>たいせい</rt></ruby>を<ruby>取<rt>と</rt></ruby>らないようにします。<ruby>足場<rt>あしば</rt></ruby>が<ruby>不安定<rt>ふあんてい</rt></ruby>だと<ruby>感<rt>かん</rt></ruby>じたときは、そのまま<ruby>作業<rt>さぎょう</rt></ruby>を<ruby>続<rt>つづ</rt></ruby>けず、すぐに<ruby>責任者<rt>せきにんしゃ</rt></ruby>に<ruby>報告<rt>ほうこく</rt></ruby>して<ruby>確認<rt>かくにん</rt></ruby>してもらいます。</p>
+    <p class="en">When working at height, always attach your safety harness (lifeline) to the scaffolding or a hook, and avoid taking an unstable posture on your own. If a scaffold feels unstable, don't continue working — stop and report it to a supervisor for a check right away.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="船内のタンクなど密閉空間で作業するときは、作業前に必ず換気を行い、酸素濃度を測定してから入ることが鉄則です。">🔊</button><ruby>船<rt>ふね</rt></ruby>の<ruby>内部<rt>ないぶ</rt></ruby>にあるタンクや<ruby>二重底<rt>にじゅうぞこ</rt></ruby>など、<ruby>狭<rt>せま</rt></ruby>く<ruby>閉<rt>と</rt></ruby>ざされた<ruby>空間<rt>くうかん</rt></ruby>（<ruby>密閉空間<rt>みっぺいくうかん</rt></ruby>）で<ruby>作業<rt>さぎょう</rt></ruby>するときは、<ruby>酸素<rt>さんそ</rt></ruby><ruby>不足<rt>ぶそく</rt></ruby>や<ruby>有害<rt>ゆうがい</rt></ruby>ガスの<ruby>発生<rt>はっせい</rt></ruby>に<ruby>特<rt>とく</rt></ruby>に<ruby>注意<rt>ちゅうい</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>です。<ruby>作業前<rt>さぎょうまえ</rt></ruby>に<ruby>必<rt>かなら</rt></ruby>ず<ruby>換気<rt>かんき</rt></ruby>を<ruby>行<rt>おこな</rt></ruby>い、<ruby>酸素<rt>さんそ</rt></ruby><ruby>濃度<rt>のうど</rt></ruby>を<ruby>測定<rt>そくてい</rt></ruby>してから<ruby>入<rt>はい</rt></ruby>ることが<ruby>鉄則<rt>てっそく</rt></ruby>です。</p>
+    <p class="en">When working inside a ship's confined spaces — such as tanks or the double bottom — special attention must be paid to the risk of oxygen deficiency and harmful gas buildup. The ironclad rule is to always ventilate the space and measure the oxygen concentration before entering.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="火気を使う作業の周りには燃えやすい物を置かないようにし、保護具は作業内容に応じて必ず正しく着用します。">🔊</button><ruby>溶接<rt>ようせつ</rt></ruby>や<ruby>研磨<rt>けんま</rt></ruby>などの<ruby>火気<rt>かき</rt></ruby>を<ruby>使<rt>つか</rt></ruby>う<ruby>作業<rt>さぎょう</rt></ruby>の<ruby>周<rt>まわ</rt></ruby>りには、<ruby>燃<rt>も</rt></ruby>えやすい<ruby>物<rt>もの</rt></ruby>を<ruby>置<rt>お</rt></ruby>かないようにし、<ruby>作業後<rt>さぎょうご</rt></ruby>も<ruby>火種<rt>ひだね</rt></ruby>が<ruby>残<rt>のこ</rt></ruby>っていないかをしっかり<ruby>確認<rt>かくにん</rt></ruby>します。<ruby>保護具<rt>ほごぐ</rt></ruby>（<ruby>保護<rt>ほご</rt></ruby>メガネ、<ruby>防<rt>ぼう</rt></ruby>じんマスク、<ruby>耳栓<rt>みみせん</rt></ruby>、<ruby>安全靴<rt>あんぜんぐつ</rt></ruby>など）は<ruby>作業内容<rt>さぎょうないよう</rt></ruby>に<ruby>応<rt>おう</rt></ruby>じて<ruby>必<rt>かなら</rt></ruby>ず<ruby>正<rt>ただ</rt></ruby>しく<ruby>着用<rt>ちゃくよう</rt></ruby>します。</p>
+    <p class="en">Around tasks that use open flame, such as welding or grinding, keep flammable materials well away, and carefully check that no embers remain after finishing. Protective equipment (safety glasses, dust masks, earplugs, safety shoes, etc.) must always be worn correctly, matched to the task at hand.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-jp"><ruby>高所<rt>こうしょ</rt></ruby><ruby>作業<rt>さぎょう</rt></ruby>を<ruby>始<rt>はじ</rt></ruby>める<ruby>前<rt>まえ</rt></ruby>に、<ruby>安全帯<rt>あんぜんたい</rt></ruby>（<ruby>命綱<rt>いのちづな</rt></ruby>）を<ruby>足場<rt>あしば</rt></ruby>やフックに<ruby>正<rt>ただ</rt></ruby>しくかける。</div>
+      <div class="step-en">Before starting work at height, correctly attach your safety harness (lifeline) to the scaffolding or a hook.</div>
+    </div>
+    <div class="step">
+      <div class="step-jp"><ruby>密閉<rt>みっぺい</rt></ruby>された<ruby>空間<rt>くうかん</rt></ruby>に<ruby>入<rt>はい</rt></ruby>る<ruby>前<rt>まえ</rt></ruby>は、<ruby>必<rt>かなら</rt></ruby>ず<ruby>換気<rt>かんき</rt></ruby>を<ruby>行<rt>おこな</rt></ruby>い、<ruby>酸素<rt>さんそ</rt></ruby><ruby>濃度<rt>のうど</rt></ruby>を<ruby>測定<rt>そくてい</rt></ruby>する。</div>
+      <div class="step-en">Before entering a confined space, always ventilate it and measure the oxygen concentration.</div>
+    </div>
+    <div class="step">
+      <div class="step-jp"><ruby>火気<rt>かき</rt></ruby>を<ruby>使<rt>つか</rt></ruby>う<ruby>作業<rt>さぎょう</rt></ruby>の<ruby>周囲<rt>しゅうい</rt></ruby>に<ruby>燃<rt>も</rt></ruby>えやすい<ruby>物<rt>もの</rt></ruby>がないか<ruby>確認<rt>かくにん</rt></ruby>し、<ruby>作業後<rt>さぎょうご</rt></ruby>は<ruby>火種<rt>ひだね</rt></ruby>が<ruby>残<rt>のこ</rt></ruby>っていないか<ruby>点検<rt>てんけん</rt></ruby>する。</div>
+      <div class="step-en">Check that no flammable materials are near work involving open flame, and inspect for remaining embers after finishing.</div>
+    </div>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🦺⚠️</div>
+    <div class="icon-caption"><span class="jp">安全帯を着けて足場の上で作業する様子のイメージ</span><span class="en">Image: a worker on scaffolding wearing a safety harness</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="B">
+    <p class="q-jp"><ruby>船内<rt>せんない</rt></ruby>のタンクなど<ruby>密閉<rt>みっぺい</rt></ruby>された<ruby>空間<rt>くうかん</rt></ruby>で<ruby>作業<rt>さぎょう</rt></ruby>するときの<ruby>対応<rt>たいおう</rt></ruby>として<b>最も適切な</b>ものはどれですか。</p>
+    <p class="q-en">What is the most appropriate response when working in a confined space such as a tank inside a ship?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 空気はどこも同じなので特別な準備はいらない</span><span class="en">Air is the same everywhere, so no special preparation is needed</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 作業前に換気を行い、酸素濃度を測定してから入る</span><span class="en">Ventilate before starting, and measure the oxygen concentration before entering</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 一人で手早く作業を終わらせる</span><span class="en">Finish the work quickly, alone</span></div>
+      <div class="opt" data-val="D"><span class="jp">D. 酸素が薄いと感じても我慢して作業を続ける</span><span class="en">Keep working even if the air feels thin, and push through it</span></div>
+    <div class="explain"><div class="jp">密閉された空間は酸素不足や有害ガスが発生しやすいため、作業前に必ず換気と酸素濃度の測定を行い、安全を確認してから入ることが鉄則です。</div><div class="en">Confined spaces are prone to oxygen deficiency and harmful gas buildup, so the ironclad rule is to always ventilate and measure the oxygen concentration, confirming safety, before entering.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch03" data-chapter="ch03">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第3章　品質管理と検査の基礎</span><span class="en">Chapter 3: Quality Control and Inspection Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="船は一度完成すると簡単には作り直せないため、工程ごとの検査を通じて品質を確保することが特に重視されます。">🔊</button><ruby>船<rt>ふね</rt></ruby>は<ruby>一度<rt>いちど</rt></ruby><ruby>完成<rt>かんせい</rt></ruby>すると<ruby>簡単<rt>かんたん</rt></ruby>には<ruby>作<rt>つく</rt></ruby>り<ruby>直<rt>なお</rt></ruby>せないため、<ruby>造船<rt>ぞうせん</rt></ruby>・<ruby>舶用工業<rt>はくようこうぎょう</rt></ruby>の<ruby>現場<rt>げんば</rt></ruby>では、<ruby>工程<rt>こうてい</rt></ruby>ごとの<ruby>検査<rt>けんさ</rt></ruby>を<ruby>通<rt>とお</rt></ruby>じて<ruby>品質<rt>ひんしつ</rt></ruby>を<ruby>確保<rt>かくほ</rt></ruby>することが<ruby>特<rt>とく</rt></ruby>に<ruby>重視<rt>じゅうし</rt></ruby>されます。</p>
+    <p class="en">Once a ship is completed, it can't easily be rebuilt, so at shipbuilding and ship-machinery worksites, ensuring quality through inspection at every stage of the process is especially important.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="溶接部分の検査には、外観検査のほか、放射線や超音波を使って内部の欠陥を調べる非破壊検査という方法があります。">🔊</button><ruby>溶接<rt>ようせつ</rt></ruby><ruby>部分<rt>ぶぶん</rt></ruby>の<ruby>検査<rt>けんさ</rt></ruby>には、<ruby>目<rt>め</rt></ruby>で<ruby>見<rt>み</rt></ruby>て<ruby>傷<rt>きず</rt></ruby>や<ruby>形状<rt>けいじょう</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>する「<ruby>外観検査<rt>がいかんけんさ</rt></ruby>」のほか、<ruby>放射線<rt>ほうしゃせん</rt></ruby>や<ruby>超音波<rt>ちょうおんぱ</rt></ruby>を<ruby>使<rt>つか</rt></ruby>って<ruby>内部<rt>ないぶ</rt></ruby>の<ruby>欠陥<rt>けっかん</rt></ruby>を<ruby>調<rt>しら</rt></ruby>べる「<ruby>非破壊検査<rt>ひはかいけんさ</rt></ruby>」という<ruby>方法<rt>ほうほう</rt></ruby>があります。<ruby>非破壊検査<rt>ひはかいけんさ</rt></ruby>は、<ruby>部品<rt>ぶひん</rt></ruby>を<ruby>壊<rt>こわ</rt></ruby>さずに<ruby>内部<rt>ないぶ</rt></ruby>の<ruby>状態<rt>じょうたい</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>できることが<ruby>特長<rt>とくちょう</rt></ruby>です。</p>
+    <p class="en">Weld inspection includes "visual inspection," in which the surface and shape are checked by eye, as well as "non-destructive testing," which uses radiography or ultrasound to check for internal defects. The key feature of non-destructive testing is that it can check the internal condition of a part without damaging it.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="検査で見つかった不具合は、どんなに小さくても自己判断で見過ごさず、必ず責任者に報告します。">🔊</button><ruby>検査<rt>けんさ</rt></ruby>で<ruby>見<rt>み</rt></ruby>つかった<ruby>不具合<rt>ふぐあい</rt></ruby>は、どんなに<ruby>小<rt>ちい</rt></ruby>さくても<ruby>自己判断<rt>じこはんだん</rt></ruby>で<ruby>見過<rt>みす</rt></ruby>ごさず、<ruby>必<rt>かなら</rt></ruby>ず<ruby>責任者<rt>せきにんしゃ</rt></ruby>に<ruby>報告<rt>ほうこく</rt></ruby>します。<ruby>溶接<rt>ようせつ</rt></ruby>の<ruby>欠陥<rt>けっかん</rt></ruby>をそのままにして<ruby>船<rt>ふね</rt></ruby>を<ruby>完成<rt>かんせい</rt></ruby>させてしまうと、<ruby>後<rt>あと</rt></ruby>で<ruby>重大<rt>じゅうだい</rt></ruby>な<ruby>事故<rt>じこ</rt></ruby>につながる<ruby>危険<rt>きけん</rt></ruby>があるためです。</p>
+    <p class="en">Any defect found during inspection, no matter how small, must never be overlooked on your own judgment — it should always be reported to a supervisor. Leaving a welding defect unaddressed and completing the ship anyway risks leading to a serious accident later.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="品質管理の基本は、完成後の検査だけに頼るのではなく、作業の一つひとつを手順通りに正確に行うことです。">🔊</button><ruby>品質管理<rt>ひんしつかんり</rt></ruby>の<ruby>基本<rt>きほん</rt></ruby>は、<ruby>完成後<rt>かんせいご</rt></ruby>の<ruby>検査<rt>けんさ</rt></ruby>だけに<ruby>頼<rt>たよ</rt></ruby>るのではなく、<ruby>作業<rt>さぎょう</rt></ruby>の<ruby>一<rt>ひと</rt></ruby>つひとつを<ruby>手順<rt>てじゅん</rt></ruby><ruby>通<rt>どお</rt></ruby>りに<ruby>正確<rt>せいかく</rt></ruby>に<ruby>行<rt>おこな</rt></ruby>い、<ruby>異常<rt>いじょう</rt></ruby>があればその<ruby>場<rt>ば</rt></ruby>ですぐに<ruby>気<rt>き</rt></ruby>づけるようにすることです。</p>
+    <p class="en">The basics of quality control are not to rely solely on inspection after completion, but to carry out each individual task accurately according to procedure, so that any abnormality can be noticed on the spot.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🔍✅</div>
+    <div class="icon-caption"><span class="jp">溶接部分を検査する様子のイメージ</span><span class="en">Image: inspecting a welded section</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="B">
+    <p class="q-jp">「<ruby>非破壊検査<rt>ひはかいけんさ</rt></ruby>」の<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。</p>
+    <p class="q-en">Which statement correctly describes "non-destructive testing"?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 部品を切断して内部を目で見て確認する検査である</span><span class="en">An inspection that cuts a part open to check the inside by eye</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 放射線や超音波などを使い、部品を壊さずに内部の欠陥を調べる検査である</span><span class="en">An inspection using radiography or ultrasound to check for internal defects without damaging the part</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 部品の重さを測定する検査である</span><span class="en">An inspection that measures a part's weight</span></div>
+      <div class="opt" data-val="D"><span class="jp">D. 溶接作業員の技能レベルを判定する試験のことである</span><span class="en">A test that grades a welder's skill level</span></div>
+    <div class="explain"><div class="jp">非破壊検査は、放射線や超音波などを利用して、部品を壊すことなく内部の欠陥の有無を確認できる検査方法です。</div><div class="en">Non-destructive testing uses radiography or ultrasound to check for the presence of internal defects without destroying the part.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch04" data-chapter="ch04">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第4章　測定・けがきの基礎知識</span><span class="en">Chapter 4: Measuring and Marking-Off Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="造船の現場では、大きな鋼板を図面通りの寸法に正確に加工するため、測定やけがきと呼ばれる作業がとても重要です。">🔊</button><ruby>造船<rt>ぞうせん</rt></ruby>の<ruby>現場<rt>げんば</rt></ruby>では、<ruby>大<rt>おお</rt></ruby>きな<ruby>鋼板<rt>こうはん</rt></ruby>を<ruby>図面<rt>ずめん</rt></ruby><ruby>通<rt>どお</rt></ruby>りの<ruby>寸法<rt>すんぽう</rt></ruby>に<ruby>正確<rt>せいかく</rt></ruby>に<ruby>加工<rt>かこう</rt></ruby>するため、<ruby>測定<rt>そくてい</rt></ruby>や「けがき」と<ruby>呼<rt>よ</rt></ruby>ばれる<ruby>作業<rt>さぎょう</rt></ruby>がとても<ruby>重要<rt>じゅうよう</rt></ruby>です。けがきとは、<ruby>鋼板<rt>こうはん</rt></ruby>の<ruby>表面<rt>ひょうめん</rt></ruby>に<ruby>切断線<rt>せつだんせん</rt></ruby>や<ruby>加工<rt>かこう</rt></ruby><ruby>位置<rt>いち</rt></ruby>の<ruby>目印<rt>めじるし</rt></ruby>を<ruby>描<rt>えが</rt></ruby>く<ruby>作業<rt>さぎょう</rt></ruby>のことです。</p>
+    <p class="en">On the shipbuilding floor, measuring and a task called "kegaki" (marking-off) are extremely important for accurately processing large steel plates to the dimensions on the drawing. Kegaki is the task of drawing cutting lines and processing-position marks onto the surface of a steel plate.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="けがきには、けがき針や、直角を確認するためのスコヤ、長い距離を測るための鋼製巻尺などの道具が使われます。">🔊</button>けがきには、「けがき<ruby>針<rt>ばり</rt></ruby>」と<ruby>呼<rt>よ</rt></ruby>ばれる<ruby>先<rt>さき</rt></ruby>のとがった<ruby>工具<rt>こうぐ</rt></ruby>や、<ruby>直角<rt>ちょっかく</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>するための「スコヤ」、<ruby>長<rt>なが</rt></ruby>い<ruby>距離<rt>きょり</rt></ruby>を<ruby>測<rt>はか</rt></ruby>るための「<ruby>鋼製<rt>こうせい</rt></ruby><ruby>巻尺<rt>まきじゃく</rt></ruby>」などの<ruby>道具<rt>どうぐ</rt></ruby>が<ruby>使<rt>つか</rt></ruby>われます。</p>
+    <p class="en">Kegaki uses tools such as the "kegaki needle," a pointed marking tool, the "square" (sukoya), used to check right angles, and the "steel tape measure," used to measure long distances.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="鋼板は熱を加えると膨張し、冷えると収縮するため、測定は工程の節目ごとに繰り返し行い、誤差を早めに見つけることが大切です。">🔊</button><ruby>鋼板<rt>こうはん</rt></ruby>は<ruby>熱<rt>ねつ</rt></ruby>を<ruby>加<rt>くわ</rt></ruby>えると<ruby>膨張<rt>ぼうちょう</rt></ruby>し、<ruby>冷<rt>ひ</rt></ruby>えると<ruby>収縮<rt>しゅうしゅく</rt></ruby>するため、<ruby>溶接後<rt>ようせつご</rt></ruby>の<ruby>寸法<rt>すんぽう</rt></ruby>が<ruby>図面<rt>ずめん</rt></ruby>とわずかにずれることがあります。そのため、<ruby>測定<rt>そくてい</rt></ruby>は<ruby>一度<rt>いちど</rt></ruby>だけでなく、<ruby>工程<rt>こうてい</rt></ruby>の<ruby>節目<rt>ふしめ</rt></ruby>ごとに<ruby>繰<rt>く</rt></ruby>り<ruby>返<rt>かえ</rt></ruby>し<ruby>行<rt>おこな</rt></ruby>い、<ruby>誤差<rt>ごさ</rt></ruby>を<ruby>早<rt>はや</rt></ruby>めに<ruby>見<rt>み</rt></ruby>つけることが<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">Steel plate expands when heated and contracts when it cools, so dimensions after welding can end up slightly off from the drawing. For this reason, it's important to measure repeatedly at each milestone of the process, not just once, so that any error is caught early.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="測定の誤差は後工程に進むほど修正が難しくなるため、少しでもおかしいと感じたら責任者や先輩に確認する習慣が欠かせません。">🔊</button><ruby>測定<rt>そくてい</rt></ruby>の<ruby>誤差<rt>ごさ</rt></ruby>は、<ruby>後工程<rt>あとこうてい</rt></ruby>に<ruby>進<rt>すす</rt></ruby>むほど<ruby>修正<rt>しゅうせい</rt></ruby>が<ruby>難<rt>むずか</rt></ruby>しく、コストも<ruby>大<rt>おお</rt></ruby>きくなります。<ruby>少<rt>すこ</rt></ruby>しでもおかしいと<ruby>感<rt>かん</rt></ruby>じたら、<ruby>自己判断<rt>じこはんだん</rt></ruby>で<ruby>進<rt>すす</rt></ruby>めずに<ruby>責任者<rt>せきにんしゃ</rt></ruby>や<ruby>先輩<rt>せんぱい</rt></ruby>に<ruby>確認<rt>かくにん</rt></ruby>する<ruby>習慣<rt>しゅうかん</rt></ruby>が<ruby>欠<rt>か</rt></ruby>かせません。</p>
+    <p class="en">A measurement error becomes harder — and more costly — to correct the further the work progresses. If anything seems even slightly off, the habit of checking with a supervisor or senior worker, rather than proceeding on your own judgment, is essential.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">📏✏️</div>
+    <div class="icon-caption"><span class="jp">鋼板にけがき線を引く作業のイメージ</span><span class="en">Image: marking off a cutting line on a steel plate</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="B">
+    <p class="q-jp">「けがき」の<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。</p>
+    <p class="q-en">Which statement correctly describes "kegaki" (marking-off)?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 完成した船体を最終的に検査する作業である</span><span class="en">The task of giving the finished hull a final inspection</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 鋼板の表面に切断線や加工位置の目印を描く作業である</span><span class="en">The task of drawing cutting lines and processing-position marks onto a steel plate's surface</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 溶接部分を非破壊検査で確認する作業である</span><span class="en">The task of checking a weld with non-destructive testing</span></div>
+      <div class="opt" data-val="D"><span class="jp">D. 保護具を点検して交換する作業である</span><span class="en">The task of inspecting and replacing protective equipment</span></div>
+    <div class="explain"><div class="jp">けがきとは、鋼板を図面通りに加工するために、切断線や加工位置の目印を鋼板の表面に描く作業のことです。</div><div class="en">Kegaki is the task of drawing cutting lines and processing-position marks onto the surface of a steel plate so it can be processed exactly as the drawing specifies.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch05" data-chapter="ch05">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第5章　図面の読み方の基礎</span><span class="en">Chapter 5: Basics of Reading Shipbuilding Drawings</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="造船の現場では、船の形を示す外形図や、部材の配置・寸法を示す構造図など、多くの種類の図面を見ながら作業を進めます。">🔊</button><ruby>造船<rt>ぞうせん</rt></ruby>の<ruby>現場<rt>げんば</rt></ruby>では、<ruby>船<rt>ふね</rt></ruby>の<ruby>形<rt>かたち</rt></ruby>や<ruby>構造<rt>こうぞう</rt></ruby>を<ruby>示<rt>しめ</rt></ruby>す「<ruby>外形図<rt>がいけいず</rt></ruby>」や、<ruby>部材<rt>ぶざい</rt></ruby>の<ruby>配置<rt>はいち</rt></ruby>・<ruby>寸法<rt>すんぽう</rt></ruby>を<ruby>示<rt>しめ</rt></ruby>す「<ruby>構造図<rt>こうぞうず</rt></ruby>」など、<ruby>多<rt>おお</rt></ruby>くの<ruby>種類<rt>しゅるい</rt></ruby>の<ruby>図面<rt>ずめん</rt></ruby>を<ruby>見<rt>み</rt></ruby>ながら<ruby>作業<rt>さぎょう</rt></ruby>を<ruby>進<rt>すす</rt></ruby>めます。<ruby>図面<rt>ずめん</rt></ruby>が<ruby>読<rt>よ</rt></ruby>めなければ、<ruby>正確<rt>せいかく</rt></ruby>な<ruby>加工<rt>かこう</rt></ruby>や<ruby>組立<rt>くみた</rt></ruby>てはできません。</p>
+    <p class="en">On the shipbuilding floor, work proceeds by reading many kinds of drawings — an "outline drawing" showing the ship's shape, and "structural drawings" showing the layout and dimensions of components, among others. Without being able to read a drawing, accurate processing and assembly are impossible.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="溶接を行う箇所には、図面上に溶接記号と呼ばれる特別な記号が書き込まれており、正しく理解することが欠かせません。">🔊</button><ruby>溶接<rt>ようせつ</rt></ruby>を<ruby>行<rt>おこな</rt></ruby>う<ruby>箇所<rt>かしょ</rt></ruby>には、<ruby>図面上<rt>ずめんじょう</rt></ruby>に「<ruby>溶接記号<rt>ようせつきごう</rt></ruby>」と<ruby>呼<rt>よ</rt></ruby>ばれる<ruby>特別<rt>とくべつ</rt></ruby>な<ruby>記号<rt>きごう</rt></ruby>が<ruby>書<rt>か</rt></ruby>き<ruby>込<rt>こ</rt></ruby>まれています。<ruby>溶接記号<rt>ようせつきごう</rt></ruby>は、<ruby>溶接<rt>ようせつ</rt></ruby>の<ruby>種類<rt>しゅるい</rt></ruby>や<ruby>大<rt>おお</rt></ruby>きさ、<ruby>行<rt>おこな</rt></ruby>う<ruby>位置<rt>いち</rt></ruby>などを<ruby>一目<rt>ひとめ</rt></ruby>で<ruby>伝<rt>つた</rt></ruby>えるためのもので、<ruby>正<rt>ただ</rt></ruby>しく<ruby>理解<rt>りかい</rt></ruby>することが<ruby>欠<rt>か</rt></ruby>かせません。</p>
+    <p class="en">Locations where welding is to be done are marked on the drawing with special symbols called "welding symbols." Welding symbols convey the type of weld, its size, and where it should be applied at a glance, so understanding them correctly is essential.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="図面には板の厚さを表す記号や材質を示す記号などが書かれており、分からない記号を勝手に解釈すると重大なミスにつながります。">🔊</button><ruby>図面<rt>ずめん</rt></ruby>にはほかにも、<ruby>板<rt>いた</rt></ruby>の<ruby>厚<rt>あつ</rt></ruby>さを<ruby>表<rt>あらわ</rt></ruby>す<ruby>記号<rt>きごう</rt></ruby>や、<ruby>材質<rt>ざいしつ</rt></ruby>を<ruby>示<rt>しめ</rt></ruby>す<ruby>記号<rt>きごう</rt></ruby>など、さまざまな<ruby>情報<rt>じょうほう</rt></ruby>が<ruby>数字<rt>すうじ</rt></ruby>とアルファベットの<ruby>組<rt>く</rt></ruby>み<ruby>合<rt>あ</rt></ruby>わせで<ruby>書<rt>か</rt></ruby>かれています。<ruby>分<rt>わ</rt></ruby>からない<ruby>記号<rt>きごう</rt></ruby>を<ruby>勝手<rt>かって</rt></ruby>に<ruby>解釈<rt>かいしゃく</rt></ruby>すると、<ruby>重大<rt>じゅうだい</rt></ruby>な<ruby>加工<rt>かこう</rt></ruby>ミスにつながります。</p>
+    <p class="en">Drawings also carry other information — such as symbols indicating plate thickness or material — written as combinations of numbers and letters. Interpreting an unfamiliar symbol on your own can lead to a serious processing mistake.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="図面の内容について少しでも疑問があるときは、必ず上司や先輩に確認してから加工に取りかかることが鉄則です。">🔊</button><ruby>図面<rt>ずめん</rt></ruby>の<ruby>内容<rt>ないよう</rt></ruby>について<ruby>少<rt>すこ</rt></ruby>しでも<ruby>疑問<rt>ぎもん</rt></ruby>があるときは、<ruby>自己判断<rt>じこはんだん</rt></ruby>で<ruby>作業<rt>さぎょう</rt></ruby>を<ruby>進<rt>すす</rt></ruby>めず、<ruby>必<rt>かなら</rt></ruby>ず<ruby>上司<rt>じょうし</rt></ruby>や<ruby>先輩<rt>せんぱい</rt></ruby>に<ruby>確認<rt>かくにん</rt></ruby>してから<ruby>加工<rt>かこう</rt></ruby>に<ruby>取<rt>と</rt></ruby>りかかることが<ruby>鉄則<rt>てっそく</rt></ruby>です。</p>
+    <p class="en">Whenever there's even a small question about what a drawing shows, the ironclad rule is to check with a supervisor or senior worker before starting to process the material, rather than proceeding on your own judgment.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">📐📄</div>
+    <div class="icon-caption"><span class="jp">溶接記号が書き込まれた造船図面のイメージ</span><span class="en">Image: a shipbuilding drawing marked with welding symbols</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="B">
+    <p class="q-jp">「<ruby>溶接記号<rt>ようせつきごう</rt></ruby>」の<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。</p>
+    <p class="q-en">Which statement correctly describes a "welding symbol"?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 鋼板の材質を示す記号である</span><span class="en">A symbol indicating the material of a steel plate</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 溶接の種類や大きさ、行う位置などを図面上に示す記号である</span><span class="en">A symbol on a drawing showing the type, size, and location of a weld</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 検査に合格した部品にだけ付けられる印である</span><span class="en">A mark placed only on parts that passed inspection</span></div>
+      <div class="opt" data-val="D"><span class="jp">D. 作業員の名前を示す記号である</span><span class="en">A symbol indicating a worker's name</span></div>
+    <div class="explain"><div class="jp">溶接記号は、図面上でどこにどんな種類・大きさの溶接を行うかを一目で伝えるための記号です。</div><div class="en">A welding symbol conveys, at a glance on the drawing, where a weld goes and what type and size it should be.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch06" data-chapter="ch06">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第6章　鋼材と溶接材料の基礎知識</span><span class="en">Chapter 6: Steel and Welding Material Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="船体の多くは厚い鋼板でできています。より高い強度が必要な部分には高張力鋼と呼ばれる特殊な鋼材が使われます。">🔊</button><ruby>船体<rt>せんたい</rt></ruby>の<ruby>多<rt>おお</rt></ruby>くは、<ruby>厚<rt>あつ</rt></ruby>い<ruby>鋼板<rt>こうはん</rt></ruby>でできています。<ruby>鋼板<rt>こうはん</rt></ruby>にはさまざまな<ruby>種類<rt>しゅるい</rt></ruby>があり、<ruby>一般的<rt>いっぱんてき</rt></ruby>な<ruby>船体<rt>せんたい</rt></ruby><ruby>構造用<rt>こうぞうよう</rt></ruby>の<ruby>鋼材<rt>こうざい</rt></ruby>のほか、より<ruby>高<rt>たか</rt></ruby>い<ruby>強度<rt>きょうど</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>な<ruby>部分<rt>ぶぶん</rt></ruby>には「<ruby>高張力鋼<rt>こうちょうりょくこう</rt></ruby>」と<ruby>呼<rt>よ</rt></ruby>ばれる<ruby>特殊<rt>とくしゅ</rt></ruby>な<ruby>鋼材<rt>こうざい</rt></ruby>が<ruby>使<rt>つか</rt></ruby>われます。</p>
+    <p class="en">Most of a ship's hull is made of thick steel plate. Steel plate comes in many types — besides ordinary structural steel for the hull, "high-tensile steel," a special steel with higher strength, is used in parts that need it.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="溶接に使う材料には溶接棒や溶接ワイヤがあり、鋼材の種類や厚さに合わせて正しく選ばないと強度不足の原因になります。">🔊</button><ruby>溶接<rt>ようせつ</rt></ruby>に<ruby>使<rt>つか</rt></ruby>う<ruby>材料<rt>ざいりょう</rt></ruby>にも<ruby>種類<rt>しゅるい</rt></ruby>があり、<ruby>代表的<rt>だいひょうてき</rt></ruby>なものが「<ruby>溶接棒<rt>ようせつぼう</rt></ruby>」や「<ruby>溶接<rt>ようせつ</rt></ruby>ワイヤ」です。これらは<ruby>溶接<rt>ようせつ</rt></ruby>する<ruby>鋼材<rt>こうざい</rt></ruby>の<ruby>種類<rt>しゅるい</rt></ruby>や<ruby>厚<rt>あつ</rt></ruby>さに<ruby>合<rt>あ</rt></ruby>わせて<ruby>正<rt>ただ</rt></ruby>しく<ruby>選<rt>えら</rt></ruby>ばないと、<ruby>溶接<rt>ようせつ</rt></ruby><ruby>部分<rt>ぶぶん</rt></ruby>の<ruby>強度<rt>きょうど</rt></ruby>が<ruby>不足<rt>ぶそく</rt></ruby>する<ruby>原因<rt>げんいん</rt></ruby>になります。</p>
+    <p class="en">Materials used for welding also come in various kinds, the most common being "welding rods" and "welding wire." If these aren't correctly matched to the type and thickness of the steel being welded, it can result in insufficient strength at the weld.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="鋼材は雨や湿気にさらされるとさびが発生し強度が低下するため、屋根のある場所で保管し使用前に確認します。">🔊</button><ruby>鋼材<rt>こうざい</rt></ruby>は<ruby>保管<rt>ほかん</rt></ruby><ruby>方法<rt>ほうほう</rt></ruby>にも<ruby>注意<rt>ちゅうい</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>です。<ruby>雨<rt>あめ</rt></ruby>や<ruby>湿気<rt>しっけ</rt></ruby>にさらされるとさびが<ruby>発生<rt>はっせい</rt></ruby>し、<ruby>強度<rt>きょうど</rt></ruby>の<ruby>低下<rt>ていか</rt></ruby>につながるため、<ruby>屋根<rt>やね</rt></ruby>のある<ruby>場所<rt>ばしょ</rt></ruby>で<ruby>保管<rt>ほかん</rt></ruby>し、<ruby>使用前<rt>しようまえ</rt></ruby>にはさびや<ruby>汚<rt>よご</rt></ruby>れがないかを<ruby>確認<rt>かくにん</rt></ruby>します。</p>
+    <p class="en">Steel materials also require careful storage. Exposure to rain or moisture causes rust, which weakens the material, so steel should be stored under cover, and checked for rust or dirt before use.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="指示された材質と異なる鋼材を誤って使うと重大な事故につながる可能性があるため、マークや証明書を必ず確認します。">🔊</button><ruby>指示<rt>しじ</rt></ruby>された<ruby>材質<rt>ざいしつ</rt></ruby>と<ruby>異<rt>こと</rt></ruby>なる<ruby>鋼材<rt>こうざい</rt></ruby>を<ruby>誤<rt>あやま</rt></ruby>って<ruby>使<rt>つか</rt></ruby>ってしまうと、<ruby>船<rt>ふね</rt></ruby>の<ruby>強度不足<rt>きょうどぶそく</rt></ruby>や<ruby>重大<rt>じゅうだい</rt></ruby>な<ruby>事故<rt>じこ</rt></ruby>につながる<ruby>可能性<rt>かのうせい</rt></ruby>があります。<ruby>材料<rt>ざいりょう</rt></ruby>に<ruby>表示<rt>ひょうじ</rt></ruby>されているマークや<ruby>証明書<rt>しょうめいしょ</rt></ruby>を<ruby>必<rt>かなら</rt></ruby>ず<ruby>確認<rt>かくにん</rt></ruby>し、<ruby>疑問<rt>ぎもん</rt></ruby>があれば<ruby>責任者<rt>せきにんしゃ</rt></ruby>に<ruby>相談<rt>そうだん</rt></ruby>します。</p>
+    <p class="en">Mistakenly using a different steel than the one specified can lead to insufficient hull strength or a serious accident. Always check the markings or certificates on the material, and consult a supervisor if there's any doubt.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🔩🧪</div>
+    <div class="icon-caption"><span class="jp">積み重ねられた鋼板と溶接材料のイメージ</span><span class="en">Image: stacked steel plates and welding materials</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="B">
+    <p class="q-jp"><ruby>鋼材<rt>こうざい</rt></ruby>の<ruby>保管<rt>ほかん</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。</p>
+    <p class="q-en">Which statement about storing steel materials is correct?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 雨や湿気にさらしても強度には影響しない</span><span class="en">Exposure to rain or moisture doesn't affect strength</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 屋根のある場所で保管し、使用前にさびや汚れがないか確認する</span><span class="en">Store it under cover, and check for rust or dirt before use</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 指示された材質と違う鋼材でも、形が同じなら使ってよい</span><span class="en">A steel of a different material than specified is fine to use as long as the shape matches</span></div>
+      <div class="opt" data-val="D"><span class="jp">D. 証明書やマークは確認しなくてもよい</span><span class="en">There's no need to check certificates or markings</span></div>
+    <div class="explain"><div class="jp">鋼材は雨や湿気でさびると強度が低下するため、屋根のある場所で保管し、使用前にさびや汚れ、材質のマークを確認することが大切です。</div><div class="en">Steel weakens when it rusts from rain or moisture, so it's important to store it under cover and check for rust, dirt, and material markings before use.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch07" data-chapter="ch07">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第7章　溶接作業の基本</span><span class="en">Chapter 7: Welding Work Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="溶接は、造船・舶用工業の現場で最も多くの作業員が従事する中心的な技能です。代表的な方法にアーク溶接があります。">🔊</button>「<ruby>溶接<rt>ようせつ</rt></ruby>」は、<ruby>造船<rt>ぞうせん</rt></ruby>・<ruby>舶用工業<rt>はくようこうぎょう</rt></ruby>の<ruby>現場<rt>げんば</rt></ruby>で<ruby>最<rt>もっと</rt></ruby>も<ruby>多<rt>おお</rt></ruby>くの<ruby>作業員<rt>さぎょういん</rt></ruby>が<ruby>従事<rt>じゅうじ</rt></ruby>する、この<ruby>分野<rt>ぶんや</rt></ruby>の<ruby>中心的<rt>ちゅうしんてき</rt></ruby>な<ruby>技能<rt>ぎのう</rt></ruby>です。<ruby>代表的<rt>だいひょうてき</rt></ruby>な<ruby>溶接<rt>ようせつ</rt></ruby><ruby>方法<rt>ほうほう</rt></ruby>には、<ruby>電気<rt>でんき</rt></ruby>の<ruby>熱<rt>ねつ</rt></ruby>を<ruby>利用<rt>りよう</rt></ruby>する「アーク<ruby>溶接<rt>ようせつ</rt></ruby>」があり、その<ruby>中<rt>なか</rt></ruby>でもよく<ruby>使<rt>つか</rt></ruby>われるのが「<ruby>被覆<rt>ひふく</rt></ruby>アーク<ruby>溶接<rt>ようせつ</rt></ruby>」と「<ruby>半自動<rt>はんじどう</rt></ruby><ruby>溶接<rt>ようせつ</rt></ruby>」です。</p>
+    <p class="en">"Welding" is the central skill of this field, engaging more workers than any other task at shipbuilding and ship-machinery worksites. A representative welding method is "arc welding," which uses electrical heat, and within that, "shielded metal arc welding" and "semi-automatic welding" are the two most commonly used.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="溶接中は強い光や火花、有害なヒュームが発生するため、溶接面や保護具の着用と換気が欠かせません。">🔊</button><ruby>溶接中<rt>ようせつちゅう</rt></ruby>は<ruby>強<rt>つよ</rt></ruby>い<ruby>光<rt>ひかり</rt></ruby>（アーク<ruby>光<rt>こう</rt></ruby>）と<ruby>火花<rt>ひばな</rt></ruby>、そして<ruby>有害<rt>ゆうがい</rt></ruby>なヒュームが<ruby>発生<rt>はっせい</rt></ruby>します。<ruby>目<rt>め</rt></ruby>を<ruby>守<rt>まも</rt></ruby>るための<ruby>溶接面<rt>ようせつめん</rt></ruby>や<ruby>遮光<rt>しゃこう</rt></ruby>メガネ、<ruby>肌<rt>はだ</rt></ruby>を<ruby>守<rt>まも</rt></ruby>るための<ruby>長袖<rt>ながそで</rt></ruby>の<ruby>作業服<rt>さぎょうふく</rt></ruby>や<ruby>革手袋<rt>かわてぶくろ</rt></ruby>、ヒュームを<ruby>吸<rt>す</rt></ruby>い<ruby>込<rt>こ</rt></ruby>まないための<ruby>換気<rt>かんき</rt></ruby>や<ruby>防<rt>ぼう</rt></ruby>じんマスクが<ruby>欠<rt>か</rt></ruby>かせません。</p>
+    <p class="en">Welding produces intense light (arc light), sparks, and harmful fumes. A welding mask or shaded goggles to protect the eyes, long-sleeved work clothes and leather gloves to protect the skin, and ventilation and a dust mask to avoid inhaling fumes are all essential.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="良い溶接には、適切な電流や速度、溶接棒やワイヤの角度が重要です。不適切だと内部に気泡ができたり強度不足の原因になったりします。">🔊</button><ruby>良<rt>よ</rt></ruby>い<ruby>溶接<rt>ようせつ</rt></ruby>には、<ruby>適切<rt>てきせつ</rt></ruby>な<ruby>電流<rt>でんりゅう</rt></ruby>や<ruby>溶接<rt>ようせつ</rt></ruby><ruby>速度<rt>そくど</rt></ruby>、そして<ruby>溶接棒<rt>ようせつぼう</rt></ruby>やワイヤの<ruby>角度<rt>かくど</rt></ruby>が<ruby>重要<rt>じゅうよう</rt></ruby>です。<ruby>溶接<rt>ようせつ</rt></ruby>の<ruby>温度<rt>おんど</rt></ruby>や<ruby>速度<rt>そくど</rt></ruby>が<ruby>不適切<rt>ふてきせつ</rt></ruby>だと、<ruby>内部<rt>ないぶ</rt></ruby>に<ruby>気泡<rt>きほう</rt></ruby>（ブローホール）ができたり、<ruby>強度不足<rt>きょうどぶそく</rt></ruby>の<ruby>原因<rt>げんいん</rt></ruby>になったりします。</p>
+    <p class="en">Good welding depends on an appropriate current, welding speed, and the angle of the welding rod or wire. If the welding temperature or speed is inappropriate, it can create internal bubbles (blowholes) or result in insufficient strength.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="溶接作業の周囲は火花が飛び散るため燃えやすい物を置かず、作業後は溶接部分に素手で触れないよう十分注意します。">🔊</button><ruby>溶接<rt>ようせつ</rt></ruby><ruby>作業<rt>さぎょう</rt></ruby>の<ruby>周囲<rt>しゅうい</rt></ruby>は<ruby>火花<rt>ひばな</rt></ruby>が<ruby>飛<rt>と</rt></ruby>び<ruby>散<rt>ち</rt></ruby>るため、<ruby>燃<rt>も</rt></ruby>えやすい<ruby>物<rt>もの</rt></ruby>を<ruby>置<rt>お</rt></ruby>かず、<ruby>他<rt>ほか</rt></ruby>の<ruby>作業者<rt>さぎょうしゃ</rt></ruby>にも<ruby>声<rt>こえ</rt></ruby>をかけて<ruby>注意<rt>ちゅうい</rt></ruby>を<ruby>促<rt>うなが</rt></ruby>します。<ruby>作業後<rt>さぎょうご</rt></ruby>は<ruby>溶接<rt>ようせつ</rt></ruby><ruby>部分<rt>ぶぶん</rt></ruby>がすぐには<ruby>冷<rt>さ</rt></ruby>めていないため、<ruby>素手<rt>すで</rt></ruby>で<ruby>触<rt>ふ</rt></ruby>れないよう<ruby>十分<rt>じゅうぶん</rt></ruby><ruby>注意<rt>ちゅうい</rt></ruby>します。</p>
+    <p class="en">Because sparks scatter around welding work, flammable materials should be kept away, and other workers nearby should be alerted to be careful. After finishing, the welded area doesn't cool down right away, so great care must be taken not to touch it with bare hands.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🔥⚡</div>
+    <div class="icon-caption"><span class="jp">アーク溶接を行う作業員のイメージ</span><span class="en">Image: a worker performing arc welding</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="B">
+    <p class="q-jp"><ruby>溶接<rt>ようせつ</rt></ruby><ruby>作業<rt>さぎょう</rt></ruby>の<ruby>安全<rt>あんぜん</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。</p>
+    <p class="q-en">Which statement about welding safety is correct?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 溶接面や遮光メガネは必要に応じて着けなくてもよい</span><span class="en">A welding mask or shaded goggles can be skipped depending on the situation</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 溶接中は強い光や火花、有害なヒュームが発生するため、保護具の着用と換気が欠かせない</span><span class="en">Because welding produces intense light, sparks, and harmful fumes, protective equipment and ventilation are essential</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 溶接直後の部分はすぐに冷えるので素手で触っても問題ない</span><span class="en">A just-welded area cools immediately, so it's fine to touch with bare hands</span></div>
+      <div class="opt" data-val="D"><span class="jp">D. 溶接の速度や電流は溶接の強度に関係しない</span><span class="en">Welding speed and current have no bearing on the weld's strength</span></div>
+    <div class="explain"><div class="jp">溶接中は強い光・火花・有害なヒュームが発生するため、溶接面や保護具の着用、十分な換気が欠かせません。</div><div class="en">Because welding produces intense light, sparks, and harmful fumes, wearing a welding mask and protective equipment, plus thorough ventilation, are essential.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch08" data-chapter="ch08">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第8章　塗装と鉄工の基本</span><span class="en">Chapter 8: Painting and Ironwork Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="塗装は完成した船体をさびから守り、美しく仕上げるための重要な工程です。塗装前には素地調整を行います。">🔊</button>「<ruby>塗装<rt>とそう</rt></ruby>」は、<ruby>完成<rt>かんせい</rt></ruby>した<ruby>船体<rt>せんたい</rt></ruby>をさびから<ruby>守<rt>まも</rt></ruby>り、<ruby>美<rt>うつく</rt></ruby>しく<ruby>仕上<rt>しあ</rt></ruby>げるための<ruby>重要<rt>じゅうよう</rt></ruby>な<ruby>工程<rt>こうてい</rt></ruby>です。<ruby>塗装<rt>とそう</rt></ruby>の<ruby>前<rt>まえ</rt></ruby>には、<ruby>鋼板<rt>こうはん</rt></ruby>の<ruby>表面<rt>ひょうめん</rt></ruby>の<ruby>汚<rt>よご</rt></ruby>れやさびを<ruby>取<rt>と</rt></ruby>り<ruby>除<rt>のぞ</rt></ruby>く「<ruby>素地調整<rt>そじちょうせい</rt></ruby>（ブラスト<ruby>処理<rt>しょり</rt></ruby>など）」を<ruby>行<rt>おこな</rt></ruby>い、<ruby>塗料<rt>とりょう</rt></ruby>がしっかり<ruby>密着<rt>みっちゃく</rt></ruby>するようにします。</p>
+    <p class="en">"Painting" is an important process that protects the finished hull from rust and gives it an attractive finish. Before painting, "surface preparation" (such as blasting) is performed to remove dirt and rust from the steel plate's surface, so the paint adheres firmly.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="塗装は一度に厚く塗るのではなく、下塗り・中塗り・上塗りと薄く塗り重ねていきます。乾燥時間を守らないと塗膜が剥がれやすくなります。">🔊</button><ruby>塗装<rt>とそう</rt></ruby>は<ruby>一度<rt>いちど</rt></ruby>に<ruby>厚<rt>あつ</rt></ruby>く<ruby>塗<rt>ぬ</rt></ruby>るのではなく、<ruby>下塗<rt>したぬ</rt></ruby>り・<ruby>中塗<rt>なかぬ</rt></ruby>り・<ruby>上塗<rt>うわぬ</rt></ruby>りというように、<ruby>何回<rt>なんかい</rt></ruby>かに<ruby>分<rt>わ</rt></ruby>けて<ruby>薄<rt>うす</rt></ruby>く<ruby>塗<rt>ぬ</rt></ruby>り<ruby>重<rt>かさ</rt></ruby>ねていきます。それぞれの<ruby>塗料<rt>とりょう</rt></ruby>に<ruby>決<rt>き</rt></ruby>められた<ruby>乾燥時間<rt>かんそうじかん</rt></ruby>を<ruby>守<rt>まも</rt></ruby>らないと、<ruby>塗膜<rt>とまく</rt></ruby>が<ruby>剥<rt>は</rt></ruby>がれやすくなります。</p>
+    <p class="en">Rather than applying a single thick coat, painting is built up in several thin layers — a primer coat, an intermediate coat, and a topcoat. Failing to observe each paint's specified drying time can cause the paint film to peel easily.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="鉄工は、鋼板を図面通りに切断・曲げ・組立てして船体の部材を作る作業で、けがきに沿って正確に加工していきます。">🔊</button>「<ruby>鉄工<rt>てっこう</rt></ruby>」は、<ruby>鋼板<rt>こうはん</rt></ruby>を<ruby>図面<rt>ずめん</rt></ruby><ruby>通<rt>どお</rt></ruby>りに<ruby>切断<rt>せつだん</rt></ruby>・<ruby>曲<rt>ま</rt></ruby>げ・<ruby>組立<rt>くみた</rt></ruby>てして<ruby>船体<rt>せんたい</rt></ruby>の<ruby>部材<rt>ぶざい</rt></ruby>を<ruby>作<rt>つく</rt></ruby>る<ruby>作業<rt>さぎょう</rt></ruby>です。ガス<ruby>切断機<rt>せつだんき</rt></ruby>やプレス<ruby>機<rt>き</rt></ruby>、<ruby>曲<rt>ま</rt></ruby>げ<ruby>加工機<rt>かこうき</rt></ruby>などの<ruby>工作機械<rt>こうさくきかい</rt></ruby>を<ruby>使<rt>つか</rt></ruby>い、けがきに<ruby>沿<rt>そ</rt></ruby>って<ruby>正確<rt>せいかく</rt></ruby>に<ruby>鋼板<rt>こうはん</rt></ruby>を<ruby>加工<rt>かこう</rt></ruby>していきます。</p>
+    <p class="en">"Ironwork" is the task of cutting, bending, and assembling steel plate according to the drawing to produce hull components. Machine tools such as gas cutters, presses, and bending machines are used to process steel plate accurately along the kegaki marking lines.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="塗装で使う塗料やシンナーには有機溶剤が含まれているものが多く、換気を十分に行い保護具を着用することが欠かせません。">🔊</button><ruby>塗装<rt>とそう</rt></ruby>で<ruby>使<rt>つか</rt></ruby>う<ruby>塗料<rt>とりょう</rt></ruby>やシンナーには、<ruby>有機溶剤<rt>ゆうきようざい</rt></ruby>が<ruby>含<rt>ふく</rt></ruby>まれているものが<ruby>多<rt>おお</rt></ruby>く、<ruby>換気<rt>かんき</rt></ruby>の<ruby>悪<rt>わる</rt></ruby>い<ruby>場所<rt>ばしょ</rt></ruby>で<ruby>長時間<rt>ちょうじかん</rt></ruby><ruby>扱<rt>あつか</rt></ruby>うと<ruby>中毒<rt>ちゅうどく</rt></ruby>を<ruby>起<rt>お</rt></ruby>こす<ruby>危険<rt>きけん</rt></ruby>があります。<ruby>塗装<rt>とそう</rt></ruby><ruby>作業<rt>さぎょう</rt></ruby>では、<ruby>換気<rt>かんき</rt></ruby>を<ruby>十分<rt>じゅうぶん</rt></ruby>に<ruby>行<rt>おこな</rt></ruby>い、<ruby>決<rt>き</rt></ruby>められた<ruby>保護具<rt>ほごぐ</rt></ruby>（<ruby>防毒<rt>ぼうどく</rt></ruby>マスクなど）を<ruby>着用<rt>ちゃくよう</rt></ruby>することが<ruby>欠<rt>か</rt></ruby>かせません。</p>
+    <p class="en">Many of the paints and thinners used in painting contain organic solvents, and handling them for long periods in poorly ventilated areas risks solvent poisoning. During painting work, thorough ventilation and wearing the designated protective equipment (such as a gas/vapor respirator) are essential.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🎨🔨</div>
+    <div class="icon-caption"><span class="jp">船体に塗装を行う作業員のイメージ</span><span class="en">Image: a worker painting a ship's hull</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="B">
+    <p class="q-jp"><ruby>塗装<rt>とそう</rt></ruby><ruby>作業<rt>さぎょう</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。</p>
+    <p class="q-en">Which statement about painting work is correct?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 一度に厚く塗るほうが早く仕上がってよい</span><span class="en">Applying a single thick coat finishes the job faster and is preferable</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 下塗り・中塗り・上塗りと薄く塗り重ね、乾燥時間を守ることが大切である</span><span class="en">Applying thin layers — primer, intermediate, and topcoat — and observing drying times is important</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 有機溶剤を含む塗料は換気をしなくても安全である</span><span class="en">Paint containing organic solvents is safe to use without ventilation</span></div>
+      <div class="opt" data-val="D"><span class="jp">D. 素地調整は塗装の見た目には関係しない</span><span class="en">Surface preparation has no bearing on the paint job's appearance</span></div>
+    <div class="explain"><div class="jp">塗装は下塗り・中塗り・上塗りと薄く塗り重ね、それぞれの乾燥時間を守ることで、塗膜がしっかり密着し剥がれにくくなります。</div><div class="en">Building up thin layers — primer, intermediate coat, and topcoat — and observing each one's drying time lets the paint film adhere firmly and resist peeling.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch09" data-chapter="ch09">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第9章　配管と舶用機関整備の基礎知識</span><span class="en">Chapter 9: Piping and Marine Engine Maintenance Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="舶用工業の現場では、舶用機関を製造・整備する作業のほか、燃料や水、油を送るための配管の作業も重要な役割を担います。">🔊</button>「<ruby>舶用工業<rt>はくようこうぎょう</rt></ruby>」の<ruby>現場<rt>げんば</rt></ruby>では、<ruby>船<rt>ふね</rt></ruby>に<ruby>搭載<rt>とうさい</rt></ruby>するエンジンやポンプなどの「<ruby>舶用機関<rt>はくようきかん</rt></ruby>」を<ruby>製造<rt>せいぞう</rt></ruby>・<ruby>整備<rt>せいび</rt></ruby>する<ruby>作業<rt>さぎょう</rt></ruby>のほか、<ruby>燃料<rt>ねんりょう</rt></ruby>や<ruby>水<rt>みず</rt></ruby>、<ruby>油<rt>あぶら</rt></ruby>などを<ruby>送<rt>おく</rt></ruby>るための「<ruby>配管<rt>はいかん</rt></ruby>」の<ruby>作業<rt>さぎょう</rt></ruby>も<ruby>重要<rt>じゅうよう</rt></ruby>な<ruby>役割<rt>やくわり</rt></ruby>を<ruby>担<rt>にな</rt></ruby>います。</p>
+    <p class="en">At "ship machinery" worksites, alongside manufacturing and maintaining "marine machinery" such as the engines and pumps installed on ships, "piping" work — running lines to carry fuel, water, oil, and more — also plays an important role.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="配管作業では、図面に示された経路に沿って金属パイプを正確な寸法に切断し、溶接やねじ込みでつなぎ合わせます。">🔊</button><ruby>配管<rt>はいかん</rt></ruby><ruby>作業<rt>さぎょう</rt></ruby>では、<ruby>図面<rt>ずめん</rt></ruby>に<ruby>示<rt>しめ</rt></ruby>された<ruby>経路<rt>けいろ</rt></ruby>に<ruby>沿<rt>そ</rt></ruby>って<ruby>金属<rt>きんぞく</rt></ruby>パイプを<ruby>正確<rt>せいかく</rt></ruby>な<ruby>寸法<rt>すんぽう</rt></ruby>に<ruby>切断<rt>せつだん</rt></ruby>し、<ruby>溶接<rt>ようせつ</rt></ruby>やねじ<ruby>込<rt>こ</rt></ruby>みでつなぎ<ruby>合<rt>あ</rt></ruby>わせていきます。パイプの<ruby>中<rt>なか</rt></ruby>を<ruby>流<rt>なが</rt></ruby>れるものによって、<ruby>耐<rt>た</rt></ruby>えられる<ruby>圧力<rt>あつりょく</rt></ruby>や<ruby>求<rt>もと</rt></ruby>められる<ruby>材質<rt>ざいしつ</rt></ruby>が<ruby>異<rt>こと</rt></ruby>なるため、<ruby>指示<rt>しじ</rt></ruby>された<ruby>仕様<rt>しよう</rt></ruby>を<ruby>守<rt>まも</rt></ruby>ることが<ruby>欠<rt>か</rt></ruby>かせません。</p>
+    <p class="en">In piping work, metal pipes are cut to precise dimensions along the route shown in the drawing, and joined by welding or threading. Since the pressure a pipe must withstand and the material required differ depending on what flows through it, following the specified requirements is essential.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="舶用機関の整備では、エンジンやポンプを分解して部品の摩耗や損傷を点検し、必要な部品を交換します。">🔊</button><ruby>舶用機関<rt>はくようきかん</rt></ruby>の<ruby>整備<rt>せいび</rt></ruby>では、エンジンやポンプを<ruby>分解<rt>ぶんかい</rt></ruby>して<ruby>部品<rt>ぶひん</rt></ruby>の<ruby>摩耗<rt>まもう</rt></ruby>や<ruby>損傷<rt>そんしょう</rt></ruby>を<ruby>点検<rt>てんけん</rt></ruby>し、<ruby>必要<rt>ひつよう</rt></ruby>な<ruby>部品<rt>ぶひん</rt></ruby>を<ruby>交換<rt>こうかん</rt></ruby>します。<ruby>分解<rt>ぶんかい</rt></ruby>した<ruby>部品<rt>ぶひん</rt></ruby>は<ruby>順番<rt>じゅんばん</rt></ruby>を<ruby>間違<rt>まちが</rt></ruby>えずに<ruby>並<rt>なら</rt></ruby>べ、<ruby>組<rt>く</rt></ruby>み<ruby>立<rt>た</rt></ruby>てるときに<ruby>元通<rt>もとどお</rt></ruby>り<ruby>正<rt>ただ</rt></ruby>しい<ruby>位置<rt>いち</rt></ruby>に<ruby>戻<rt>もど</rt></ruby>すことが<ruby>重要<rt>じゅうよう</rt></ruby>です。</p>
+    <p class="en">Marine engine maintenance involves disassembling engines and pumps to inspect parts for wear or damage, and replacing parts as needed. It's important to lay out disassembled parts in the correct order without mixing them up, so each one can be returned to its correct position during reassembly.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="配管や機関整備の作業では、油や燃料が漏れていないかを常に確認し、わずかな異常でも責任者に報告する姿勢が求められます。">🔊</button><ruby>配管<rt>はいかん</rt></ruby>や<ruby>機関<rt>きかん</rt></ruby><ruby>整備<rt>せいび</rt></ruby>の<ruby>作業<rt>さぎょう</rt></ruby>では、<ruby>油<rt>あぶら</rt></ruby>や<ruby>燃料<rt>ねんりょう</rt></ruby>が<ruby>漏<rt>も</rt></ruby>れていないかを<ruby>常<rt>つね</rt></ruby>に<ruby>確認<rt>かくにん</rt></ruby>し、わずかな<ruby>異常<rt>いじょう</rt></ruby>でも<ruby>見逃<rt>みのが</rt></ruby>さず<ruby>責任者<rt>せきにんしゃ</rt></ruby>に<ruby>報告<rt>ほうこく</rt></ruby>する<ruby>姿勢<rt>しせい</rt></ruby>が<ruby>求<rt>もと</rt></ruby>められます。<ruby>小<rt>ちい</rt></ruby>さな<ruby>漏<rt>も</rt></ruby>れを<ruby>放置<rt>ほうち</rt></ruby>すると、<ruby>火災<rt>かさい</rt></ruby>など<ruby>重大<rt>じゅうだい</rt></ruby>な<ruby>事故<rt>じこ</rt></ruby>につながることがあります。</p>
+    <p class="en">In piping and engine maintenance work, workers are expected to constantly check for oil or fuel leaks and report even the slightest abnormality to a supervisor rather than overlooking it. Leaving a small leak unaddressed can lead to a serious accident such as a fire.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🔧⚙️</div>
+    <div class="icon-caption"><span class="jp">配管を接続する作業員のイメージ</span><span class="en">Image: a worker connecting pipe fittings</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="B">
+    <p class="q-jp"><ruby>舶用機関<rt>はくようきかん</rt></ruby>の<ruby>整備<rt>せいび</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>説明<rt>せつめい</rt></ruby>として<b>最も適切な</b>ものはどれですか。</p>
+    <p class="q-en">Which statement about marine engine maintenance is most appropriate?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 分解した部品の順番は気にしなくてよい</span><span class="en">There's no need to worry about the order of disassembled parts</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 分解した部品は順番を間違えずに並べ、正しい位置に組み立て直す</span><span class="en">Lay out disassembled parts in the correct order and reassemble each one in its correct position</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 油や燃料の小さな漏れは報告しなくてよい</span><span class="en">A small oil or fuel leak doesn't need to be reported</span></div>
+      <div class="opt" data-val="D"><span class="jp">D. パイプの材質は流すものに関係なく同じでよい</span><span class="en">A pipe's material can stay the same regardless of what flows through it</span></div>
+    <div class="explain"><div class="jp">分解した部品は順番を間違えると正しく組み立て直せなくなるため、順番通りに並べて管理し、元の位置に正確に戻すことが重要です。</div><div class="en">Mixing up the order of disassembled parts makes correct reassembly impossible, so it's important to keep them arranged in order and return each one precisely to its original position.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch10" data-chapter="ch10">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第10章　職場のコミュニケーションと報連相</span><span class="en">Chapter 10: Workplace Communication and Hourensou</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="造船・舶用工業の現場では、一つの船を多くの作業員が分担して造り上げるため、上司や先輩、他のチームとの連携が欠かせません。">🔊</button><ruby>造船<rt>ぞうせん</rt></ruby>・<ruby>舶用工業<rt>はくようこうぎょう</rt></ruby>の<ruby>現場<rt>げんば</rt></ruby>では、<ruby>一<rt>ひと</rt></ruby>つの<ruby>船<rt>ふね</rt></ruby>を<ruby>多<rt>おお</rt></ruby>くの<ruby>作業員<rt>さぎょういん</rt></ruby>が<ruby>分担<rt>ぶんたん</rt></ruby>して<ruby>造<rt>つく</rt></ruby>り<ruby>上<rt>あ</rt></ruby>げるため、<ruby>上司<rt>じょうし</rt></ruby>や<ruby>先輩<rt>せんぱい</rt></ruby>、<ruby>他<rt>ほか</rt></ruby>の<ruby>作業<rt>さぎょう</rt></ruby>チームとの<ruby>連携<rt>れんけい</rt></ruby>が<ruby>欠<rt>か</rt></ruby>かせません。そのために<ruby>基本<rt>きほん</rt></ruby>となるのが「<ruby>報告<rt>ほうこく</rt></ruby>・<ruby>連絡<rt>れんらく</rt></ruby>・<ruby>相談<rt>そうだん</rt></ruby>」、<ruby>略<rt>りゃく</rt></ruby>して「<ruby>報連相<rt>ほうれんそう</rt></ruby>」と<ruby>呼<rt>よ</rt></ruby>ばれるコミュニケーションです。</p>
+    <p class="en">At shipbuilding and ship-machinery worksites, a single ship is built through the divided work of many people, so coordination with supervisors, senior staff, and other work teams is essential. The foundation for this is the communication practice known as "hourensou": report, inform, and consult.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="報告とは作業の進み具合を上司に伝えること、連絡とは関係者へ必要な情報を伝えること、相談とは一人で抱え込まず助言を求めることです。">🔊</button>「<ruby>報告<rt>ほうこく</rt></ruby>」とは、<ruby>指示<rt>しじ</rt></ruby>された<ruby>作業<rt>さぎょう</rt></ruby>が<ruby>終<rt>お</rt></ruby>わったことや<ruby>進<rt>すす</rt></ruby>み<ruby>具合<rt>ぐあい</rt></ruby>を<ruby>上司<rt>じょうし</rt></ruby>に<ruby>伝<rt>つた</rt></ruby>えることです。「<ruby>連絡<rt>れんらく</rt></ruby>」とは、<ruby>自分<rt>じぶん</rt></ruby>の<ruby>作業<rt>さぎょう</rt></ruby>が<ruby>他<rt>ほか</rt></ruby>のチームの<ruby>作業<rt>さぎょう</rt></ruby>に<ruby>影響<rt>えいきょう</rt></ruby>する<ruby>場合<rt>ばあい</rt></ruby>などに、<ruby>関係者<rt>かんけいしゃ</rt></ruby>へ<ruby>必要<rt>ひつよう</rt></ruby>な<ruby>情報<rt>じょうほう</rt></ruby>を<ruby>伝<rt>つた</rt></ruby>えることです。「<ruby>相談<rt>そうだん</rt></ruby>」とは、<ruby>判断<rt>はんだん</rt></ruby>に<ruby>迷<rt>まよ</rt></ruby>ったときに<ruby>一人<rt>ひとり</rt></ruby>で<ruby>抱<rt>かか</rt></ruby>え<ruby>込<rt>こ</rt></ruby>まず、<ruby>周囲<rt>しゅうい</rt></ruby>に<ruby>助言<rt>じょげん</rt></ruby>を<ruby>求<rt>もと</rt></ruby>めることです。</p>
+    <p class="en">"Report" means telling a supervisor that an assigned task is finished, or how it's progressing. "Inform" means passing necessary information to those involved, such as when your work will affect another team's work. "Consult" means seeking advice from those around you rather than carrying a problem alone whenever you're unsure how to judge something.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="造船所は複数の作業チームが同時並行で作業を進めるため、作業前後の連絡を徹底することが欠かせません。">🔊</button><ruby>造船所<rt>ぞうせんじょ</rt></ruby>は<ruby>複数<rt>ふくすう</rt></ruby>の<ruby>作業<rt>さぎょう</rt></ruby>チームが<ruby>同時並行<rt>どうじへいこう</rt></ruby>で<ruby>作業<rt>さぎょう</rt></ruby>を<ruby>進<rt>すす</rt></ruby>めるため、<ruby>自分<rt>じぶん</rt></ruby>のチームだけの<ruby>都合<rt>つごう</rt></ruby>で<ruby>作業<rt>さぎょう</rt></ruby>を<ruby>進<rt>すす</rt></ruby>めると、<ruby>他<rt>ほか</rt></ruby>のチームの<ruby>作業<rt>さぎょう</rt></ruby>とぶつかったり、<ruby>思<rt>おも</rt></ruby>わぬ<ruby>事故<rt>じこ</rt></ruby>につながったりすることがあります。<ruby>作業前後<rt>さぎょうぜんご</rt></ruby>の<ruby>連絡<rt>れんらく</rt></ruby>を<ruby>徹底<rt>てってい</rt></ruby>することが<ruby>欠<rt>か</rt></ruby>かせません。</p>
+    <p class="en">Because multiple work teams proceed with tasks in parallel at a shipyard, moving ahead based only on your own team's convenience can clash with another team's work or lead to an unexpected accident. Thorough communication before and after each task is essential.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="分からないことをそのままにせず、指示を受けたらはいとはっきり返事をし、疑問があればその場で質問する姿勢が大切にされます。">🔊</button><ruby>分<rt>わ</rt></ruby>からないことをそのままにせず、<ruby>指示<rt>しじ</rt></ruby>を<ruby>受<rt>う</rt></ruby>けたら「はい」とはっきり<ruby>返事<rt>へんじ</rt></ruby>をし、<ruby>疑問<rt>ぎもん</rt></ruby>があればその<ruby>場<rt>ば</rt></ruby>で<ruby>質問<rt>しつもん</rt></ruby>する<ruby>姿勢<rt>しせい</rt></ruby>が<ruby>大切<rt>たいせつ</rt></ruby>にされます。あいまいな<ruby>返事<rt>へんじ</rt></ruby>のまま<ruby>作業<rt>さぎょう</rt></ruby>を<ruby>進<rt>すす</rt></ruby>めることは、<ruby>大<rt>おお</rt></ruby>きな<ruby>事故<rt>じこ</rt></ruby>の<ruby>原因<rt>げんいん</rt></ruby>になります。</p>
+    <p class="en">It's considered important not to leave something unclear, to respond with a clear "yes" when given an instruction, and to ask a question on the spot if you have doubts. Proceeding with work based on a vague response can cause a major accident.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🗣️🤝</div>
+    <div class="icon-caption"><span class="jp">上司に作業の報告をする様子のイメージ</span><span class="en">Image: a worker reporting on a task to a supervisor</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="B">
+    <p class="q-jp"><ruby>造船所<rt>ぞうせんじょ</rt></ruby>での「<ruby>連絡<rt>れんらく</rt></ruby>」の<ruby>説明<rt>せつめい</rt></ruby>として<b>最も適切な</b>ものはどれですか。</p>
+    <p class="q-en">Which statement most appropriately describes "renraku" (informing) at a shipyard?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 自分の判断だけで作業を進め、誰にも伝えないこと</span><span class="en">Proceeding with work based only on your own judgment and telling no one</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 自分の作業が他のチームに影響する場合などに、関係者へ必要な情報を伝えること</span><span class="en">Passing necessary information to those involved when your work will affect another team, and similar cases</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 上司に会うのを避けて作業を進めること</span><span class="en">Avoiding your supervisor and proceeding with work</span></div>
+      <div class="opt" data-val="D"><span class="jp">D. 分からないことをそのままにして作業を進めること</span><span class="en">Leaving something unclear and proceeding with work anyway</span></div>
+    <div class="explain"><div class="jp">連絡とは、自分の作業が他の作業チームに影響を与える可能性がある場合などに、関係者へ必要な情報を伝えることです。造船所では複数のチームが同時に作業するため、特に重要になります。</div><div class="en">Renraku (informing) means passing necessary information to those involved when your work may affect another team's work, among other cases. This matters especially at a shipyard, where multiple teams work simultaneously.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch11" data-chapter="ch11">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第11章　実技試験対策：判断問題の練習</span><span class="en">Chapter 11: Practical-Test Prep — Judgment Practice</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="実技試験では、実際の作業風景や道具のイラストを見て、正しい手順や適切な対応を選ぶ判断問題が出題されます。">🔊</button><ruby>実技<rt>じつぎ</rt></ruby><ruby>試験<rt>しけん</rt></ruby>では、<ruby>実際<rt>じっさい</rt></ruby>の<ruby>作業<rt>さぎょう</rt></ruby><ruby>風景<rt>ふうけい</rt></ruby>や<ruby>道具<rt>どうぐ</rt></ruby>のイラストを<ruby>見<rt>み</rt></ruby>て、<ruby>正<rt>ただ</rt></ruby>しい<ruby>手順<rt>てじゅん</rt></ruby>や<ruby>適切<rt>てきせつ</rt></ruby>な<ruby>対応<rt>たいおう</rt></ruby>を<ruby>選<rt>えら</rt></ruby>ぶ「<ruby>判断問題<rt>はんだんもんだい</rt></ruby>」が<ruby>出題<rt>しゅつだい</rt></ruby>されます。ここでは、これまで<ruby>学<rt>まな</rt></ruby>んだ<ruby>知識<rt>ちしき</rt></ruby>を<ruby>使<rt>つか</rt></ruby>って、いくつかの<ruby>判断問題<rt>はんだんもんだい</rt></ruby>を<ruby>練習<rt>れんしゅう</rt></ruby>してみましょう。</p>
+    <p class="en">The practical exam includes "judgment questions," where you look at illustrations of actual work scenes or tools and choose the correct procedure or appropriate response. Let's use what you've learned so far to practice a few judgment questions here.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="判断に迷ったときは、安全を最優先すること、分からないことは自己判断せず確認することの2つの原則に立ち返りましょう。">🔊</button><ruby>判断<rt>はんだん</rt></ruby>に<ruby>迷<rt>まよ</rt></ruby>ったときは、「<ruby>安全<rt>あんぜん</rt></ruby>を<ruby>最優先<rt>さいゆうせん</rt></ruby>する」「<ruby>分<rt>わ</rt></ruby>からないことは<ruby>自己判断<rt>じこはんだん</rt></ruby>せず<ruby>確認<rt>かくにん</rt></ruby>する」という2つの<ruby>基本原則<rt>きほんげんそく</rt></ruby>に<ruby>立<rt>た</rt></ruby>ち<ruby>返<rt>かえ</rt></ruby>ると、<ruby>正<rt>ただ</rt></ruby>しい<ruby>答<rt>こた</rt></ruby>えにたどり<ruby>着<rt>つ</rt></ruby>きやすくなります。</p>
+    <p class="en">When you're unsure how to judge a situation, returning to two basic principles — "safety comes first" and "when in doubt, check rather than guess" — makes it easier to arrive at the correct answer.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🖥️✅</div>
+    <div class="icon-caption"><span class="jp">判断問題に取り組む練習画面のイメージ</span><span class="en">Image: a practice screen for working through judgment questions</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="B">
+    <p class="q-jp"><ruby>高所<rt>こうしょ</rt></ruby>の<ruby>足場<rt>あしば</rt></ruby>で<ruby>作業中<rt>さぎょうちゅう</rt></ruby>、<ruby>安全帯<rt>あんぜんたい</rt></ruby>を<ruby>掛<rt>か</rt></ruby>けるフックが<ruby>壊<rt>こわ</rt></ruby>れていることに<ruby>気<rt>き</rt></ruby>づきました。<b>最も適切な</b>対応はどれですか。</p>
+    <p class="q-en">While working on scaffolding at height, you notice that the hook for attaching your safety harness is broken. What is the most appropriate response?</p>
+      <div class="opt" data-val="A"><span class="jp">A. フックが壊れていても注意して作業すれば問題ない</span><span class="en">It's fine to keep working carefully even with a broken hook</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 作業を中断し、責任者に報告して安全な足場・設備に交換してから作業を再開する</span><span class="en">Stop work, report it to a supervisor, and resume only after the scaffolding/equipment is replaced with something safe</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 別の場所に自分の判断でフックを付け替えて作業を続ける</span><span class="en">Reattach the hook somewhere else on your own judgment and keep working</span></div>
+      <div class="opt" data-val="D"><span class="jp">D. 休憩時間になるまで気づかなかったことにする</span><span class="en">Pretend not to have noticed until the next break</span></div>
+    <div class="explain"><div class="jp">壊れたフックのまま高所作業を続けると、転落という重大な事故につながるため、すぐに作業を中断して責任者に報告し、安全な設備に交換してから再開します。</div><div class="en">Continuing to work at height with a broken hook risks a serious fall accident, so stop work immediately, report it to a supervisor, and resume only after it's replaced with safe equipment.</div></div>
+  </div>
+  <div class="q-block" data-answer="B">
+    <p class="q-jp"><ruby>船内<rt>せんない</rt></ruby>のタンクの<ruby>中<rt>なか</rt></ruby>で<ruby>作業<rt>さぎょう</rt></ruby>をしているとき、<ruby>急<rt>きゅう</rt></ruby>に<ruby>気分<rt>きぶん</rt></ruby>が<ruby>悪<rt>わる</rt></ruby>くなりました。<b>最も適切な</b>対応はどれですか。</p>
+    <p class="q-en">While working inside a ship's tank, you suddenly start to feel unwell. What is the most appropriate response?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 我慢してそのまま作業を最後まで終わらせる</span><span class="en">Push through and finish the work anyway</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. すぐに作業を中止してタンクの外に出て、周囲の人に伝える</span><span class="en">Stop work immediately, get out of the tank, and tell those nearby</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. しばらく休めば治ると思い、タンクの中で座って休む</span><span class="en">Assume resting will fix it and sit down to rest inside the tank</span></div>
+      <div class="opt" data-val="D"><span class="jp">D. 誰にも言わずに一人で対応する</span><span class="en">Handle it alone without telling anyone</span></div>
+    <div class="explain"><div class="jp">密閉された空間で気分が悪くなるのは酸素不足や有害ガスの影響である可能性があり、非常に危険です。すぐに作業を中止してタンクの外に出て、周囲の人にすぐ伝えることが鉄則です。</div><div class="en">Feeling unwell in a confined space may be due to oxygen deficiency or harmful gas, which is extremely dangerous. The ironclad rule is to stop work immediately, get out of the tank, and tell those nearby right away.</div></div>
+  </div>
+</div>
+</section>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+function safeGet(key){ try{ return JSON.parse(localStorage.getItem(key) || '{}'); }catch(e){ return {}; } }
+function safeSet(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+var readChapters = safeGet('shipssw_read');
+
+document.querySelectorAll('.chapter-card').forEach(function(c){
+  c.addEventListener('click', function(){ goToTarget(this.dataset.target); });
+});
+
+var allTocLinks = document.querySelectorAll('.toc-link');
+
+function showHome(){
+  document.getElementById('view-home').style.display = 'block';
+  document.getElementById('view-content').style.display = 'none';
+  document.getElementById('mobile-title').textContent = 'Shipbuilding & Ship Machinery SSW';
+  clearActiveTOC();
+}
+function showContent(){
+  document.getElementById('view-home').style.display = 'none';
+  document.getElementById('view-content').style.display = 'block';
+}
+function clearActiveTOC(){ allTocLinks.forEach(function(l){ l.classList.remove('active'); }); }
+function goToTarget(id){
+  showContent();
+  var el = document.getElementById(id);
+  if (el){ el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  setActiveTOC(id);
+  if (window.innerWidth <= 980) closeSidebar();
+  markRead(id);
+}
+function setActiveTOC(id){
+  clearActiveTOC();
+  var link = document.querySelector('.toc-link[data-target="'+id+'"]');
+  if (link) link.classList.add('active');
+}
+function markRead(id){
+  if (!readChapters[id]){ readChapters[id] = true; safeSet('shipssw_read', readChapters); updateProgress(); }
+}
+function updateProgress(){
+  var total = document.querySelectorAll('.toc-link').length;
+  var n = Object.keys(readChapters).length;
+  if (n > total) n = total;
+  var pct = total ? Math.round(n/total*100) : 0;
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-text').textContent = n+' / '+total+' read';
+  var hs = document.getElementById('home-progress-stat');
+  if (hs) hs.querySelector('b').textContent = pct+'%';
+}
+document.querySelectorAll('.toc-link').forEach(function(el){
+  el.addEventListener('click', function(){ goToTarget(this.dataset.target); });
+});
+document.querySelector('.brand').addEventListener('click', showHome);
+document.querySelector('.brand').style.cursor = 'pointer';
+
+function speakJP(text){
+  if (!text) return;
+  if (!('speechSynthesis' in window)){ alert('Text-to-speech is not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+function injectScoreBadges(){
+  document.querySelectorAll('.sec').forEach(function(sec){
+    var qblocks = sec.querySelectorAll('.q-block');
+    if (!qblocks.length) return;
+    var title = sec.querySelector('.sec-title');
+    if (!title || title.querySelector('.section-score-inline')) return;
+    var span = document.createElement('span');
+    span.className = 'section-score-inline';
+    span.style.marginLeft = 'auto';
+    span.dataset.total = qblocks.length;
+    span.dataset.correct = '0';
+    span.textContent = '0 / ' + qblocks.length;
+    title.style.flexDirection = 'row';
+    title.style.alignItems = 'center';
+    title.appendChild(span);
+  });
+}
+injectScoreBadges();
+
+document.addEventListener('click', function(e){
+  var spk = e.target.closest('.spk');
+  if (spk){ e.stopPropagation(); speakJP(spk.getAttribute('data-jp')); return; }
+
+  var opt = e.target.closest('.opt');
+  if (opt){
+    var qblock = opt.closest('.q-block');
+    if (!qblock || qblock.classList.contains('answered')) return;
+    var chosen = opt.getAttribute('data-val');
+    var answer = qblock.getAttribute('data-answer');
+    qblock.classList.add('answered');
+    qblock.querySelectorAll('.opt').forEach(function(o){
+      var v = o.getAttribute('data-val');
+      if (v === answer) o.classList.add('correct');
+      else if (v === chosen) o.classList.add('wrong');
+    });
+    var sec = qblock.closest('.sec');
+    if (sec){
+      var badge = sec.querySelector('.section-score-inline');
+      if (badge && chosen === answer){ badge.dataset.correct = (parseInt(badge.dataset.correct,10) + 1); }
+      if (badge) badge.textContent = badge.dataset.correct + ' / ' + badge.dataset.total;
+    }
+    return;
+  }
+});
+
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); }
+document.getElementById('menu-toggle').addEventListener('click', function(){
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+updateProgress();
+showHome();
+</script>
+</body>
+</html>

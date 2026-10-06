@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shipbuilding & Ship Machinery SSW — Theory Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#12395d; --teal-dark:#0b2945; --teal-light:#315E7F;
+  --caution:#d62828; --caution-dark:#b91f1f;
+  --ink:#16232E; --muted:#5A6B79; --border:#DCE4EA; --paper:#F5F7F9; --card:#FFFFFF;
+  --good:#1F7A4D; --bad:#B3261E; --radius:14px; --shadow:0 2px 10px rgba(11,61,98,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); line-height:1.55;}
+.jp{font-family:'Noto Sans JP','Inter',sans-serif;}
+ruby rt{font-size:0.55em; color:var(--muted);}
+
+header{background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%); color:#fff; padding:22px 24px; position:sticky; top:0; z-index:20; box-shadow:0 2px 10px rgba(0,0,0,0.15);}
+header h1{margin:0; font-size:19px; font-weight:800; display:flex; align-items:center; gap:10px;}
+header p{margin:4px 0 0 0; font-size:12.5px; color:#BFD6E6;}
+
+#tabs{display:flex; gap:6px; padding:14px 24px 0 24px; background:var(--card); border-bottom:1px solid var(--border); overflow-x:auto;}
+.tab-btn{padding:11px 18px; border:none; background:none; font-size:13.5px; font-weight:700; color:var(--muted); cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap;}
+.tab-btn.active{color:var(--teal-dark); border-bottom-color:var(--caution);}
+.tab-panel{display:none; max-width:820px; margin:0 auto; padding:24px 20px 80px 20px;}
+.tab-panel.active{display:block;}
+
+.stat-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;}
+.stat-pill{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px 16px; box-shadow:var(--shadow); font-size:12.5px; color:var(--muted);}
+.stat-pill b{color:var(--teal-dark); font-size:16px; display:block;}
+
+.filter-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+.filter-chip{padding:7px 14px; border-radius:20px; border:1.5px solid var(--border); background:var(--card); font-size:12px; font-weight:600; cursor:pointer; color:var(--muted);}
+.filter-chip.active{background:var(--teal); border-color:var(--teal); color:#fff;}
+
+#flash-stage{display:flex; flex-direction:column; align-items:center; gap:18px;}
+.flashcard{width:100%; max-width:480px; min-height:220px; background:var(--card); border-radius:20px; box-shadow:var(--shadow); border:1px solid var(--border); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 24px; cursor:pointer; text-align:center; position:relative;}
+.flashcard .badge{position:absolute; top:14px; left:16px; font-size:10.5px; color:var(--muted); background:#EEF3F7; padding:3px 9px; border-radius:20px;}
+.flashcard .term-jp{font-size:28px; font-weight:800; display:flex; align-items:center; gap:10px;}
+.flashcard .term-reading{font-size:13px; color:var(--muted); margin-top:6px;}
+.flashcard .term-en{font-size:17px; color:var(--teal-dark); font-weight:700; margin-top:14px;}
+.flashcard .hint{position:absolute; bottom:12px; font-size:11px; color:#9DB3C4;}
+.flash-controls{display:flex; gap:12px;}
+.btn{padding:11px 20px; border-radius:10px; border:none; font-size:13.5px; font-weight:700; cursor:pointer; background:var(--teal); color:#fff;}
+.btn.secondary{background:var(--card); color:var(--teal-dark); border:1.5px solid var(--border);}
+.btn.yellow{background:var(--caution); color:var(--teal-dark);}
+.btn:active{transform:scale(0.97);}
+#flash-progress{font-size:12.5px; color:var(--muted);}
+
+.q-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px; margin-bottom:16px; box-shadow:var(--shadow);}
+.q-card .q-meta{font-size:10.5px; color:var(--muted); background:#EEF3F7; display:inline-block; padding:2px 9px; border-radius:20px; margin-bottom:8px;}
+.q-jp{font-size:15px; font-weight:700; margin:0 0 2px 0;}
+.q-en{font-size:12.5px; color:var(--muted); margin:0 0 12px 0;}
+.opt{padding:10px 14px; border-radius:9px; border:1.5px solid var(--border); margin-bottom:7px; cursor:pointer; background:#fff;}
+.opt:hover{border-color:var(--teal-light);}
+.opt .jp{font-size:13.5px;}
+.opt .en{font-size:11.5px; color:var(--muted);}
+.q-card.answered .opt{cursor:default; pointer-events:none;}
+.q-card.answered .opt.correct{background:#E7F5EC; border-color:var(--good);}
+.q-card.answered .opt.wrong{background:#FBEAE9; border-color:var(--bad);}
+.explain{display:none; margin-top:10px; padding:10px 12px; background:#EEF3F7; border-left:3px solid var(--teal); border-radius:6px; font-size:12.5px;}
+.q-card.answered .explain{display:block;}
+.explain .jp{font-weight:600; margin-bottom:3px;}
+.explain .en{color:var(--muted);}
+
+.spk{flex-shrink:0; border:none; background:var(--caution); color:var(--teal-dark); border-radius:50%; width:24px;height:24px; font-size:11px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.2);}
+.spk:active{transform:scale(0.9);}
+
+.empty-msg{text-align:center; color:var(--muted); padding:40px 0; font-size:13.5px;}
+#quiz-summary{background:var(--card); border-radius:var(--radius); padding:18px 20px; margin-bottom:18px; box-shadow:var(--shadow); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
+#quiz-summary b{font-size:20px; color:var(--teal-dark);}
+</style>
+</head>
+<body>
+<header>
+  <h1>⚓ Shipbuilding & Ship Machinery SSW — Theory Practice</h1>
+  <p>Vocabulary flashcards and a self-graded knowledge quiz — companion to the full study guide</p>
+</header>
+<div id="tabs">
+  <button class="tab-btn active" data-tab="vocab">📇 Vocabulary</button>
+  <button class="tab-btn" data-tab="mcq">📝 Knowledge Quiz</button>
+</div>
+
+<div class="tab-panel active" id="panel-vocab">
+  <div class="stat-row">
+    <div class="stat-pill"><b id="vocab-total">0</b>Total terms</div>
+    <div class="stat-pill"><b id="vocab-pos">0</b>Current card</div>
+  </div>
+  <div class="filter-row" id="vocab-filters"></div>
+  <div id="flash-stage">
+    <div class="flashcard" id="flashcard">
+      <div class="badge" id="flash-badge">Ch.1</div>
+      <div id="flash-front">
+        <div class="term-jp"><span id="flash-jp"></span><button class="spk" id="flash-spk">🔊</button></div>
+        <div class="term-reading" id="flash-reading"></div>
+      </div>
+      <div id="flash-back" style="display:none;">
+        <div class="term-en" id="flash-en"></div>
+      </div>
+      <div class="hint">Tap card to flip / タップして裏返す</div>
+    </div>
+    <div id="flash-progress"></div>
+    <div class="flash-controls">
+      <button class="btn secondary" id="flash-prev">← Prev</button>
+      <button class="btn yellow" id="flash-shuffle">🔀 Shuffle</button>
+      <button class="btn" id="flash-next">Next →</button>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="panel-mcq">
+  <div id="quiz-summary">
+    <div><b id="mcq-score">0</b> / <span id="mcq-total-inline">0</span> correct</div>
+    <button class="btn secondary" id="mcq-reset">↺ Reset Quiz</button>
+  </div>
+  <div class="filter-row" id="mcq-filters"></div>
+  <div id="mcq-list"></div>
+</div>
+
+<script>
+var DATA = {"vocab": [{"jp": "造船", "reading": "ぞうせん", "en": "shipbuilding", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "舶用工業", "reading": "はくようこうぎょう", "en": "ship machinery industry", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "船体", "reading": "せんたい", "en": "ship's hull", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "作業区分", "reading": "さぎょうくぶん", "en": "work category", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "安全帯", "reading": "あんぜんたい", "en": "safety harness", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "密閉空間", "reading": "みっぺいくうかん", "en": "confined space", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "酸素濃度", "reading": "さんそのうど", "en": "oxygen concentration", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "防じんマスク", "reading": "ぼうじんますく", "en": "dust mask", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "外観検査", "reading": "がいかんけんさ", "en": "visual inspection", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "非破壊検査", "reading": "ひはかいけんさ", "en": "non-destructive testing", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "欠陥", "reading": "けっかん", "en": "defect", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "不具合", "reading": "ふぐあい", "en": "malfunction / defect", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "けがき", "reading": "けがき", "en": "marking-off (scribing)", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "スコヤ", "reading": "すこや", "en": "square (right-angle tool)", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "鋼製巻尺", "reading": "こうせいまきじゃく", "en": "steel tape measure", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "誤差", "reading": "ごさ", "en": "error / discrepancy", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "外形図", "reading": "がいけいず", "en": "outline drawing", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "構造図", "reading": "こうぞうず", "en": "structural drawing", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "溶接記号", "reading": "ようせつきごう", "en": "welding symbol", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "板厚", "reading": "いたあつ", "en": "plate thickness", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "高張力鋼", "reading": "こうちょうりょくこう", "en": "high-tensile steel", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "溶接棒", "reading": "ようせつぼう", "en": "welding rod", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "溶接ワイヤ", "reading": "ようせつわいや", "en": "welding wire", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "証明書", "reading": "しょうめいしょ", "en": "certificate", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "アーク溶接", "reading": "あーくようせつ", "en": "arc welding", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "被覆アーク溶接", "reading": "ひふくあーくようせつ", "en": "shielded metal arc welding", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "ヒューム", "reading": "ひゅーむ", "en": "fume(s)", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "ブローホール", "reading": "ぶろーほーる", "en": "blowhole (weld defect)", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "素地調整", "reading": "そじちょうせい", "en": "surface preparation", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "下塗り", "reading": "したぬり", "en": "primer coat / undercoat", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "鉄工", "reading": "てっこう", "en": "ironwork / steelwork", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "有機溶剤", "reading": "ゆうきようざい", "en": "organic solvent", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "舶用機関", "reading": "はくようきかん", "en": "marine machinery / marine engine", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "配管", "reading": "はいかん", "en": "piping", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "摩耗", "reading": "まもう", "en": "wear (mechanical)", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "漏れ", "reading": "もれ", "en": "leak", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "報連相", "reading": "ほうれんそう", "en": "report-inform-consult", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "連携", "reading": "れんけい", "en": "coordination / cooperation", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "作業チーム", "reading": "さぎょうちーむ", "en": "work team", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "指示", "reading": "しじ", "en": "instruction", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "判断問題", "reading": "はんだんもんだい", "en": "judgment question", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "足場", "reading": "あしば", "en": "scaffolding", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "交換", "reading": "こうかん", "en": "replacement / exchange", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "中止", "reading": "ちゅうし", "en": "stopping / discontinuing", "chapter": "ch11", "chapter_label": "第11章"}], "mcq": [{"q_jp": "<ruby>造船<rt>ぞうせん</rt></ruby>・<ruby>舶用工業<rt>はくようこうぎょう</rt></ruby><ruby>分野<rt>ぶんや</rt></ruby>の<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。", "q_en": "Which statement correctly describes the Shipbuilding and Ship Machinery Industry field?", "options": [{"val": "A", "jp": "特定技能2号は6つすべての作業区分が対象である", "en": "Specified Skilled Worker (ii) covers all six work categories"}, {"val": "B", "jp": "特定技能1号の評価試験では6つの作業区分から一つを選んで受験する", "en": "The SSW (i) evaluation test lets candidates choose one of six work categories"}, {"val": "C", "jp": "造船・舶用工業の作業には屋外や高所での作業は含まれない", "en": "Shipbuilding and ship-machinery work never involves outdoor or at-height work"}, {"val": "D", "jp": "舶用工業とは船の電気機器だけを指す言葉である", "en": "\"Ship machinery\" refers only to a ship's electrical equipment"}], "answer": "B", "explain_jp": "特定技能1号の評価試験は溶接・塗装・鉄工・仕上げ・機械加工・電気機器組立ての6区分に分かれており、受験者は自分の職種に合う区分を一つ選んで受験します。2号は溶接・塗装・鉄工の3区分のみが対象です。", "explain_en": "The SSW (i) evaluation test is divided into six categories — welding, painting, ironwork, finishing, machining, and electrical equipment assembly — and each candidate selects the one matching their job. SSW (ii) covers only three: welding, painting, and ironwork.", "chapter": "ch01", "chapter_label": "第1章"}, {"q_jp": "<ruby>船内<rt>せんない</rt></ruby>のタンクなど<ruby>密閉<rt>みっぺい</rt></ruby>された<ruby>空間<rt>くうかん</rt></ruby>で<ruby>作業<rt>さぎょう</rt></ruby>するときの<ruby>対応<rt>たいおう</rt></ruby>として<b>最も適切な</b>ものはどれですか。", "q_en": "What is the most appropriate response when working in a confined space such as a tank inside a ship?", "options": [{"val": "A", "jp": "空気はどこも同じなので特別な準備はいらない", "en": "Air is the same everywhere, so no special preparation is needed"}, {"val": "B", "jp": "作業前に換気を行い、酸素濃度を測定してから入る", "en": "Ventilate before starting, and measure the oxygen concentration before entering"}, {"val": "C", "jp": "一人で手早く作業を終わらせる", "en": "Finish the work quickly, alone"}, {"val": "D", "jp": "酸素が薄いと感じても我慢して作業を続ける", "en": "Keep working even if the air feels thin, and push through it"}], "answer": "B", "explain_jp": "密閉された空間は酸素不足や有害ガスが発生しやすいため、作業前に必ず換気と酸素濃度の測定を行い、安全を確認してから入ることが鉄則です。", "explain_en": "Confined spaces are prone to oxygen deficiency and harmful gas buildup, so the ironclad rule is to always ventilate and measure the oxygen concentration, confirming safety, before entering.", "chapter": "ch02", "chapter_label": "第2章"}, {"q_jp": "「<ruby>非破壊検査<rt>ひはかいけんさ</rt></ruby>」の<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。", "q_en": "Which statement correctly describes \"non-destructive testing\"?", "options": [{"val": "A", "jp": "部品を切断して内部を目で見て確認する検査である", "en": "An inspection that cuts a part open to check the inside by eye"}, {"val": "B", "jp": "放射線や超音波などを使い、部品を壊さずに内部の欠陥を調べる検査である", "en": "An inspection using radiography or ultrasound to check for internal defects without damaging the part"}, {"val": "C", "jp": "部品の重さを測定する検査である", "en": "An inspection that measures a part's weight"}, {"val": "D", "jp": "溶接作業員の技能レベルを判定する試験のことである", "en": "A test that grades a welder's skill level"}], "answer": "B", "explain_jp": "非破壊検査は、放射線や超音波などを利用して、部品を壊すことなく内部の欠陥の有無を確認できる検査方法です。", "explain_en": "Non-destructive testing uses radiography or ultrasound to check for the presence of internal defects without destroying the part.", "chapter": "ch03", "chapter_label": "第3章"}, {"q_jp": "「けがき」の<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。", "q_en": "Which statement correctly describes \"kegaki\" (marking-off)?", "options": [{"val": "A", "jp": "完成した船体を最終的に検査する作業である", "en": "The task of giving the finished hull a final inspection"}, {"val": "B", "jp": "鋼板の表面に切断線や加工位置の目印を描く作業である", "en": "The task of drawing cutting lines and processing-position marks onto a steel plate's surface"}, {"val": "C", "jp": "溶接部分を非破壊検査で確認する作業である", "en": "The task of checking a weld with non-destructive testing"}, {"val": "D", "jp": "保護具を点検して交換する作業である", "en": "The task of inspecting and replacing protective equipment"}], "answer": "B", "explain_jp": "けがきとは、鋼板を図面通りに加工するために、切断線や加工位置の目印を鋼板の表面に描く作業のことです。", "explain_en": "Kegaki is the task of drawing cutting lines and processing-position marks onto the surface of a steel plate so it can be processed exactly as the drawing specifies.", "chapter": "ch04", "chapter_label": "第4章"}, {"q_jp": "「<ruby>溶接記号<rt>ようせつきごう</rt></ruby>」の<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。", "q_en": "Which statement correctly describes a \"welding symbol\"?", "options": [{"val": "A", "jp": "鋼板の材質を示す記号である", "en": "A symbol indicating the material of a steel plate"}, {"val": "B", "jp": "溶接の種類や大きさ、行う位置などを図面上に示す記号である", "en": "A symbol on a drawing showing the type, size, and location of a weld"}, {"val": "C", "jp": "検査に合格した部品にだけ付けられる印である", "en": "A mark placed only on parts that passed inspection"}, {"val": "D", "jp": "作業員の名前を示す記号である", "en": "A symbol indicating a worker's name"}], "answer": "B", "explain_jp": "溶接記号は、図面上でどこにどんな種類・大きさの溶接を行うかを一目で伝えるための記号です。", "explain_en": "A welding symbol conveys, at a glance on the drawing, where a weld goes and what type and size it should be.", "chapter": "ch05", "chapter_label": "第5章"}, {"q_jp": "<ruby>鋼材<rt>こうざい</rt></ruby>の<ruby>保管<rt>ほかん</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。", "q_en": "Which statement about storing steel materials is correct?", "options": [{"val": "A", "jp": "雨や湿気にさらしても強度には影響しない", "en": "Exposure to rain or moisture doesn't affect strength"}, {"val": "B", "jp": "屋根のある場所で保管し、使用前にさびや汚れがないか確認する", "en": "Store it under cover, and check for rust or dirt before use"}, {"val": "C", "jp": "指示された材質と違う鋼材でも、形が同じなら使ってよい", "en": "A steel of a different material than specified is fine to use as long as the shape matches"}, {"val": "D", "jp": "証明書やマークは確認しなくてもよい", "en": "There's no need to check certificates or markings"}], "answer": "B", "explain_jp": "鋼材は雨や湿気でさびると強度が低下するため、屋根のある場所で保管し、使用前にさびや汚れ、材質のマークを確認することが大切です。", "explain_en": "Steel weakens when it rusts from rain or moisture, so it's important to store it under cover and check for rust, dirt, and material markings before use.", "chapter": "ch06", "chapter_label": "第6章"}, {"q_jp": "<ruby>溶接<rt>ようせつ</rt></ruby><ruby>作業<rt>さぎょう</rt></ruby>の<ruby>安全<rt>あんぜん</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。", "q_en": "Which statement about welding safety is correct?", "options": [{"val": "A", "jp": "溶接面や遮光メガネは必要に応じて着けなくてもよい", "en": "A welding mask or shaded goggles can be skipped depending on the situation"}, {"val": "B", "jp": "溶接中は強い光や火花、有害なヒュームが発生するため、保護具の着用と換気が欠かせない", "en": "Because welding produces intense light, sparks, and harmful fumes, protective equipment and ventilation are essential"}, {"val": "C", "jp": "溶接直後の部分はすぐに冷えるので素手で触っても問題ない", "en": "A just-welded area cools immediately, so it's fine to touch with bare hands"}, {"val": "D", "jp": "溶接の速度や電流は溶接の強度に関係しない", "en": "Welding speed and current have no bearing on the weld's strength"}], "answer": "B", "explain_jp": "溶接中は強い光・火花・有害なヒュームが発生するため、溶接面や保護具の着用、十分な換気が欠かせません。", "explain_en": "Because welding produces intense light, sparks, and harmful fumes, wearing a welding mask and protective equipment, plus thorough ventilation, are essential.", "chapter": "ch07", "chapter_label": "第7章"}, {"q_jp": "<ruby>塗装<rt>とそう</rt></ruby><ruby>作業<rt>さぎょう</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。", "q_en": "Which statement about painting work is correct?", "options": [{"val": "A", "jp": "一度に厚く塗るほうが早く仕上がってよい", "en": "Applying a single thick coat finishes the job faster and is preferable"}, {"val": "B", "jp": "下塗り・中塗り・上塗りと薄く塗り重ね、乾燥時間を守ることが大切である", "en": "Applying thin layers — primer, intermediate, and topcoat — and observing drying times is important"}, {"val": "C", "jp": "有機溶剤を含む塗料は換気をしなくても安全である", "en": "Paint containing organic solvents is safe to use without ventilation"}, {"val": "D", "jp": "素地調整は塗装の見た目には関係しない", "en": "Surface preparation has no bearing on the paint job's appearance"}], "answer": "B", "explain_jp": "塗装は下塗り・中塗り・上塗りと薄く塗り重ね、それぞれの乾燥時間を守ることで、塗膜がしっかり密着し剥がれにくくなります。", "explain_en": "Building up thin layers — primer, intermediate coat, and topcoat — and observing each one's drying time lets the paint film adhere firmly and resist peeling.", "chapter": "ch08", "chapter_label": "第8章"}, {"q_jp": "<ruby>舶用機関<rt>はくようきかん</rt></ruby>の<ruby>整備<rt>せいび</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>説明<rt>せつめい</rt></ruby>として<b>最も適切な</b>ものはどれですか。", "q_en": "Which statement about marine engine maintenance is most appropriate?", "options": [{"val": "A", "jp": "分解した部品の順番は気にしなくてよい", "en": "There's no need to worry about the order of disassembled parts"}, {"val": "B", "jp": "分解した部品は順番を間違えずに並べ、正しい位置に組み立て直す", "en": "Lay out disassembled parts in the correct order and reassemble each one in its correct position"}, {"val": "C", "jp": "油や燃料の小さな漏れは報告しなくてよい", "en": "A small oil or fuel leak doesn't need to be reported"}, {"val": "D", "jp": "パイプの材質は流すものに関係なく同じでよい", "en": "A pipe's material can stay the same regardless of what flows through it"}], "answer": "B", "explain_jp": "分解した部品は順番を間違えると正しく組み立て直せなくなるため、順番通りに並べて管理し、元の位置に正確に戻すことが重要です。", "explain_en": "Mixing up the order of disassembled parts makes correct reassembly impossible, so it's important to keep them arranged in order and return each one precisely to its original position.", "chapter": "ch09", "chapter_label": "第9章"}, {"q_jp": "<ruby>造船所<rt>ぞうせんじょ</rt></ruby>での「<ruby>連絡<rt>れんらく</rt></ruby>」の<ruby>説明<rt>せつめい</rt></ruby>として<b>最も適切な</b>ものはどれですか。", "q_en": "Which statement most appropriately describes \"renraku\" (informing) at a shipyard?", "options": [{"val": "A", "jp": "自分の判断だけで作業を進め、誰にも伝えないこと", "en": "Proceeding with work based only on your own judgment and telling no one"}, {"val": "B", "jp": "自分の作業が他のチームに影響する場合などに、関係者へ必要な情報を伝えること", "en": "Passing necessary information to those involved when your work will affect another team, and similar cases"}, {"val": "C", "jp": "上司に会うのを避けて作業を進めること", "en": "Avoiding your supervisor and proceeding with work"}, {"val": "D", "jp": "分からないことをそのままにして作業を進めること", "en": "Leaving something unclear and proceeding with work anyway"}], "answer": "B", "explain_jp": "連絡とは、自分の作業が他の作業チームに影響を与える可能性がある場合などに、関係者へ必要な情報を伝えることです。造船所では複数のチームが同時に作業するため、特に重要になります。", "explain_en": "Renraku (informing) means passing necessary information to those involved when your work may affect another team's work, among other cases. This matters especially at a shipyard, where multiple teams work simultaneously.", "chapter": "ch10", "chapter_label": "第10章"}, {"q_jp": "<ruby>高所<rt>こうしょ</rt></ruby>の<ruby>足場<rt>あしば</rt></ruby>で<ruby>作業中<rt>さぎょうちゅう</rt></ruby>、<ruby>安全帯<rt>あんぜんたい</rt></ruby>を<ruby>掛<rt>か</rt></ruby>けるフックが<ruby>壊<rt>こわ</rt></ruby>れていることに<ruby>気<rt>き</rt></ruby>づきました。<b>最も適切な</b>対応はどれですか。", "q_en": "While working on scaffolding at height, you notice that the hook for attaching your safety harness is broken. What is the most appropriate response?", "options": [{"val": "A", "jp": "フックが壊れていても注意して作業すれば問題ない", "en": "It's fine to keep working carefully even with a broken hook"}, {"val": "B", "jp": "作業を中断し、責任者に報告して安全な足場・設備に交換してから作業を再開する", "en": "Stop work, report it to a supervisor, and resume only after the scaffolding/equipment is replaced with something safe"}, {"val": "C", "jp": "別の場所に自分の判断でフックを付け替えて作業を続ける", "en": "Reattach the hook somewhere else on your own judgment and keep working"}, {"val": "D", "jp": "休憩時間になるまで気づかなかったことにする", "en": "Pretend not to have noticed until the next break"}], "answer": "B", "explain_jp": "壊れたフックのまま高所作業を続けると、転落という重大な事故につながるため、すぐに作業を中断して責任者に報告し、安全な設備に交換してから再開します。", "explain_en": "Continuing to work at height with a broken hook risks a serious fall accident, so stop work immediately, report it to a supervisor, and resume only after it's replaced with safe equipment.", "chapter": "ch11", "chapter_label": "第11章"}, {"q_jp": "<ruby>船内<rt>せんない</rt></ruby>のタンクの<ruby>中<rt>なか</rt></ruby>で<ruby>作業<rt>さぎょう</rt></ruby>をしているとき、<ruby>急<rt>きゅう</rt></ruby>に<ruby>気分<rt>きぶん</rt></ruby>が<ruby>悪<rt>わる</rt></ruby>くなりました。<b>最も適切な</b>対応はどれですか。", "q_en": "While working inside a ship's tank, you suddenly start to feel unwell. What is the most appropriate response?", "options": [{"val": "A", "jp": "我慢してそのまま作業を最後まで終わらせる", "en": "Push through and finish the work anyway"}, {"val": "B", "jp": "すぐに作業を中止してタンクの外に出て、周囲の人に伝える", "en": "Stop work immediately, get out of the tank, and tell those nearby"}, {"val": "C", "jp": "しばらく休めば治ると思い、タンクの中で座って休む", "en": "Assume resting will fix it and sit down to rest inside the tank"}, {"val": "D", "jp": "誰にも言わずに一人で対応する", "en": "Handle it alone without telling anyone"}], "answer": "B", "explain_jp": "密閉された空間で気分が悪くなるのは酸素不足や有害ガスの影響である可能性があり、非常に危険です。すぐに作業を中止してタンクの外に出て、周囲の人にすぐ伝えることが鉄則です。", "explain_en": "Feeling unwell in a confined space may be due to oxygen deficiency or harmful gas, which is extremely dangerous. The ironclad rule is to stop work immediately, get out of the tank, and tell those nearby right away.", "chapter": "ch11", "chapter_label": "第11章"}]};
+function esc(s){ return (s||'').toString(); }
+function speakJP(text){
+  if (!text) return;
+  if (!('speechSynthesis' in window)){ alert('Text-to-speech not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* FLASHCARDS */
+var vocabAll = DATA.vocab.slice();
+var vocabFiltered = vocabAll.slice();
+var flashIdx = 0, flashFlipped = false;
+var chLabels = Array.from(new Set(vocabAll.map(function(v){ return v.chapter_label; })));
+var chFilterEl = document.getElementById('vocab-filters');
+var allChip = document.createElement('div'); allChip.className='filter-chip active'; allChip.textContent='All'; allChip.dataset.ch='all';
+chFilterEl.appendChild(allChip);
+chLabels.forEach(function(ch){
+  var chip = document.createElement('div'); chip.className='filter-chip'; chip.textContent=ch; chip.dataset.ch=ch;
+  chFilterEl.appendChild(chip);
+});
+chFilterEl.addEventListener('click', function(e){
+  var chip = e.target.closest('.filter-chip'); if(!chip) return;
+  chFilterEl.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+  chip.classList.add('active');
+  var ch = chip.dataset.ch;
+  vocabFiltered = ch === 'all' ? vocabAll.slice() : vocabAll.filter(function(v){ return v.chapter_label === ch; });
+  flashIdx = 0; renderFlash();
+});
+document.getElementById('vocab-total').textContent = vocabAll.length;
+
+function renderFlash(){
+  if (!vocabFiltered.length){ document.getElementById('flash-jp').textContent='No cards'; return; }
+  if (flashIdx >= vocabFiltered.length) flashIdx = 0;
+  if (flashIdx < 0) flashIdx = vocabFiltered.length - 1;
+  var v = vocabFiltered[flashIdx];
+  flashFlipped = false;
+  document.getElementById('flash-front').style.display='block';
+  document.getElementById('flash-back').style.display='none';
+  document.getElementById('flash-badge').textContent = v.chapter_label;
+  document.getElementById('flash-jp').textContent = v.jp || '';
+  document.getElementById('flash-reading').textContent = v.reading || '';
+  document.getElementById('flash-en').textContent = v.en || '';
+  document.getElementById('flash-progress').textContent = (flashIdx+1)+' / '+vocabFiltered.length;
+  document.getElementById('vocab-pos').textContent = flashIdx+1;
+}
+document.getElementById('flashcard').addEventListener('click', function(e){
+  if (e.target.closest('.spk')) return;
+  flashFlipped = !flashFlipped;
+  document.getElementById('flash-front').style.display = flashFlipped ? 'none' : 'block';
+  document.getElementById('flash-back').style.display = flashFlipped ? 'block' : 'none';
+});
+document.getElementById('flash-spk').addEventListener('click', function(e){
+  e.stopPropagation();
+  var v = vocabFiltered[flashIdx];
+  speakJP(v ? v.jp : '');
+});
+document.getElementById('flash-next').addEventListener('click', function(){ flashIdx++; renderFlash(); });
+document.getElementById('flash-prev').addEventListener('click', function(){ flashIdx--; renderFlash(); });
+document.getElementById('flash-shuffle').addEventListener('click', function(){
+  for (var i = vocabFiltered.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i+1));
+    var tmp = vocabFiltered[i]; vocabFiltered[i] = vocabFiltered[j]; vocabFiltered[j] = tmp;
+  }
+  flashIdx = 0; renderFlash();
+});
+renderFlash();
+
+/* MCQ */
+var mcqAll = DATA.mcq.slice();
+var mcqScore = 0;
+document.getElementById('mcq-total-inline').textContent = mcqAll.length;
+var mcqChFilterEl = document.getElementById('mcq-filters');
+var mcqAllChip = document.createElement('div'); mcqAllChip.className='filter-chip active'; mcqAllChip.textContent='All'; mcqAllChip.dataset.ch='all';
+mcqChFilterEl.appendChild(mcqAllChip);
+Array.from(new Set(mcqAll.map(function(m){ return m.chapter_label; }))).forEach(function(ch){
+  var chip = document.createElement('div'); chip.className='filter-chip'; chip.textContent=ch; chip.dataset.ch=ch;
+  mcqChFilterEl.appendChild(chip);
+});
+mcqChFilterEl.addEventListener('click', function(e){
+  var chip = e.target.closest('.filter-chip'); if(!chip) return;
+  mcqChFilterEl.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+  chip.classList.add('active');
+  renderMCQ(chip.dataset.ch);
+});
+function renderMCQ(filterCh){
+  var list = document.getElementById('mcq-list');
+  list.innerHTML = '';
+  var items = (!filterCh || filterCh === 'all') ? mcqAll : mcqAll.filter(function(m){ return m.chapter_label === filterCh; });
+  if (!items.length){ list.innerHTML = '<div class="empty-msg">No questions in this filter.</div>'; return; }
+  items.forEach(function(m){
+    var card = document.createElement('div');
+    card.className = 'q-card';
+    card.dataset.answer = m.answer;
+    var optsHtml = '';
+    (m.options||[]).forEach(function(o){
+      optsHtml += '<div class="opt" data-val="'+o.val+'"><span class="jp">'+o.val+'. '+esc(o.jp)+'</span><span class="en">'+esc(o.en)+'</span></div>';
+    });
+    card.innerHTML =
+      '<div class="q-meta">'+esc(m.chapter_label)+'</div>'+
+      '<p class="q-jp"><button class="spk" data-jp="'+esc(m.q_jp).replace(/<[^>]+>/g,'').replace(/"/g,'&quot;')+'">🔊</button>'+esc(m.q_jp)+'</p>'+
+      '<p class="q-en">'+esc(m.q_en)+'</p>'+
+      optsHtml+
+      '<div class="explain"><div class="jp">'+esc(m.explain_jp)+'</div><div class="en">'+esc(m.explain_en)+'</div></div>';
+    list.appendChild(card);
+  });
+  mcqScore = 0;
+  document.getElementById('mcq-score').textContent = mcqScore;
+  document.getElementById('mcq-total-inline').textContent = items.length;
+}
+document.getElementById('mcq-reset').addEventListener('click', function(){
+  var activeChip = mcqChFilterEl.querySelector('.filter-chip.active');
+  renderMCQ(activeChip ? activeChip.dataset.ch : 'all');
+});
+renderMCQ('all');
+document.getElementById('mcq-list').addEventListener('click', function(e){
+  var opt = e.target.closest('.opt');
+  if (!opt) return;
+  var card = opt.closest('.q-card');
+  if (card.classList.contains('answered')) return;
+  var chosen = opt.dataset.val;
+  var answer = card.dataset.answer;
+  card.classList.add('answered');
+  card.querySelectorAll('.opt').forEach(function(o){
+    if (o.dataset.val === answer) o.classList.add('correct');
+    else if (o.dataset.val === chosen) o.classList.add('wrong');
+  });
+  if (chosen === answer){ mcqScore++; document.getElementById('mcq-score').textContent = mcqScore; }
+});
+
+document.addEventListener('click', function(e){
+  var spk = e.target.closest('.spk');
+  if (spk && spk.id !== 'flash-spk'){ speakJP(spk.getAttribute('data-jp')); }
+});
+</script>
+</body>
+</html>
