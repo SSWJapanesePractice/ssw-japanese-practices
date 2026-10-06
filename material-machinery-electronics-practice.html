@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Material/Machinery/Electronics SSW — Theory Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#12395d; --teal-dark:#0b2945; --teal-light:#315E7F;
+  --caution:#d62828; --caution-dark:#b91f1f;
+  --ink:#1B2430; --muted:#5B6675; --border:#DDE3EA; --paper:#F5F7FA; --card:#FFFFFF;
+  --good:#1F7A4D; --bad:#B3261E; --radius:14px; --shadow:0 2px 10px rgba(18,35,61,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); line-height:1.55;}
+.jp{font-family:'Noto Sans JP','Inter',sans-serif;}
+ruby rt{font-size:0.55em; color:var(--muted);}
+
+header{background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%); color:#fff; padding:22px 24px; position:sticky; top:0; z-index:20; box-shadow:0 2px 10px rgba(0,0,0,0.15);}
+header h1{margin:0; font-size:19px; font-weight:800; display:flex; align-items:center; gap:10px;}
+header p{margin:4px 0 0 0; font-size:12.5px; color:#C3D2E6;}
+
+#tabs{display:flex; gap:6px; padding:14px 24px 0 24px; background:var(--card); border-bottom:1px solid var(--border); overflow-x:auto;}
+.tab-btn{padding:11px 18px; border:none; background:none; font-size:13.5px; font-weight:700; color:var(--muted); cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap;}
+.tab-btn.active{color:var(--teal-dark); border-bottom-color:var(--caution);}
+.tab-panel{display:none; max-width:820px; margin:0 auto; padding:24px 20px 80px 20px;}
+.tab-panel.active{display:block;}
+
+.stat-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;}
+.stat-pill{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px 16px; box-shadow:var(--shadow); font-size:12.5px; color:var(--muted);}
+.stat-pill b{color:var(--teal-dark); font-size:16px; display:block;}
+
+.filter-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+.filter-chip{padding:7px 14px; border-radius:20px; border:1.5px solid var(--border); background:var(--card); font-size:12px; font-weight:600; cursor:pointer; color:var(--muted);}
+.filter-chip.active{background:var(--teal); border-color:var(--teal); color:#fff;}
+
+#flash-stage{display:flex; flex-direction:column; align-items:center; gap:18px;}
+.flashcard{width:100%; max-width:480px; min-height:220px; background:var(--card); border-radius:20px; box-shadow:var(--shadow); border:1px solid var(--border); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 24px; cursor:pointer; text-align:center; position:relative;}
+.flashcard .badge{position:absolute; top:14px; left:16px; font-size:10.5px; color:var(--muted); background:#EEF2F7; padding:3px 9px; border-radius:20px;}
+.flashcard .term-jp{font-size:28px; font-weight:800; display:flex; align-items:center; gap:10px;}
+.flashcard .term-reading{font-size:13px; color:var(--muted); margin-top:6px;}
+.flashcard .term-en{font-size:17px; color:var(--teal-dark); font-weight:700; margin-top:14px;}
+.flashcard .hint{position:absolute; bottom:12px; font-size:11px; color:#AEBBCB;}
+.flash-controls{display:flex; gap:12px;}
+.btn{padding:11px 20px; border-radius:10px; border:none; font-size:13.5px; font-weight:700; cursor:pointer; background:var(--teal); color:#fff;}
+.btn.secondary{background:var(--card); color:var(--teal-dark); border:1.5px solid var(--border);}
+.btn.yellow{background:var(--caution); color:var(--teal-dark);}
+.btn:active{transform:scale(0.97);}
+#flash-progress{font-size:12.5px; color:var(--muted);}
+
+.q-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px; margin-bottom:16px; box-shadow:var(--shadow);}
+.q-card .q-meta{font-size:10.5px; color:var(--muted); background:#EEF2F7; display:inline-block; padding:2px 9px; border-radius:20px; margin-bottom:8px;}
+.q-jp{font-size:15px; font-weight:700; margin:0 0 2px 0;}
+.q-en{font-size:12.5px; color:var(--muted); margin:0 0 12px 0;}
+.opt{padding:10px 14px; border-radius:9px; border:1.5px solid var(--border); margin-bottom:7px; cursor:pointer; background:#fff;}
+.opt:hover{border-color:var(--teal-light);}
+.opt .jp{font-size:13.5px;}
+.opt .en{font-size:11.5px; color:var(--muted);}
+.q-card.answered .opt{cursor:default; pointer-events:none;}
+.q-card.answered .opt.correct{background:#E7F5EC; border-color:var(--good);}
+.q-card.answered .opt.wrong{background:#FBEAE9; border-color:var(--bad);}
+.explain{display:none; margin-top:10px; padding:10px 12px; background:#EEF2F7; border-left:3px solid var(--teal); border-radius:6px; font-size:12.5px;}
+.q-card.answered .explain{display:block;}
+.explain .jp{font-weight:600; margin-bottom:3px;}
+.explain .en{color:var(--muted);}
+
+.spk{flex-shrink:0; border:none; background:var(--caution); color:var(--teal-dark); border-radius:50%; width:24px;height:24px; font-size:11px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.2);}
+.spk:active{transform:scale(0.9);}
+
+.empty-msg{text-align:center; color:var(--muted); padding:40px 0; font-size:13.5px;}
+#quiz-summary{background:var(--card); border-radius:var(--radius); padding:18px 20px; margin-bottom:18px; box-shadow:var(--shadow); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
+#quiz-summary b{font-size:20px; color:var(--teal-dark);}
+</style>
+</head>
+<body>
+<header>
+  <h1>⚙️ Material/Machinery/Electronics SSW — Theory Practice</h1>
+  <p>Vocabulary flashcards and a self-graded knowledge quiz — companion to the full study guide</p>
+</header>
+<div id="tabs">
+  <button class="tab-btn active" data-tab="vocab">📇 Vocabulary</button>
+  <button class="tab-btn" data-tab="mcq">📝 Knowledge Quiz</button>
+</div>
+
+<div class="tab-panel active" id="panel-vocab">
+  <div class="stat-row">
+    <div class="stat-pill"><b id="vocab-total">0</b>Total terms</div>
+    <div class="stat-pill"><b id="vocab-pos">0</b>Current card</div>
+  </div>
+  <div class="filter-row" id="vocab-filters"></div>
+  <div id="flash-stage">
+    <div class="flashcard" id="flashcard">
+      <div class="badge" id="flash-badge">Ch.1</div>
+      <div id="flash-front">
+        <div class="term-jp"><span id="flash-jp"></span><button class="spk" id="flash-spk">🔊</button></div>
+        <div class="term-reading" id="flash-reading"></div>
+      </div>
+      <div id="flash-back" style="display:none;">
+        <div class="term-en" id="flash-en"></div>
+      </div>
+      <div class="hint">Tap card to flip / タップして裏返す</div>
+    </div>
+    <div id="flash-progress"></div>
+    <div class="flash-controls">
+      <button class="btn secondary" id="flash-prev">← Prev</button>
+      <button class="btn yellow" id="flash-shuffle">🔀 Shuffle</button>
+      <button class="btn" id="flash-next">Next →</button>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="panel-mcq">
+  <div id="quiz-summary">
+    <div><b id="mcq-score">0</b> / <span id="mcq-total-inline">0</span> correct</div>
+    <button class="btn secondary" id="mcq-reset">↺ Reset Quiz</button>
+  </div>
+  <div class="filter-row" id="mcq-filters"></div>
+  <div id="mcq-list"></div>
+</div>
+
+<script>
+var DATA = {"vocab": [{"jp": "素形材", "reading": "そけいざい", "en": "cast/forged material parts (material processing)", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "産業機械", "reading": "さんぎょうきかい", "en": "industrial machinery", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "機械金属加工", "reading": "きかいきんぞくかこう", "en": "machining and metal processing", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "電気電子機器組立て", "reading": "でんきでんしききぐみたて", "en": "electric and electronic equipment assembly", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "金属表面処理", "reading": "きんぞくひょうめんしょり", "en": "metal surface treatment", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "安全衛生", "reading": "あんぜんえいせい", "en": "occupational safety and health", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "保護具", "reading": "ほごぐ", "en": "protective equipment", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "危険予知", "reading": "きけんよち", "en": "hazard prediction", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "責任者", "reading": "せきにんしゃ", "en": "person in charge / supervisor", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "台車", "reading": "だいしゃ", "en": "hand truck / dolly", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "整理", "reading": "せいり", "en": "sorting (removing unneeded items)", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "整頓", "reading": "せいとん", "en": "setting in order", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "品質管理", "reading": "ひんしつかんり", "en": "quality control", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "不良品", "reading": "ふりょうひん", "en": "defective product", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "ノギス", "reading": "のぎす", "en": "caliper", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "マイクロメーター", "reading": "まいくろめーたー", "en": "micrometer", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "水準器", "reading": "すいじゅんき", "en": "level (spirit level)", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "精度", "reading": "せいど", "en": "precision / accuracy", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "図面", "reading": "ずめん", "en": "technical drawing", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "寸法", "reading": "すんぽう", "en": "dimension", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "公差", "reading": "こうさ", "en": "tolerance", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "記号", "reading": "きごう", "en": "symbol", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "硬度", "reading": "こうど", "en": "hardness", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "融点", "reading": "ゆうてん", "en": "melting point", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "耐食性", "reading": "たいしょくせい", "en": "corrosion resistance", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "樹脂", "reading": "じゅし", "en": "resin / plastic", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "鋳造", "reading": "ちゅうぞう", "en": "casting", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "鍛造", "reading": "たんぞう", "en": "forging", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "ダイカスト", "reading": "だいかすと", "en": "die-casting", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "溶接", "reading": "ようせつ", "en": "welding", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "塗装", "reading": "とそう", "en": "painting / coating", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "はんだ付け", "reading": "はんだづけ", "en": "soldering", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "プリント配線板", "reading": "プリントはいせんばん", "en": "printed circuit board", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "静電気", "reading": "せいでんき", "en": "static electricity", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "配線", "reading": "はいせん", "en": "wiring", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "制御盤", "reading": "せいぎょばん", "en": "control panel", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "めっき", "reading": "めっき", "en": "plating", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "陽極酸化処理", "reading": "ようきょくさんかしょり", "en": "anodizing", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "耐摩耗性", "reading": "たいまもうせい", "en": "wear resistance", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "洗浄液", "reading": "せんじょうえき", "en": "cleaning solution", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "報連相", "reading": "ほうれんそう", "en": "report-inform-consult", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "指示", "reading": "しじ", "en": "instruction", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "異常", "reading": "いじょう", "en": "abnormality", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "質問", "reading": "しつもん", "en": "question", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "判断問題", "reading": "はんだんもんだい", "en": "judgment question", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "再測定", "reading": "さいそくてい", "en": "re-measurement", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "交換", "reading": "こうかん", "en": "replacement / exchange", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "中断", "reading": "ちゅうだん", "en": "interruption / suspension", "chapter": "ch11", "chapter_label": "第11章"}], "mcq": [{"q_jp": "<ruby>素形材<rt>そけいざい</rt></ruby>・<ruby>産業機械<rt>さんぎょうきかい</rt></ruby>・<ruby>電気<rt>でんき</rt></ruby><ruby>電子<rt>でんし</rt></ruby><ruby>情報<rt>じょうほう</rt></ruby><ruby>関連<rt>かんれん</rt></ruby><ruby>製造業<rt>せいぞうぎょう</rt></ruby><ruby>分野<rt>ぶんや</rt></ruby>の<ruby>特定技能<rt>とくていぎのう</rt></ruby><ruby>評価<rt>ひょうか</rt></ruby><ruby>試験<rt>しけん</rt></ruby>の<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。", "q_en": "Which statement correctly describes the SSW skill evaluation test for this manufacturing field?", "options": [{"val": "A", "jp": "すべての受験者が3つの区分すべてに合格する必要がある", "en": "All candidates must pass all three categories"}, {"val": "B", "jp": "受験者は3つの区分の中から一つを選んで受験する", "en": "Candidates choose one of the three categories to take"}, {"val": "C", "jp": "電気電子機器組立て区分にはめっきの問題しか出題されない", "en": "Only plating questions appear in the Electric/Electronic Equipment Assembly category"}, {"val": "D", "jp": "安全衛生の問題はどの区分にもまったく出題されない", "en": "Safety and health questions never appear in any category"}], "answer": "B", "explain_jp": "この分野の評価試験は機械金属加工・電気電子機器組立て・金属表面処理の3区分に分かれており、受験者は自分が従事する区分を一つ選んで受験します。", "explain_en": "The test for this field is divided into three categories — Machining and Metal Processing, Electric and Electronic Equipment Assembly, and Metal Surface Treatment — and each candidate selects and sits for the one category matching their job.", "chapter": "ch01", "chapter_label": "第1章"}, {"q_jp": "<ruby>重<rt>おも</rt></ruby>い<ruby>荷物<rt>にもつ</rt></ruby>を<ruby>運<rt>はこ</rt></ruby>ぶときの<ruby>対応<rt>たいおう</rt></ruby>として<b>最も適切な</b>ものはどれですか。", "q_en": "Which is the most appropriate response when needing to move a heavy load?", "options": [{"val": "A", "jp": "腰を痛めても一人で一気に持ち上げる", "en": "Lift it alone in one go even if it strains your back"}, {"val": "B", "jp": "台車を使うか、同僚と二人で運ぶ", "en": "Use a hand truck, or carry it together with a coworker"}, {"val": "C", "jp": "誰にも相談せず自己流のやり方で運ぶ", "en": "Move it your own way without consulting anyone"}, {"val": "D", "jp": "重ければそのまま放置して誰にも伝えない", "en": "If it's too heavy, just leave it there and tell no one"}], "answer": "B", "explain_jp": "重い荷物を無理に一人で持ち上げると腰を痛める危険があるため、台車の利用や二人以上での運搬など、体に負担をかけない方法を選びます。", "explain_en": "Forcing a heavy lift alone risks back injury, so choose a method that doesn't strain the body, such as using a hand truck or carrying it with another person.", "chapter": "ch02", "chapter_label": "第2章"}, {"q_jp": "５Ｓの「<ruby>整頓<rt>せいとん</rt></ruby>」が<ruby>意味<rt>いみ</rt></ruby>することとして<b>正しい</b>ものはどれですか。", "q_en": "What does the \"seiton\" (set in order) step of 5S mean?", "options": [{"val": "A", "jp": "いらない物を思い切って捨てること", "en": "Getting rid of unneeded items"}, {"val": "B", "jp": "物の置き場所を決めて誰でも分かりやすくすること", "en": "Deciding a fixed location for items so anyone can find them easily"}, {"val": "C", "jp": "決めたルールを毎日の習慣にすること", "en": "Making the rules into a daily habit"}, {"val": "D", "jp": "職場を隅々まできれいに掃除すること", "en": "Cleaning the workplace thoroughly, corner to corner"}], "answer": "B", "explain_jp": "整頓は、必要な物をすぐに取り出せるように、置き場所や置き方を決めて分かりやすく表示しておくことを指します。Aは整理、Cはしつけ、Dは清掃の説明です。", "explain_en": "Seiton refers to deciding a fixed place and way to store items, and labeling them clearly, so needed items can be retrieved instantly. (A describes seiri, C describes shitsuke, and D describes seiso.)", "chapter": "ch03", "chapter_label": "第3章"}, {"q_jp": "ノギスとマイクロメーターの<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。", "q_en": "Which statement correctly describes calipers and micrometers?", "options": [{"val": "A", "jp": "ノギスは穴の内径を測ることができない", "en": "Calipers cannot measure inner diameter"}, {"val": "B", "jp": "マイクロメーターはノギスよりもさらに細かい単位まで測定できる", "en": "Micrometers can measure to an even finer unit than calipers"}, {"val": "C", "jp": "水準器は部品の長さを測るための器具である", "en": "A level is an instrument for measuring part length"}, {"val": "D", "jp": "測定器具は多少落としても精度に影響しない", "en": "Dropping a measuring instrument doesn't affect its accuracy"}], "answer": "B", "explain_jp": "マイクロメーターは1000分の1ミリ単位まで測定できる精密な器具で、ノギスよりも高い精度が必要な検査に使われます。", "explain_en": "The micrometer is a precision instrument that can measure to 1/1000 of a millimeter, and is used for inspections requiring higher precision than a caliper provides.", "chapter": "ch04", "chapter_label": "第4章"}, {"q_jp": "<ruby>図面<rt>ずめん</rt></ruby>の「<ruby>公差<rt>こうさ</rt></ruby>」の<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。", "q_en": "Which statement correctly describes \"tolerance\" on a drawing?", "options": [{"val": "A", "jp": "部品の重さを表す単位である", "en": "A unit representing a part's weight"}, {"val": "B", "jp": "実際の仕上がり寸法が許容される範囲のことである", "en": "The allowed range within which the actual finished dimension may vary"}, {"val": "C", "jp": "図面を描いた担当者の名前のことである", "en": "The name of the person who drew the drawing"}, {"val": "D", "jp": "材質の種類を表す記号のことである", "en": "A symbol representing the type of material"}], "answer": "B", "explain_jp": "公差とは、実際の仕上がり寸法がどこまでずれてもよいかを示す許容範囲のことで、この範囲を超えると不良品として扱われます。", "explain_en": "Tolerance is the allowed range within which the actual finished dimension may deviate; exceeding that range means the part is treated as defective.", "chapter": "ch05", "chapter_label": "第5章"}, {"q_jp": "<ruby>金属<rt>きんぞく</rt></ruby><ruby>材料<rt>ざいりょう</rt></ruby>に<ruby>関<rt>かん</rt></ruby>する<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。", "q_en": "Which statement about metal materials is correct?", "options": [{"val": "A", "jp": "ステンレスは鉄より、さびに弱い", "en": "Stainless steel is more prone to rust than plain iron"}, {"val": "B", "jp": "アルミニウムは軽量で、さびに強い性質を持つ", "en": "Aluminum is lightweight and resists rust"}, {"val": "C", "jp": "すべての金属は同じ融点で溶ける", "en": "All metals melt at the same melting point"}, {"val": "D", "jp": "材質が違っても加工方法や注意点は変わらない", "en": "Processing methods and precautions stay the same regardless of material"}], "answer": "B", "explain_jp": "アルミニウムは軽量でさびに強い金属として広く使われます。ステンレスはさびに強く、金属ごとに融点や加工方法・注意点は異なります。", "explain_en": "Aluminum is widely used precisely because it is lightweight and rust-resistant. Stainless steel is in fact highly rust-resistant, and melting points and processing precautions differ from metal to metal.", "chapter": "ch06", "chapter_label": "第6章"}, {"q_jp": "「ダイカスト」の<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。", "q_en": "Which statement correctly describes \"die-casting\"?", "options": [{"val": "A", "jp": "金属を叩いて形を変える加工方法である", "en": "A process that shapes metal by hammering it"}, {"val": "B", "jp": "溶けた金属を金属製の型に高い圧力で押し込んで成形する方法である", "en": "A process that forces molten metal into a metal mold under high pressure"}, {"val": "C", "jp": "完成した部品の表面にめっきを施す工程である", "en": "A process that plates the surface of a finished part"}, {"val": "D", "jp": "図面の寸法を確認するための検査方法である", "en": "An inspection method for checking a drawing's dimensions"}], "answer": "B", "explain_jp": "ダイカストは鋳造の一種で、溶けた金属を金属製の型に高い圧力で押し込んで成形する方法です。Aは鍛造、Cは金属表面処理の説明です。", "explain_en": "Die-casting is a type of casting that forces molten metal into a metal mold under high pressure. (A describes forging, and C describes metal surface treatment.)", "chapter": "ch07", "chapter_label": "第7章"}, {"q_jp": "<ruby>電子<rt>でんし</rt></ruby><ruby>部品<rt>ぶひん</rt></ruby>の<ruby>取<rt>と</rt></ruby>り<ruby>扱<rt>あつか</rt></ruby>いに<ruby>関<rt>かん</rt></ruby>する<ruby>説明<rt>せつめい</rt></ruby>として<b>正しい</b>ものはどれですか。", "q_en": "Which statement about handling electronic components is correct?", "options": [{"val": "A", "jp": "静電気は電子部品に影響を与えることはない", "en": "Static electricity never affects electronic components"}, {"val": "B", "jp": "一部の電子部品は静電気によって壊れることがあるため、静電気対策が必要である", "en": "Some electronic components can be destroyed by static electricity, so static-control measures are needed"}, {"val": "C", "jp": "はんだ付けは接着剤だけで部品を固定する作業である", "en": "Soldering is a process that fixes parts in place using only adhesive glue"}, {"val": "D", "jp": "プリント配線板には配線パターンは印刷されていない", "en": "Printed wiring boards have no wiring pattern printed on them"}], "answer": "B", "explain_jp": "一部の電子部品は静電気によって壊れる非常に繊細な部品であるため、リストストラップの着用など静電気対策の徹底が必要です。", "explain_en": "Some electronic components are extremely sensitive and can be destroyed by static electricity, so thorough static-control measures such as wearing a wrist strap are necessary.", "chapter": "ch08", "chapter_label": "第8章"}, {"q_jp": "「めっき」の<ruby>目的<rt>もくてき</rt></ruby>として<b>正しい</b>ものはどれですか。", "q_en": "What is a correct purpose of \"plating\"?", "options": [{"val": "A", "jp": "部品の重さを大幅に増やすこと", "en": "Significantly increasing a part's weight"}, {"val": "B", "jp": "部品の表面に別の金属の膜を付け、さびへの強さなどを高めること", "en": "Coating a part's surface with a different metal to increase rust resistance and similar properties"}, {"val": "C", "jp": "金属の内部の硬度を変化させること", "en": "Changing the internal hardness of the metal"}, {"val": "D", "jp": "図面の寸法を変更すること", "en": "Changing the dimensions on a drawing"}], "answer": "B", "explain_jp": "めっきは、部品の表面に別の金属の薄い膜を付けることで、さびへの強さや見た目を高める表面処理です。", "explain_en": "Plating is a surface treatment that coats a part with a thin layer of a different metal, increasing its rust resistance and improving its appearance.", "chapter": "ch09", "chapter_label": "第9章"}, {"q_jp": "<ruby>作業中<rt>さぎょうちゅう</rt></ruby>に<ruby>機械<rt>きかい</rt></ruby>の<ruby>異常<rt>いじょう</rt></ruby>に<ruby>気<rt>き</rt></ruby>づいたときの<ruby>対応<rt>たいおう</rt></ruby>として<b>最も適切な</b>ものはどれですか。", "q_en": "What is the most appropriate response when you notice a machine abnormality while working?", "options": [{"val": "A", "jp": "自分で直せると思えば黙って直す", "en": "Quietly fix it yourself if you think you can"}, {"val": "B", "jp": "大したことではないと思い、そのまま作業を続ける", "en": "Assume it's nothing serious and keep working"}, {"val": "C", "jp": "すぐに作業を止め、責任者に報告する", "en": "Stop work immediately and report it to a supervisor"}, {"val": "D", "jp": "次の休憩時間まで報告を待つ", "en": "Wait to report it until the next break"}], "answer": "C", "explain_jp": "機械の異常に気づいたときは、自己判断で処理を進めず、すぐに作業を止めて責任者に報告することが鉄則です。", "explain_en": "When you notice a machine abnormality, the ironclad rule is to stop work immediately and report it to a supervisor, rather than deciding on your own how to handle it.", "chapter": "ch10", "chapter_label": "第10章"}, {"q_jp": "<ruby>測定<rt>そくてい</rt></ruby>した<ruby>部品<rt>ぶひん</rt></ruby>の<ruby>寸法<rt>すんぽう</rt></ruby>が<ruby>図面<rt>ずめん</rt></ruby>の<ruby>公差<rt>こうさ</rt></ruby>を<ruby>外<rt>はず</rt></ruby>れていることに<ruby>気<rt>き</rt></ruby>づいたとき、<b>最も適切な</b>対応はどれですか。", "q_en": "What is the most appropriate action when you notice a measured part's dimension is outside the drawing's tolerance?", "options": [{"val": "A", "jp": "公差を少し超えている程度なら、そのまま次の工程に流す", "en": "If it's only slightly out of tolerance, send it on to the next process anyway"}, {"val": "B", "jp": "責任者に報告し、その部品の扱いについて指示を受ける", "en": "Report it to a supervisor and receive instructions on how to handle the part"}, {"val": "C", "jp": "自分の判断で公差の基準を変更する", "en": "Change the tolerance standard on your own judgment"}, {"val": "D", "jp": "測定器具が壊れていると決めつけて再測定しない", "en": "Assume the measuring instrument is broken and don't re-measure"}], "answer": "B", "explain_jp": "公差を外れた部品をそのまま流すと不良品が後工程やお客様に届いてしまう可能性があるため、必ず責任者に報告し、指示に従って扱いを決めます。", "explain_en": "Passing a part that's out of tolerance risks letting a defective item reach the next process or the customer, so always report it to a supervisor and follow their instructions on how to handle it.", "chapter": "ch11", "chapter_label": "第11章"}, {"q_jp": "<ruby>溶接<rt>ようせつ</rt></ruby><ruby>作業中<rt>さぎょうちゅう</rt></ruby>に、<ruby>保護具<rt>ほごぐ</rt></ruby>の<ruby>一部<rt>いちぶ</rt></ruby>（<ruby>溶接用<rt>ようせつよう</rt></ruby>の<ruby>手袋<rt>てぶくろ</rt></ruby>）が<ruby>破<rt>やぶ</rt></ruby>れていることに<ruby>気<rt>き</rt></ruby>づきました。<b>最も適切な</b>対応はどれですか。", "q_en": "While welding, you notice that part of your protective equipment (welding gloves) is torn. What is the most appropriate response?", "options": [{"val": "A", "jp": "作業を中断し、責任者に報告して新しい手袋に交換してから作業を再開する", "en": "Stop work, report it to a supervisor, and resume only after replacing the gloves"}, {"val": "B", "jp": "少しの破れなら問題ないので、そのまま作業を続ける", "en": "A small tear is no problem, so keep working as is"}, {"val": "C", "jp": "手袋を外したまま作業を続ける", "en": "Keep working with the gloves removed"}, {"val": "D", "jp": "休憩時間になるまで気づかなかったふりをする", "en": "Pretend not to notice until the next break"}], "answer": "A", "explain_jp": "破れた保護具のまま高温・火花を伴う溶接作業を続けると、やけどなどの重大な事故につながるため、すぐに作業を中断して責任者に報告し、正しい保護具に交換してから再開します。", "explain_en": "Continuing high-temperature, spark-producing welding work with torn protective equipment risks a serious accident such as a burn, so stop work immediately, report it to a supervisor, and resume only after replacing it with proper equipment.", "chapter": "ch11", "chapter_label": "第11章"}]};
+function esc(s){ return (s||'').toString(); }
+function speakJP(text){
+  if (!text) return;
+  if (!('speechSynthesis' in window)){ alert('Text-to-speech not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* FLASHCARDS */
+var vocabAll = DATA.vocab.slice();
+var vocabFiltered = vocabAll.slice();
+var flashIdx = 0, flashFlipped = false;
+var chLabels = Array.from(new Set(vocabAll.map(function(v){ return v.chapter_label; })));
+var chFilterEl = document.getElementById('vocab-filters');
+var allChip = document.createElement('div'); allChip.className='filter-chip active'; allChip.textContent='All'; allChip.dataset.ch='all';
+chFilterEl.appendChild(allChip);
+chLabels.forEach(function(ch){
+  var chip = document.createElement('div'); chip.className='filter-chip'; chip.textContent=ch; chip.dataset.ch=ch;
+  chFilterEl.appendChild(chip);
+});
+chFilterEl.addEventListener('click', function(e){
+  var chip = e.target.closest('.filter-chip'); if(!chip) return;
+  chFilterEl.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+  chip.classList.add('active');
+  var ch = chip.dataset.ch;
+  vocabFiltered = ch === 'all' ? vocabAll.slice() : vocabAll.filter(function(v){ return v.chapter_label === ch; });
+  flashIdx = 0; renderFlash();
+});
+document.getElementById('vocab-total').textContent = vocabAll.length;
+
+function renderFlash(){
+  if (!vocabFiltered.length){ document.getElementById('flash-jp').textContent='No cards'; return; }
+  if (flashIdx >= vocabFiltered.length) flashIdx = 0;
+  if (flashIdx < 0) flashIdx = vocabFiltered.length - 1;
+  var v = vocabFiltered[flashIdx];
+  flashFlipped = false;
+  document.getElementById('flash-front').style.display='block';
+  document.getElementById('flash-back').style.display='none';
+  document.getElementById('flash-badge').textContent = v.chapter_label;
+  document.getElementById('flash-jp').textContent = v.jp || '';
+  document.getElementById('flash-reading').textContent = v.reading || '';
+  document.getElementById('flash-en').textContent = v.en || '';
+  document.getElementById('flash-progress').textContent = (flashIdx+1)+' / '+vocabFiltered.length;
+  document.getElementById('vocab-pos').textContent = flashIdx+1;
+}
+document.getElementById('flashcard').addEventListener('click', function(e){
+  if (e.target.closest('.spk')) return;
+  flashFlipped = !flashFlipped;
+  document.getElementById('flash-front').style.display = flashFlipped ? 'none' : 'block';
+  document.getElementById('flash-back').style.display = flashFlipped ? 'block' : 'none';
+});
+document.getElementById('flash-spk').addEventListener('click', function(e){
+  e.stopPropagation();
+  var v = vocabFiltered[flashIdx];
+  speakJP(v ? v.jp : '');
+});
+document.getElementById('flash-next').addEventListener('click', function(){ flashIdx++; renderFlash(); });
+document.getElementById('flash-prev').addEventListener('click', function(){ flashIdx--; renderFlash(); });
+document.getElementById('flash-shuffle').addEventListener('click', function(){
+  for (var i = vocabFiltered.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i+1));
+    var tmp = vocabFiltered[i]; vocabFiltered[i] = vocabFiltered[j]; vocabFiltered[j] = tmp;
+  }
+  flashIdx = 0; renderFlash();
+});
+renderFlash();
+
+/* MCQ */
+var mcqAll = DATA.mcq.slice();
+var mcqScore = 0;
+document.getElementById('mcq-total-inline').textContent = mcqAll.length;
+var mcqChFilterEl = document.getElementById('mcq-filters');
+var mcqAllChip = document.createElement('div'); mcqAllChip.className='filter-chip active'; mcqAllChip.textContent='All'; mcqAllChip.dataset.ch='all';
+mcqChFilterEl.appendChild(mcqAllChip);
+Array.from(new Set(mcqAll.map(function(m){ return m.chapter_label; }))).forEach(function(ch){
+  var chip = document.createElement('div'); chip.className='filter-chip'; chip.textContent=ch; chip.dataset.ch=ch;
+  mcqChFilterEl.appendChild(chip);
+});
+mcqChFilterEl.addEventListener('click', function(e){
+  var chip = e.target.closest('.filter-chip'); if(!chip) return;
+  mcqChFilterEl.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+  chip.classList.add('active');
+  renderMCQ(chip.dataset.ch);
+});
+function renderMCQ(filterCh){
+  var list = document.getElementById('mcq-list');
+  list.innerHTML = '';
+  var items = (!filterCh || filterCh === 'all') ? mcqAll : mcqAll.filter(function(m){ return m.chapter_label === filterCh; });
+  if (!items.length){ list.innerHTML = '<div class="empty-msg">No questions in this filter.</div>'; return; }
+  items.forEach(function(m){
+    var card = document.createElement('div');
+    card.className = 'q-card';
+    card.dataset.answer = m.answer;
+    var optsHtml = '';
+    (m.options||[]).forEach(function(o){
+      optsHtml += '<div class="opt" data-val="'+o.val+'"><span class="jp">'+o.val+'. '+esc(o.jp)+'</span><span class="en">'+esc(o.en)+'</span></div>';
+    });
+    card.innerHTML =
+      '<div class="q-meta">'+esc(m.chapter_label)+'</div>'+
+      '<p class="q-jp"><button class="spk" data-jp="'+esc(m.q_jp).replace(/<[^>]+>/g,'').replace(/"/g,'&quot;')+'">🔊</button>'+esc(m.q_jp)+'</p>'+
+      '<p class="q-en">'+esc(m.q_en)+'</p>'+
+      optsHtml+
+      '<div class="explain"><div class="jp">'+esc(m.explain_jp)+'</div><div class="en">'+esc(m.explain_en)+'</div></div>';
+    list.appendChild(card);
+  });
+  mcqScore = 0;
+  document.getElementById('mcq-score').textContent = mcqScore;
+  document.getElementById('mcq-total-inline').textContent = items.length;
+}
+document.getElementById('mcq-reset').addEventListener('click', function(){
+  var activeChip = mcqChFilterEl.querySelector('.filter-chip.active');
+  renderMCQ(activeChip ? activeChip.dataset.ch : 'all');
+});
+renderMCQ('all');
+document.getElementById('mcq-list').addEventListener('click', function(e){
+  var opt = e.target.closest('.opt');
+  if (!opt) return;
+  var card = opt.closest('.q-card');
+  if (card.classList.contains('answered')) return;
+  var chosen = opt.dataset.val;
+  var answer = card.dataset.answer;
+  card.classList.add('answered');
+  card.querySelectorAll('.opt').forEach(function(o){
+    if (o.dataset.val === answer) o.classList.add('correct');
+    else if (o.dataset.val === chosen) o.classList.add('wrong');
+  });
+  if (chosen === answer){ mcqScore++; document.getElementById('mcq-score').textContent = mcqScore; }
+});
+
+document.addEventListener('click', function(e){
+  var spk = e.target.closest('.spk');
+  if (spk && spk.id !== 'flash-spk'){ speakJP(spk.getAttribute('data-jp')); }
+});
+</script>
+</body>
+</html>
