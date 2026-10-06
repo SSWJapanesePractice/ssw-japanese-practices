@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Railway SSW — Theory Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#12395d; --teal-dark:#0b2945; --teal-light:#315E7F;
+  --caution:#d62828; --caution-dark:#b91f1f;
+  --ink:#2B1D22; --muted:#6B5D63; --border:#E6DCDF; --paper:#FAF6F4; --card:#FFFFFF;
+  --good:#1F7A4D; --bad:#B3261E; --radius:14px; --shadow:0 2px 10px rgba(107,30,60,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); line-height:1.55;}
+.jp{font-family:'Noto Sans JP','Inter',sans-serif;}
+ruby rt{font-size:0.55em; color:var(--muted);}
+
+header{background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%); color:#fff; padding:22px 24px; position:sticky; top:0; z-index:20; box-shadow:0 2px 10px rgba(0,0,0,0.15);}
+header h1{margin:0; font-size:19px; font-weight:800; display:flex; align-items:center; gap:10px;}
+header p{margin:4px 0 0 0; font-size:12.5px; color:#BFD6E6;}
+
+#tabs{display:flex; gap:6px; padding:14px 24px 0 24px; background:var(--card); border-bottom:1px solid var(--border); overflow-x:auto;}
+.tab-btn{padding:11px 18px; border:none; background:none; font-size:13.5px; font-weight:700; color:var(--muted); cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap;}
+.tab-btn.active{color:var(--teal-dark); border-bottom-color:var(--caution);}
+.tab-panel{display:none; max-width:820px; margin:0 auto; padding:24px 20px 80px 20px;}
+.tab-panel.active{display:block;}
+
+.stat-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;}
+.stat-pill{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px 16px; box-shadow:var(--shadow); font-size:12.5px; color:var(--muted);}
+.stat-pill b{color:var(--teal-dark); font-size:16px; display:block;}
+
+.filter-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+.filter-chip{padding:7px 14px; border-radius:20px; border:1.5px solid var(--border); background:var(--card); font-size:12px; font-weight:600; cursor:pointer; color:var(--muted);}
+.filter-chip.active{background:var(--teal); border-color:var(--teal); color:#fff;}
+
+#flash-stage{display:flex; flex-direction:column; align-items:center; gap:18px;}
+.flashcard{width:100%; max-width:480px; min-height:220px; background:var(--card); border-radius:20px; box-shadow:var(--shadow); border:1px solid var(--border); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 24px; cursor:pointer; text-align:center; position:relative;}
+.flashcard .badge{position:absolute; top:14px; left:16px; font-size:10.5px; color:var(--muted); background:#EEF3F7; padding:3px 9px; border-radius:20px;}
+.flashcard .term-jp{font-size:28px; font-weight:800; display:flex; align-items:center; gap:10px;}
+.flashcard .term-reading{font-size:13px; color:var(--muted); margin-top:6px;}
+.flashcard .term-en{font-size:17px; color:var(--teal-dark); font-weight:700; margin-top:14px;}
+.flashcard .hint{position:absolute; bottom:12px; font-size:11px; color:#9DB3C4;}
+.flash-controls{display:flex; gap:12px;}
+.btn{padding:11px 20px; border-radius:10px; border:none; font-size:13.5px; font-weight:700; cursor:pointer; background:var(--teal); color:#fff;}
+.btn.secondary{background:var(--card); color:var(--teal-dark); border:1.5px solid var(--border);}
+.btn.yellow{background:var(--caution); color:var(--teal-dark);}
+.btn:active{transform:scale(0.97);}
+#flash-progress{font-size:12.5px; color:var(--muted);}
+
+.q-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px; margin-bottom:16px; box-shadow:var(--shadow);}
+.q-card .q-meta{font-size:10.5px; color:var(--muted); background:#EEF3F7; display:inline-block; padding:2px 9px; border-radius:20px; margin-bottom:8px;}
+.q-jp{font-size:15px; font-weight:700; margin:0 0 2px 0;}
+.q-en{font-size:12.5px; color:var(--muted); margin:0 0 12px 0;}
+.opt{padding:10px 14px; border-radius:9px; border:1.5px solid var(--border); margin-bottom:7px; cursor:pointer; background:#fff;}
+.opt:hover{border-color:var(--teal-light);}
+.opt .jp{font-size:13.5px;}
+.opt .en{font-size:11.5px; color:var(--muted);}
+.q-card.answered .opt{cursor:default; pointer-events:none;}
+.q-card.answered .opt.correct{background:#E7F5EC; border-color:var(--good);}
+.q-card.answered .opt.wrong{background:#FBEAE9; border-color:var(--bad);}
+.explain{display:none; margin-top:10px; padding:10px 12px; background:#EEF3F7; border-left:3px solid var(--teal); border-radius:6px; font-size:12.5px;}
+.q-card.answered .explain{display:block;}
+.explain .jp{font-weight:600; margin-bottom:3px;}
+.explain .en{color:var(--muted);}
+
+.spk{flex-shrink:0; border:none; background:var(--caution); color:var(--teal-dark); border-radius:50%; width:24px;height:24px; font-size:11px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.2);}
+.spk:active{transform:scale(0.9);}
+
+.empty-msg{text-align:center; color:var(--muted); padding:40px 0; font-size:13.5px;}
+#quiz-summary{background:var(--card); border-radius:var(--radius); padding:18px 20px; margin-bottom:18px; box-shadow:var(--shadow); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
+#quiz-summary b{font-size:20px; color:var(--teal-dark);}
+</style>
+</head>
+<body>
+<header>
+  <h1>🚆 Railway SSW — Theory Practice</h1>
+  <p>Vocabulary flashcards and a self-graded knowledge quiz — companion to the full study guide</p>
+</header>
+<div id="tabs">
+  <button class="tab-btn active" data-tab="vocab">📇 Vocabulary</button>
+  <button class="tab-btn" data-tab="mcq">📝 Knowledge Quiz</button>
+</div>
+
+<div class="tab-panel active" id="panel-vocab">
+  <div class="stat-row">
+    <div class="stat-pill"><b id="vocab-total">0</b>Total terms</div>
+    <div class="stat-pill"><b id="vocab-pos">0</b>Current card</div>
+  </div>
+  <div class="filter-row" id="vocab-filters"></div>
+  <div id="flash-stage">
+    <div class="flashcard" id="flashcard">
+      <div class="badge" id="flash-badge">Ch.1</div>
+      <div id="flash-front">
+        <div class="term-jp"><span id="flash-jp"></span><button class="spk" id="flash-spk">🔊</button></div>
+        <div class="term-reading" id="flash-reading"></div>
+      </div>
+      <div id="flash-back" style="display:none;">
+        <div class="term-en" id="flash-en"></div>
+      </div>
+      <div class="hint">Tap card to flip / タップして裏返す</div>
+    </div>
+    <div id="flash-progress"></div>
+    <div class="flash-controls">
+      <button class="btn secondary" id="flash-prev">← Prev</button>
+      <button class="btn yellow" id="flash-shuffle">🔀 Shuffle</button>
+      <button class="btn" id="flash-next">Next →</button>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="panel-mcq">
+  <div id="quiz-summary">
+    <div><b id="mcq-score">0</b> / <span id="mcq-total-inline">0</span> correct</div>
+    <button class="btn secondary" id="mcq-reset">↺ Reset Quiz</button>
+  </div>
+  <div class="filter-row" id="mcq-filters"></div>
+  <div id="mcq-list"></div>
+</div>
+
+<script>
+var DATA = {"vocab": [{"jp": "鉄道分野", "reading": "てつどうぶんや", "en": "railway field", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "業務区分", "reading": "ぎょうむくぶん", "en": "work category", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "旅客", "reading": "りょかく", "en": "passengers", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "貨物", "reading": "かもつ", "en": "freight / cargo", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "安全最優先", "reading": "あんぜんさいゆうせん", "en": "safety first", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "指差呼称", "reading": "しさこしょう", "en": "pointing-and-calling", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "ヒヤリハット", "reading": "ひやりはっと", "en": "near-miss", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "危険予知", "reading": "きけんよち", "en": "hazard prediction (KY)", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "軌道整備", "reading": "きどうせいび", "en": "track maintenance", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "レール", "reading": "れーる", "en": "rail", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "まくらぎ", "reading": "まくらぎ", "en": "sleeper (railroad tie)", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "バラスト", "reading": "ばらすと", "en": "ballast", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "電気設備整備", "reading": "でんきせつびせいび", "en": "electrical equipment maintenance", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "信号保安設備", "reading": "しんごうほあんせつび", "en": "signal safety equipment", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "踏切保安設備", "reading": "ふみきりほあんせつび", "en": "level-crossing safety equipment", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "変電所", "reading": "へんでんしょ", "en": "substation", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "車両整備", "reading": "しゃりょうせいび", "en": "rolling stock maintenance", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "列車検査", "reading": "れっしゃけんさ", "en": "train inspection", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "定期検査", "reading": "ていきけんさ", "en": "periodic inspection", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "台車", "reading": "だいしゃ", "en": "bogie (rail truck)", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "車両製造", "reading": "しゃりょうせいぞう", "en": "rolling stock manufacturing", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "構体組立て", "reading": "こうたいくみたて", "en": "car-body assembly", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "溶接", "reading": "ようせつ", "en": "welding", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "ぎ装", "reading": "ぎそう", "en": "outfitting", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "運輸係員", "reading": "うんゆかかりいん", "en": "transport staff", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "ポイント操作", "reading": "ぽいんとそうさ", "en": "switch (points) operation", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "旅客案内", "reading": "りょかくあんない", "en": "passenger guidance", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "入換え合図", "reading": "いれかえあいず", "en": "shunting signal", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "車掌", "reading": "しゃしょう", "en": "conductor", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "運転士", "reading": "うんてんし", "en": "train driver", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "運行管理", "reading": "うんこうかんり", "en": "train operation management", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "ダイヤ", "reading": "だいや", "en": "train schedule (diagram)", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "異常時対応", "reading": "いじょうじたいおう", "en": "response to abnormal situations", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "緊急停止", "reading": "きんきゅうていし", "en": "emergency stop", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "避難誘導", "reading": "ひなんゆうどう", "en": "evacuation guidance", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "事故防止", "reading": "じこぼうし", "en": "accident prevention", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "検査記録", "reading": "けんさきろく", "en": "inspection record", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "測定器具", "reading": "そくていきぐ", "en": "measuring instrument", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "品質管理", "reading": "ひんしつかんり", "en": "quality control", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "保守点検", "reading": "ほしゅてんけん", "en": "maintenance inspection", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "報告", "reading": "ほうこく", "en": "report", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "連絡", "reading": "れんらく", "en": "contact", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "相談", "reading": "そうだん", "en": "consultation", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "判断", "reading": "はんだん", "en": "judgment", "chapter": "ch11", "chapter_label": "第11章"}], "mcq": [{"q_jp": "<ruby>鉄道分野<rt>てつどうぶんや</rt></ruby>の<ruby>業務区分<rt>ぎょうむくぶん</rt></ruby>に<b>あてはまらない</b>ものはどれですか。", "q_en": "Which of the following is NOT one of the Railway field's five work categories?", "options": [{"val": "A", "jp": "遠洋漁業", "en": "Deep-sea fishing operations"}, {"val": "B", "jp": "車両整備", "en": "Rolling stock maintenance"}, {"val": "C", "jp": "運輸係員", "en": "Transport staff"}], "answer": "A", "explain_jp": "鉄道分野の業務区分は、軌道整備・電気設備整備・車両整備・車両製造・運輸係員の5つです。遠洋漁業はこの分野にはあてはまりません。", "explain_en": "The Railway field has five work categories: track maintenance, electrical equipment maintenance, rolling stock maintenance, rolling stock manufacturing, and transport staff. Deep-sea fishing is not part of this field.", "chapter": "ch01", "chapter_label": "第1章"}, {"q_jp": "<ruby>指<rt>ゆび</rt></ruby>で<ruby>指<rt>さ</rt></ruby>して<ruby>声<rt>こえ</rt></ruby>に<ruby>出<rt>だ</rt></ruby>して<ruby>確認<rt>かくにん</rt></ruby>することを<b>何といいますか</b>。", "q_en": "What is it called when workers point with a finger and confirm aloud?", "options": [{"val": "A", "jp": "指差呼称", "en": "Pointing-and-calling"}, {"val": "B", "jp": "危険予知", "en": "Hazard prediction"}, {"val": "C", "jp": "入換え合図", "en": "Shunting signal"}], "answer": "A", "explain_jp": "指で指して声に出して確認することを指差呼称といいます。", "explain_en": "Pointing with a finger and confirming aloud is called pointing-and-calling (shisa-kosho).", "chapter": "ch02", "chapter_label": "第2章"}, {"q_jp": "レールを<ruby>支<rt>ささ</rt></ruby>える<ruby>横<rt>よこ</rt></ruby>の<ruby>部材<rt>ぶざい</rt></ruby>で、コンクリート<ruby>製<rt>せい</rt></ruby>のものが<ruby>多<rt>おお</rt></ruby>いものは<b>どれですか</b>。", "q_en": "What is the crosswise component that supports the rails, often made of concrete?", "options": [{"val": "A", "jp": "まくらぎ", "en": "Sleeper"}, {"val": "B", "jp": "バラスト", "en": "Ballast"}, {"val": "C", "jp": "台車", "en": "Bogie"}], "answer": "A", "explain_jp": "まくらぎはレールを支える横の部材で、コンクリート製のものが多く使われています。", "explain_en": "Sleepers are the crosswise components that support the rails, and concrete ones are commonly used.", "chapter": "ch03", "chapter_label": "第3章"}, {"q_jp": "<ruby>列車<rt>れっしゃ</rt></ruby>を<ruby>動<rt>うご</rt></ruby>かすための<ruby>電気<rt>でんき</rt></ruby>を、ちょうどよい<ruby>電圧<rt>でんあつ</rt></ruby>に<ruby>変<rt>か</rt></ruby>えて<ruby>送<rt>おく</rt></ruby>る<ruby>設備<rt>せつび</rt></ruby>は<b>どれですか</b>。", "q_en": "Which facility converts electricity into the right voltage to power the trains?", "options": [{"val": "A", "jp": "変電所", "en": "Substation"}, {"val": "B", "jp": "踏切保安設備", "en": "Level-crossing safety equipment"}, {"val": "C", "jp": "台車", "en": "Bogie"}], "answer": "A", "explain_jp": "変電所は、列車を動かすための電気をちょうどよい電圧に変えて送る設備です。", "explain_en": "A substation is a facility that converts electricity into the right voltage to power the trains.", "chapter": "ch04", "chapter_label": "第4章"}, {"q_jp": "<ruby>運行<rt>うんこう</rt></ruby>の<ruby>合間<rt>あいま</rt></ruby>に<ruby>短時間<rt>たんじかん</rt></ruby>で<ruby>行<rt>おこな</rt></ruby>う、ブレーキなどの<ruby>基本的<rt>きほんてき</rt></ruby>な<ruby>確認<rt>かくにん</rt></ruby>を<b>何といいますか</b>。", "q_en": "What is the brief check between runs, confirming basic items like the brakes, called?", "options": [{"val": "A", "jp": "列車検査", "en": "Train inspection"}, {"val": "B", "jp": "定期検査", "en": "Periodic inspection"}, {"val": "C", "jp": "危険予知", "en": "Hazard prediction"}], "answer": "A", "explain_jp": "運行の合間に短時間で行う、ブレーキや連結器などの基本的な確認を列車検査といいます。", "explain_en": "The brief check performed between runs, confirming basic items such as the brakes and couplers, is called train inspection.", "chapter": "ch05", "chapter_label": "第5章"}, {"q_jp": "<ruby>金属<rt>きんぞく</rt></ruby>の<ruby>部材<rt>ぶざい</rt></ruby>どうしを<ruby>熱<rt>ねつ</rt></ruby>で<ruby>溶<rt>と</rt></ruby>かしてつなぎ<ruby>合<rt>あ</rt></ruby>わせる<ruby>作業<rt>さぎょう</rt></ruby>を<b>何といいますか</b>。", "q_en": "What is the process of joining metal parts together by melting them with heat called?", "options": [{"val": "A", "jp": "溶接", "en": "Welding"}, {"val": "B", "jp": "ぎ装", "en": "Outfitting"}, {"val": "C", "jp": "構体組立て", "en": "Car-body assembly"}], "answer": "A", "explain_jp": "金属の部材どうしを熱で溶かしてつなぎ合わせる作業を溶接といいます。", "explain_en": "The process of joining metal parts together by melting them with heat is called welding.", "chapter": "ch06", "chapter_label": "第6章"}, {"q_jp": "<ruby>列車<rt>れっしゃ</rt></ruby>が<ruby>進<rt>すす</rt></ruby>む<ruby>線路<rt>せんろ</rt></ruby>を<ruby>切<rt>き</rt></ruby>り<ruby>替<rt>か</rt></ruby>える<ruby>分岐器<rt>ぶんきき</rt></ruby>を<ruby>操作<rt>そうさ</rt></ruby>することを<b>何といいますか</b>。", "q_en": "What is it called when workers operate the points that change which track a train travels onto?", "options": [{"val": "A", "jp": "ポイント操作", "en": "Switch operation"}, {"val": "B", "jp": "入換え合図", "en": "Shunting signal"}, {"val": "C", "jp": "運行管理", "en": "Train operation management"}], "answer": "A", "explain_jp": "列車が進む線路を切り替える分岐器を操作することをポイント操作といいます。", "explain_en": "Operating the points that change which track a train travels onto is called switch operation.", "chapter": "ch07", "chapter_label": "第7章"}, {"q_jp": "<ruby>列車内<rt>れっしゃない</rt></ruby>でドアの<ruby>開閉<rt>かいへい</rt></ruby>や<ruby>放送<rt>ほうそう</rt></ruby>を<ruby>担当<rt>たんとう</rt></ruby>するのは<b>誰ですか</b>。", "q_en": "Who is responsible for opening and closing doors and making announcements inside the train?", "options": [{"val": "A", "jp": "車掌", "en": "Conductor"}, {"val": "B", "jp": "運転士", "en": "Train driver"}, {"val": "C", "jp": "変電所の作業員", "en": "A substation worker"}], "answer": "A", "explain_jp": "車掌は、列車内でドアの開閉や放送、安全確認などを担当します。", "explain_en": "A conductor is responsible for opening and closing doors, making announcements, and confirming safety inside the train.", "chapter": "ch08", "chapter_label": "第8章"}, {"q_jp": "<ruby>危険<rt>きけん</rt></ruby>を<ruby>感<rt>かん</rt></ruby>じたときにためらわずに<ruby>行<rt>おこな</rt></ruby>うべき<ruby>操作<rt>そうさ</rt></ruby>は<b>どれですか</b>。", "q_en": "What action should be taken without hesitation when sensing danger?", "options": [{"val": "A", "jp": "緊急停止", "en": "Emergency stop"}, {"val": "B", "jp": "ポイント操作", "en": "Switch operation"}, {"val": "C", "jp": "ぎ装", "en": "Outfitting"}], "answer": "A", "explain_jp": "危険を感じたときは、ためらわずに緊急停止の操作を行い、列車を止めます。", "explain_en": "When sensing danger, workers do not hesitate to perform an emergency stop to halt the train.", "chapter": "ch09", "chapter_label": "第9章"}, {"q_jp": "レールのすり<ruby>減<rt>へ</rt></ruby>り<ruby>具合<rt>ぐあい</rt></ruby>や<ruby>部品<rt>ぶひん</rt></ruby>の<ruby>寸法<rt>すんぽう</rt></ruby>を<ruby>正確<rt>せいかく</rt></ruby>に<ruby>測<rt>はか</rt></ruby>るために<ruby>使<rt>つか</rt></ruby>うものは<b>どれですか</b>。", "q_en": "What is used to accurately measure things like the degree of rail wear or the dimensions of parts?", "options": [{"val": "A", "jp": "測定器具", "en": "Measuring instruments"}, {"val": "B", "jp": "ダイヤ", "en": "Train schedule (diagram)"}, {"val": "C", "jp": "台車", "en": "Bogie"}], "answer": "A", "explain_jp": "レールのすり減り具合や部品の寸法などは、測定器具を使って正確に測ります。", "explain_en": "Things like the degree of rail wear or the dimensions of parts are measured accurately using measuring instruments.", "chapter": "ch10", "chapter_label": "第10章"}, {"q_jp": "<ruby>点検中<rt>てんけんちゅう</rt></ruby>に、レールに<ruby>普段<rt>ふだん</rt></ruby>と<ruby>違<rt>ちが</rt></ruby>うひび<ruby>割<rt>わ</rt></ruby>れを<ruby>見<rt>み</rt></ruby>つけました。<b>もっとも適切な行動</b>はどれですか。", "q_en": "While inspecting, you find a crack in the rail that looks different from usual. What is the most appropriate action?", "options": [{"val": "A", "jp": "すぐに指令や先輩に報告し、指示を受ける", "en": "Report it to the control center or a senior worker right away and receive instructions"}, {"val": "B", "jp": "気にせずそのまま次の作業に進む", "en": "Ignore it and move on to the next task"}, {"val": "C", "jp": "自分の判断だけで応急処置をして済ませる", "en": "Decide alone to make a temporary fix and leave it at that"}], "answer": "A", "explain_jp": "設備の異常に気づいたときは、自分だけで判断せず、すぐに指令や先輩に報告します。", "explain_en": "When you notice an equipment abnormality, you should not judge the situation on your own — report it to the control center or a senior worker right away.", "chapter": "ch11", "chapter_label": "第11章"}, {"q_jp": "<ruby>作業中<rt>さぎょうちゅう</rt></ruby>に、<ruby>危険<rt>きけん</rt></ruby>を<ruby>感<rt>かん</rt></ruby>じる<ruby>場面<rt>ばめん</rt></ruby>がありました。<b>最初にすること</b>はどれですか。", "q_en": "While working, you sense a dangerous situation. What should you do first?", "options": [{"val": "A", "jp": "ためらわずに緊急停止の操作を行う", "en": "Perform an emergency stop without hesitation"}, {"val": "B", "jp": "様子を見てから判断する", "en": "Wait and see before deciding"}, {"val": "C", "jp": "周りに伝えずに一人で対応する", "en": "Handle it alone without telling anyone around you"}], "answer": "A", "explain_jp": "危険を感じたときは、ためらわずに緊急停止の操作を行い、列車を止めます。", "explain_en": "When sensing danger, workers do not hesitate to perform an emergency stop to halt the train.", "chapter": "ch11", "chapter_label": "第11章"}]};
+function esc(s){ return (s||'').toString(); }
+function speakJP(text){
+  if (!text) return;
+  if (!('speechSynthesis' in window)){ alert('Text-to-speech not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* FLASHCARDS */
+var vocabAll = DATA.vocab.slice();
+var vocabFiltered = vocabAll.slice();
+var flashIdx = 0, flashFlipped = false;
+var chLabels = Array.from(new Set(vocabAll.map(function(v){ return v.chapter_label; })));
+var chFilterEl = document.getElementById('vocab-filters');
+var allChip = document.createElement('div'); allChip.className='filter-chip active'; allChip.textContent='All'; allChip.dataset.ch='all';
+chFilterEl.appendChild(allChip);
+chLabels.forEach(function(ch){
+  var chip = document.createElement('div'); chip.className='filter-chip'; chip.textContent=ch; chip.dataset.ch=ch;
+  chFilterEl.appendChild(chip);
+});
+chFilterEl.addEventListener('click', function(e){
+  var chip = e.target.closest('.filter-chip'); if(!chip) return;
+  chFilterEl.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+  chip.classList.add('active');
+  var ch = chip.dataset.ch;
+  vocabFiltered = ch === 'all' ? vocabAll.slice() : vocabAll.filter(function(v){ return v.chapter_label === ch; });
+  flashIdx = 0; renderFlash();
+});
+document.getElementById('vocab-total').textContent = vocabAll.length;
+
+function renderFlash(){
+  if (!vocabFiltered.length){ document.getElementById('flash-jp').textContent='No cards'; return; }
+  if (flashIdx >= vocabFiltered.length) flashIdx = 0;
+  if (flashIdx < 0) flashIdx = vocabFiltered.length - 1;
+  var v = vocabFiltered[flashIdx];
+  flashFlipped = false;
+  document.getElementById('flash-front').style.display='block';
+  document.getElementById('flash-back').style.display='none';
+  document.getElementById('flash-badge').textContent = v.chapter_label;
+  document.getElementById('flash-jp').textContent = v.jp || '';
+  document.getElementById('flash-reading').textContent = v.reading || '';
+  document.getElementById('flash-en').textContent = v.en || '';
+  document.getElementById('flash-progress').textContent = (flashIdx+1)+' / '+vocabFiltered.length;
+  document.getElementById('vocab-pos').textContent = flashIdx+1;
+}
+document.getElementById('flashcard').addEventListener('click', function(e){
+  if (e.target.closest('.spk')) return;
+  flashFlipped = !flashFlipped;
+  document.getElementById('flash-front').style.display = flashFlipped ? 'none' : 'block';
+  document.getElementById('flash-back').style.display = flashFlipped ? 'block' : 'none';
+});
+document.getElementById('flash-spk').addEventListener('click', function(e){
+  e.stopPropagation();
+  var v = vocabFiltered[flashIdx];
+  speakJP(v ? v.jp : '');
+});
+document.getElementById('flash-next').addEventListener('click', function(){ flashIdx++; renderFlash(); });
+document.getElementById('flash-prev').addEventListener('click', function(){ flashIdx--; renderFlash(); });
+document.getElementById('flash-shuffle').addEventListener('click', function(){
+  for (var i = vocabFiltered.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i+1));
+    var tmp = vocabFiltered[i]; vocabFiltered[i] = vocabFiltered[j]; vocabFiltered[j] = tmp;
+  }
+  flashIdx = 0; renderFlash();
+});
+renderFlash();
+
+/* MCQ */
+var mcqAll = DATA.mcq.slice();
+var mcqScore = 0;
+document.getElementById('mcq-total-inline').textContent = mcqAll.length;
+var mcqChFilterEl = document.getElementById('mcq-filters');
+var mcqAllChip = document.createElement('div'); mcqAllChip.className='filter-chip active'; mcqAllChip.textContent='All'; mcqAllChip.dataset.ch='all';
+mcqChFilterEl.appendChild(mcqAllChip);
+Array.from(new Set(mcqAll.map(function(m){ return m.chapter_label; }))).forEach(function(ch){
+  var chip = document.createElement('div'); chip.className='filter-chip'; chip.textContent=ch; chip.dataset.ch=ch;
+  mcqChFilterEl.appendChild(chip);
+});
+mcqChFilterEl.addEventListener('click', function(e){
+  var chip = e.target.closest('.filter-chip'); if(!chip) return;
+  mcqChFilterEl.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+  chip.classList.add('active');
+  renderMCQ(chip.dataset.ch);
+});
+function renderMCQ(filterCh){
+  var list = document.getElementById('mcq-list');
+  list.innerHTML = '';
+  var items = (!filterCh || filterCh === 'all') ? mcqAll : mcqAll.filter(function(m){ return m.chapter_label === filterCh; });
+  if (!items.length){ list.innerHTML = '<div class="empty-msg">No questions in this filter.</div>'; return; }
+  items.forEach(function(m){
+    var card = document.createElement('div');
+    card.className = 'q-card';
+    card.dataset.answer = m.answer;
+    var optsHtml = '';
+    (m.options||[]).forEach(function(o){
+      optsHtml += '<div class="opt" data-val="'+o.val+'"><span class="jp">'+o.val+'. '+esc(o.jp)+'</span><span class="en">'+esc(o.en)+'</span></div>';
+    });
+    card.innerHTML =
+      '<div class="q-meta">'+esc(m.chapter_label)+'</div>'+
+      '<p class="q-jp"><button class="spk" data-jp="'+esc(m.q_jp).replace(/<[^>]+>/g,'').replace(/"/g,'&quot;')+'">🔊</button>'+esc(m.q_jp)+'</p>'+
+      '<p class="q-en">'+esc(m.q_en)+'</p>'+
+      optsHtml+
+      '<div class="explain"><div class="jp">'+esc(m.explain_jp)+'</div><div class="en">'+esc(m.explain_en)+'</div></div>';
+    list.appendChild(card);
+  });
+  mcqScore = 0;
+  document.getElementById('mcq-score').textContent = mcqScore;
+  document.getElementById('mcq-total-inline').textContent = items.length;
+}
+document.getElementById('mcq-reset').addEventListener('click', function(){
+  var activeChip = mcqChFilterEl.querySelector('.filter-chip.active');
+  renderMCQ(activeChip ? activeChip.dataset.ch : 'all');
+});
+renderMCQ('all');
+document.getElementById('mcq-list').addEventListener('click', function(e){
+  var opt = e.target.closest('.opt');
+  if (!opt) return;
+  var card = opt.closest('.q-card');
+  if (card.classList.contains('answered')) return;
+  var chosen = opt.dataset.val;
+  var answer = card.dataset.answer;
+  card.classList.add('answered');
+  card.querySelectorAll('.opt').forEach(function(o){
+    if (o.dataset.val === answer) o.classList.add('correct');
+    else if (o.dataset.val === chosen) o.classList.add('wrong');
+  });
+  if (chosen === answer){ mcqScore++; document.getElementById('mcq-score').textContent = mcqScore; }
+});
+
+document.addEventListener('click', function(e){
+  var spk = e.target.closest('.spk');
+  if (spk && spk.id !== 'flash-spk'){ speakJP(spk.getAttribute('data-jp')); }
+});
+</script>
+</body>
+</html>

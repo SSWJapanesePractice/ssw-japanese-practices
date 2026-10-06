@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Railway SSW — Japanese with Raza Sensei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#12395d; --navy-dark:#0b2945; --navy-light:#315E7F;
+  --steel:#6B7A85; --rust:#d62828; --rust-dark:#b91f1f;
+  --ink:#1A2530; --muted:#5C6B75; --border:#DDE3E7; --paper:#F5F7F8; --card:#FFFFFF;
+  --good:#1F7A4D; --bad:#B3261E; --radius:14px; --shadow:0 2px 10px rgba(107,30,60,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); line-height:1.55;}
+.jp{font-family:'Noto Sans JP','Inter',sans-serif;}
+ruby rt{font-size:0.55em; color:var(--muted);}
+
+#app{display:flex; min-height:100vh;}
+#sidebar{width:290px; flex-shrink:0; background:var(--navy-dark); color:#fff; height:100vh; position:sticky; top:0; overflow-y:auto; padding-bottom:30px;}
+.brand{display:flex; align-items:center; gap:10px; padding:20px 18px 16px 18px; border-bottom:1px solid rgba(255,255,255,0.12); cursor:pointer;}
+.brand .logo{width:40px;height:40px;border-radius:10px;background:var(--rust); display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.brand-text{font-weight:800;font-size:13.5px;line-height:1.25;}
+.brand-text small{display:block;font-weight:500;font-size:11px;color:#A8C2D6;}
+#toc{padding:10px 8px 0 8px;}
+.toc-link{display:flex; align-items:center; gap:8px; padding:10px 12px; margin:3px 2px; font-size:12.5px; color:#C9DBE9; border-radius:9px; cursor:pointer;}
+.toc-icon{font-size:15px;}
+.toc-link:hover{background:rgba(255,255,255,0.08); color:#fff;}
+.toc-link.active{background:var(--rust); color:#fff; font-weight:700;}
+#sidebar-footer{padding:16px 18px; font-size:10.5px; color:#87A2B8; border-top:1px solid rgba(255,255,255,0.1); margin-top:14px;}
+
+#menu-toggle{display:none; position:fixed; top:14px; left:14px; z-index:50; width:42px;height:42px;border-radius:10px;background:var(--navy-dark);color:#fff; border:none; font-size:18px; box-shadow:var(--shadow); cursor:pointer;}
+
+#main{flex:1; min-width:0;}
+#topbar{position:sticky; top:0; z-index:20; background:var(--card); border-bottom:1px solid var(--border); padding:14px 32px; display:flex; align-items:center; justify-content:space-between;}
+#mobile-title{font-weight:800; font-size:14px; color:var(--navy-dark);}
+#progress-wrap{display:flex; align-items:center; gap:10px; font-size:12px; color:var(--muted);}
+#progress-track{width:130px; height:7px; background:var(--border); border-radius:5px; overflow:hidden;}
+#progress-fill{height:100%; background:linear-gradient(90deg,var(--rust),var(--navy-light)); width:0%; transition:width .3s;}
+
+#content{max-width:880px; margin:0 auto; padding:0 32px 100px 32px;}
+
+.home-hero{background:linear-gradient(135deg,var(--navy) 0%, var(--navy-dark) 100%); color:#fff; border-radius:20px; padding:44px 38px; margin:32px 0 28px 0; position:relative; overflow:hidden;}
+.home-hero::after{content:"🚃"; position:absolute; right:24px; bottom:-16px; font-size:130px; opacity:0.15; transform:rotate(-8deg);}
+.home-hero h2{margin:0 0 10px 0; font-size:23px; font-weight:800;}
+.home-hero p{margin:0; color:#D3E2ED; max-width:560px; font-size:14.5px;}
+.home-stats{display:flex; gap:14px; margin-top:24px; flex-wrap:wrap;}
+.home-stat{background:rgba(255,255,255,0.1); border-radius:12px; padding:12px 18px; min-width:100px;}
+.home-stat b{display:block; font-size:22px;}
+.home-stat span{font-size:11px; color:#BBD3E4;}
+.chapter-cards{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px;}
+@media(max-width:700px){.chapter-cards{grid-template-columns:1fr;}}
+.chapter-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; cursor:pointer; box-shadow:var(--shadow); border-top:4px solid var(--rust); transition:transform .15s;}
+.chapter-card:hover{transform:translateY(-2px);}
+.card-icon{font-size:26px;}
+.chapter-card h3{margin:8px 0 4px 0; font-size:14.5px;}
+.chapter-card p{margin:0; font-size:12px; color:var(--muted);}
+.footer-credit{text-align:center; color:var(--muted); font-size:12px; margin:40px 0 10px 0;}
+
+.chapter-section{padding-top:8px;}
+.chapter-banner{background:var(--navy-dark); color:#fff; border-radius:16px; padding:24px 26px; margin:28px 0 20px 0; border-left:6px solid var(--rust);}
+.chapter-banner-eyebrow{font-size:11px; letter-spacing:.05em; color:var(--rust); font-weight:700; text-transform:uppercase;}
+.chapter-banner-title{margin:6px 0 0 0; display:flex; flex-direction:column; gap:2px;}
+.chapter-banner-title .jp{font-size:19px; font-weight:800;}
+.chapter-banner-title .en{font-size:12.5px; color:#BFD6E6; font-weight:500;}
+
+.sec{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:22px 24px; margin-bottom:18px; box-shadow:var(--shadow);}
+.sec-title{display:flex; flex-direction:column; gap:2px; margin-bottom:14px; padding-bottom:12px; border-bottom:2px solid #EAEEF2;}
+.sec-title .jp{font-weight:800; font-size:15.5px; color:var(--navy-dark);}
+.sec-title .en{font-size:12px; color:var(--muted); font-weight:600;}
+
+.para{margin-bottom:14px;}
+.para .jp{font-size:15px; display:flex; align-items:flex-start; gap:8px; margin:0 0 4px 0;}
+.para .en{font-size:13px; color:var(--muted); margin:0; padding-left:34px;}
+
+.spk{flex-shrink:0; border:none; background:var(--rust); color:#fff; border-radius:50%; width:26px;height:26px; font-size:12px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.2); margin-top:1px;}
+.spk:hover{background:var(--rust-dark);}
+.spk:active{transform:scale(0.92);}
+
+.steps{margin:10px 0 16px 0; padding:14px 16px; background:#EEF3F7; border-radius:12px;}
+.step{margin-bottom:9px;}
+.step:last-child{margin-bottom:0;}
+.step-jp{font-size:14px;}
+.step-en{font-size:12px; color:var(--muted); margin-top:1px;}
+
+.icon-card{background:#EEF3F7; border:1px dashed var(--border); border-radius:12px; padding:20px; text-align:center; margin:16px 0;}
+.icon-visual{font-size:50px; line-height:1; margin-bottom:10px; letter-spacing:4px;}
+.icon-caption{display:flex; flex-direction:column; gap:2px;}
+.icon-caption .jp{font-size:12.5px; font-weight:600; color:var(--navy-dark);}
+.icon-caption .en{font-size:11px; color:var(--muted);}
+
+.q-block{background:#EEF3F7; border-radius:12px; padding:16px 18px; margin:14px 0; border:1px solid var(--border);}
+.q-jp{font-size:14.5px; font-weight:700; margin:0 0 2px 0;}
+.q-en{font-size:12px; color:var(--muted); margin:0 0 12px 0;}
+.opt{padding:10px 14px; border-radius:9px; border:1.5px solid var(--border); margin-bottom:7px; cursor:pointer; background:#fff; display:flex; flex-direction:column; gap:1px;}
+.opt:hover{border-color:var(--navy-light);}
+.opt .jp{font-size:13.5px;}
+.opt .en{font-size:11.5px; color:var(--muted);}
+.q-block.answered .opt{cursor:default; pointer-events:none;}
+.q-block.answered .opt.correct{background:#E7F5EC; border-color:var(--good);}
+.q-block.answered .opt.wrong{background:#FBEAE9; border-color:var(--bad);}
+.explain{display:none; margin-top:10px; padding:10px 12px; background:#fff; border-left:3px solid var(--navy); border-radius:6px; font-size:12.5px;}
+.q-block.answered .explain{display:block;}
+.explain .jp{font-weight:600; margin-bottom:3px;}
+.explain .en{color:var(--muted);}
+.section-score-inline{background:var(--navy); color:#fff; padding:2px 9px; border-radius:20px; font-size:11px !important;}
+
+@media(max-width:980px){
+  #sidebar{position:fixed; left:-310px; top:0; z-index:40; transition:left .2s; width:270px; box-shadow:4px 0 20px rgba(0,0,0,0.3);}
+  #sidebar.open{left:0;}
+  #menu-toggle{display:flex; align-items:center; justify-content:center;}
+  #content{padding:0 16px 100px 16px;}
+  #topbar{padding:14px 16px 14px 64px;}
+  .home-hero{padding:30px 22px;}
+}
+</style>
+</head>
+<body>
+<button id="menu-toggle">☰</button>
+<div id="app">
+  <aside id="sidebar">
+    <div class="brand"><div class="logo">🚆</div><div class="brand-text">Railway<br>SSW<small>Japanese with Raza Sensei</small></div></div>
+    <div id="toc">
+    <div class="toc-link" data-target="ch01"><span class="toc-icon">🚃</span>第1章　鉄道分野の仕事</div>
+    <div class="toc-link" data-target="ch02"><span class="toc-icon">🦺</span>第2章　鉄道の安全文化</div>
+    <div class="toc-link" data-target="ch03"><span class="toc-icon">🛤</span>第3章　軌道整備の基本</div>
+    <div class="toc-link" data-target="ch04"><span class="toc-icon">⚡</span>第4章　電気設備整備の基本</div>
+    <div class="toc-link" data-target="ch05"><span class="toc-icon">🔍</span>第5章　車両整備の基本</div>
+    <div class="toc-link" data-target="ch06"><span class="toc-icon">🏭</span>第6章　車両製造の基本</div>
+    <div class="toc-link" data-target="ch07"><span class="toc-icon">🚉</span>第7章　運輸係員（駅の仕事）</div>
+    <div class="toc-link" data-target="ch08"><span class="toc-icon">🚂</span>第8章　運輸係員（車掌と運転士）</div>
+    <div class="toc-link" data-target="ch09"><span class="toc-icon">🚨</span>第9章　異常時の対応</div>
+    <div class="toc-link" data-target="ch10"><span class="toc-icon">📏</span>第10章　検査記録と品質管理</div>
+    <div class="toc-link" data-target="ch11"><span class="toc-icon">💬</span>第11章　報連相と判断練習</div>
+    </div>
+    <div id="sidebar-footer">特定技能「鉄道分野」<br>Bilingual Study Guide · Ruby Furigana · Audio<br><br>Original study material — not affiliated with or reproducing any official test-prep publisher's text.</div>
+  </aside>
+  <main id="main">
+    <div id="topbar">
+      <div id="mobile-title">Railway SSW</div>
+      <div id="progress-wrap"><div id="progress-track"><div id="progress-fill"></div></div><span id="progress-text">0 / 11 read</span></div>
+    </div>
+    <div id="content">
+      <div id="view-home">
+        <div class="home-hero">
+          <h2>特定技能「鉄道分野」<br>Railway — SSW Exam Prep</h2>
+          <p>An original bilingual study guide covering this field's core work — railway safety culture, track maintenance, electrical equipment maintenance, rolling stock maintenance &amp; manufacturing, station and train-crew duties, responding to abnormal situations, and inspection &amp; quality control — with furigana and tap-to-listen audio.</p>
+          <div class="home-stats">
+            <div class="home-stat"><b>11</b><span>Chapters</span></div>
+            <div class="home-stat"><b>🔊</b><span>Audio</span></div>
+            <div class="home-stat" id="home-progress-stat"><b>0%</b><span>Completed</span></div>
+          </div>
+        </div>
+        <div class="chapter-cards" id="chapter-cards">
+<div class="chapter-card" data-target="ch01"><div class="card-icon">🚃</div><h3>第1章　鉄道分野の仕事</h3><p>Chapter 1: Work in the Railway Field</p></div>
+<div class="chapter-card" data-target="ch02"><div class="card-icon">🦺</div><h3>第2章　鉄道の安全文化</h3><p>Chapter 2: Railway Safety Culture</p></div>
+<div class="chapter-card" data-target="ch03"><div class="card-icon">🛤️</div><h3>第3章　軌道整備の基本</h3><p>Chapter 3: Track Maintenance Basics</p></div>
+<div class="chapter-card" data-target="ch04"><div class="card-icon">⚡</div><h3>第4章　電気設備整備の基本</h3><p>Chapter 4: Electrical Equipment Maintenance Basics</p></div>
+<div class="chapter-card" data-target="ch05"><div class="card-icon">🔍</div><h3>第5章　車両整備の基本</h3><p>Chapter 5: Rolling Stock Maintenance Basics</p></div>
+<div class="chapter-card" data-target="ch06"><div class="card-icon">🏭</div><h3>第6章　車両製造の基本</h3><p>Chapter 6: Rolling Stock Manufacturing Basics</p></div>
+<div class="chapter-card" data-target="ch07"><div class="card-icon">🚉</div><h3>第7章　運輸係員（駅の仕事）</h3><p>Chapter 7: Transport Staff — Station Work</p></div>
+<div class="chapter-card" data-target="ch08"><div class="card-icon">🚂</div><h3>第8章　運輸係員（車掌と運転士）</h3><p>Chapter 8: Transport Staff — Conductor and Train Driver</p></div>
+<div class="chapter-card" data-target="ch09"><div class="card-icon">🚨</div><h3>第9章　異常時の対応</h3><p>Chapter 9: Responding to Abnormal Situations</p></div>
+<div class="chapter-card" data-target="ch10"><div class="card-icon">📏</div><h3>第10章　検査記録と品質管理</h3><p>Chapter 10: Inspection Records and Quality Control</p></div>
+<div class="chapter-card" data-target="ch11"><div class="card-icon">💬</div><h3>第11章　報連相と判断練習</h3><p>Chapter 11: Workplace Communication and Judgment Practice</p></div>
+        </div>
+        <p class="footer-credit">Japanese with Raza Sensei · SSW Railway System · Original bilingual study guide, icons &amp; text independently authored</p>
+      </div>
+      <div id="view-content" style="display:none;">
+<section class="chapter-section" id="ch01" data-chapter="ch01">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第1章　鉄道分野の仕事</span><span class="en">Chapter 1: Work in the Railway Field</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="鉄道分野の特定技能には、軌道整備、電気設備整備、車両整備、車両製造、運輸係員の5つの業務区分があります。">🔊</button><ruby>鉄道分野<rt>てつどうぶんや</rt></ruby>の<ruby>特定技能<rt>とくていぎのう</rt></ruby>には、<ruby>軌道整備<rt>きどうせいび</rt></ruby>、<ruby>電気設備整備<rt>でんきせつびせいび</rt></ruby>、<ruby>車両整備<rt>しゃりょうせいび</rt></ruby>、<ruby>車両製造<rt>しゃりょうせいぞう</rt></ruby>、<ruby>運輸係員<rt>うんゆかかりいん</rt></ruby>の5つの<ruby>業務区分<rt>ぎょうむくぶん</rt></ruby>があります。</p>
+    <p class="en">The Railway SSW field has five work categories: track maintenance, electrical equipment maintenance, rolling stock maintenance, rolling stock manufacturing, and transport staff.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="軌道整備や電気設備整備は、線路や信号など、鉄道の「インフラ」を支える仕事です。">🔊</button><ruby>軌道整備<rt>きどうせいび</rt></ruby>や<ruby>電気設備整備<rt>でんきせつびせいび</rt></ruby>は、<ruby>線路<rt>せんろ</rt></ruby>や<ruby>信号<rt>しんごう</rt></ruby>など、<ruby>鉄道<rt>てつどう</rt></ruby>の「インフラ」を<ruby>支<rt>ささ</rt></ruby>える<ruby>仕事<rt>しごと</rt></ruby>です。</p>
+    <p class="en">Track maintenance and electrical equipment maintenance support the railway's infrastructure, such as tracks and signals.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="車両整備と車両製造は、実際に走る鉄道車両を作り、整える仕事です。">🔊</button><ruby>車両整備<rt>しゃりょうせいび</rt></ruby>と<ruby>車両製造<rt>しゃりょうせいぞう</rt></ruby>は、<ruby>実際<rt>じっさい</rt></ruby>に<ruby>走<rt>はし</rt></ruby>る<ruby>鉄道車両<rt>てつどうしゃりょう</rt></ruby>を<ruby>作<rt>つく</rt></ruby>り、<ruby>整<rt>ととの</rt></ruby>える<ruby>仕事<rt>しごと</rt></ruby>です。</p>
+    <p class="en">Rolling stock maintenance and rolling stock manufacturing involve building and maintaining the railway vehicles that actually run.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="運輸係員は、駅での案内から車掌・運転士まで、お客様や貨物を運ぶ仕事を担当します。">🔊</button><ruby>運輸係員<rt>うんゆかかりいん</rt></ruby>は、<ruby>駅<rt>えき</rt></ruby>での<ruby>案内<rt>あんない</rt></ruby>から<ruby>車掌<rt>しゃしょう</rt></ruby>・<ruby>運転士<rt>うんてんし</rt></ruby>まで、お<ruby>客様<rt>きゃくさま</rt></ruby>や<ruby>貨物<rt>かもつ</rt></ruby>を<ruby>運<rt>はこ</rt></ruby>ぶ<ruby>仕事<rt>しごと</rt></ruby>を<ruby>担当<rt>たんとう</rt></ruby>します。</p>
+    <p class="en">Transport staff handle everything from station guidance to conductor and train driver duties, carrying passengers and freight.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🚃</div>
+    <div class="icon-caption"><span class="jp">鉄道の5つの業務区分</span><span class="en">The five work categories in the railway field</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>鉄道分野<rt>てつどうぶんや</rt></ruby>の<ruby>業務区分<rt>ぎょうむくぶん</rt></ruby>に<b>あてはまらない</b>ものはどれですか。</p>
+    <p class="q-en">Which of the following is NOT one of the Railway field's five work categories?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 遠洋漁業</span><span class="en">Deep-sea fishing operations</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 車両整備</span><span class="en">Rolling stock maintenance</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 運輸係員</span><span class="en">Transport staff</span></div>
+    <div class="explain"><div class="jp">鉄道分野の業務区分は、軌道整備・電気設備整備・車両整備・車両製造・運輸係員の5つです。遠洋漁業はこの分野にはあてはまりません。</div><div class="en">The Railway field has five work categories: track maintenance, electrical equipment maintenance, rolling stock maintenance, rolling stock manufacturing, and transport staff. Deep-sea fishing is not part of this field.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch02" data-chapter="ch02">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第2章　鉄道の安全文化</span><span class="en">Chapter 2: Railway Safety Culture</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="鉄道では、たくさんのお客様の命を預かるため、「安全最優先」の考え方がすべての基本です。">🔊</button><ruby>鉄道<rt>てつどう</rt></ruby>では、たくさんのお<ruby>客様<rt>きゃくさま</rt></ruby>の<ruby>命<rt>いのち</rt></ruby>を<ruby>預<rt>あず</rt></ruby>かるため、「<ruby>安全最優先<rt>あんぜんさいゆうせん</rt></ruby>」の<ruby>考<rt>かんが</rt></ruby>え<ruby>方<rt>かた</rt></ruby>がすべての<ruby>基本<rt>きほん</rt></ruby>です。</p>
+    <p class="en">Because railways are entrusted with the lives of many passengers, the principle of "safety first" is the foundation of everything.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="作業や確認をするときは、指で指して声に出して確認する「指差呼称」を行います。">🔊</button><ruby>作業<rt>さぎょう</rt></ruby>や<ruby>確認<rt>かくにん</rt></ruby>をするときは、<ruby>指<rt>ゆび</rt></ruby>で<ruby>指<rt>さ</rt></ruby>して<ruby>声<rt>こえ</rt></ruby>に<ruby>出<rt>だ</rt></ruby>して<ruby>確認<rt>かくにん</rt></ruby>する「<ruby>指差呼称<rt>しさこしょう</rt></ruby>」を<ruby>行<rt>おこな</rt></ruby>います。</p>
+    <p class="en">When performing tasks or checks, workers use "pointing-and-calling" — pointing with a finger and confirming aloud.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="事故には至らなかったが、ヒヤリとした出来事を「ヒヤリハット」といい、報告して職場で共有します。">🔊</button><ruby>事故<rt>じこ</rt></ruby>には<ruby>至<rt>いた</rt></ruby>らなかったが、ヒヤリとした<ruby>出来事<rt>できごと</rt></ruby>を「ヒヤリハット」といい、<ruby>報告<rt>ほうこく</rt></ruby>して<ruby>職場<rt>しょくば</rt></ruby>で<ruby>共有<rt>きょうゆう</rt></ruby>します。</p>
+    <p class="en">An incident that did not lead to an accident but gave someone a scare is called a "near-miss," and it is reported and shared with the workplace.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="作業に潜む危険を事前に予測する「危険予知」(KY)活動も、事故を防ぐために重要です。">🔊</button><ruby>作業<rt>さぎょう</rt></ruby>に<ruby>潜<rt>ひそ</rt></ruby>む<ruby>危険<rt>きけん</rt></ruby>を<ruby>事前<rt>じぜん</rt></ruby>に<ruby>予測<rt>よそく</rt></ruby>する「<ruby>危険予知<rt>きけんよち</rt></ruby>」(KY)<ruby>活動<rt>かつどう</rt></ruby>も、<ruby>事故<rt>じこ</rt></ruby>を<ruby>防<rt>ふせ</rt></ruby>ぐために<ruby>重要<rt>じゅうよう</rt></ruby>です。</p>
+    <p class="en">"Hazard prediction" (KY) activities, which anticipate dangers hidden in a task beforehand, are also important for preventing accidents.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🦺</div>
+    <div class="icon-caption"><span class="jp">安全最優先と指差呼称</span><span class="en">Safety first, and pointing-and-calling</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>指<rt>ゆび</rt></ruby>で<ruby>指<rt>さ</rt></ruby>して<ruby>声<rt>こえ</rt></ruby>に<ruby>出<rt>だ</rt></ruby>して<ruby>確認<rt>かくにん</rt></ruby>することを<b>何といいますか</b>。</p>
+    <p class="q-en">What is it called when workers point with a finger and confirm aloud?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 指差呼称</span><span class="en">Pointing-and-calling</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 危険予知</span><span class="en">Hazard prediction</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 入換え合図</span><span class="en">Shunting signal</span></div>
+    <div class="explain"><div class="jp">指で指して声に出して確認することを指差呼称といいます。</div><div class="en">Pointing with a finger and confirming aloud is called pointing-and-calling (shisa-kosho).</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch03" data-chapter="ch03">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第3章　軌道整備の基本</span><span class="en">Chapter 3: Track Maintenance Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「軌道整備」は、列車が安全に走るための線路を新設・改良・修繕する仕事です。">🔊</button>「<ruby>軌道整備<rt>きどうせいび</rt></ruby>」は、<ruby>列車<rt>れっしゃ</rt></ruby>が<ruby>安全<rt>あんぜん</rt></ruby>に<ruby>走<rt>はし</rt></ruby>るための<ruby>線路<rt>せんろ</rt></ruby>を<ruby>新設<rt>しんせつ</rt></ruby>・<ruby>改良<rt>かいりょう</rt></ruby>・<ruby>修繕<rt>しゅうぜん</rt></ruby>する<ruby>仕事<rt>しごと</rt></ruby>です。</p>
+    <p class="en">"Track maintenance" is the work of building, improving, and repairing the tracks that let trains run safely.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「レール」は列車の車輪が直接触れる金属の棒で、すり減りやひび割れがないか定期的に点検します。">🔊</button>「レール」は<ruby>列車<rt>れっしゃ</rt></ruby>の<ruby>車輪<rt>しゃりん</rt></ruby>が<ruby>直接<rt>ちょくせつ</rt></ruby><ruby>触<rt>ふ</rt></ruby>れる<ruby>金属<rt>きんぞく</rt></ruby>の<ruby>棒<rt>ぼう</rt></ruby>で、すり<ruby>減<rt>へ</rt></ruby>りやひび<ruby>割<rt>わ</rt></ruby>れがないか<ruby>定期的<rt>ていきてき</rt></ruby>に<ruby>点検<rt>てんけん</rt></ruby>します。</p>
+    <p class="en">"Rails" are the metal bars that the train's wheels touch directly, and they are regularly inspected for wear and cracks.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「まくらぎ」はレールを支える横の部材で、コンクリート製のものが多く使われています。">🔊</button>「まくらぎ」はレールを<ruby>支<rt>ささ</rt></ruby>える<ruby>横<rt>よこ</rt></ruby>の<ruby>部材<rt>ぶざい</rt></ruby>で、コンクリート<ruby>製<rt>せい</rt></ruby>のものが<ruby>多<rt>おお</rt></ruby>く<ruby>使<rt>つか</rt></ruby>われています。</p>
+    <p class="en">"Sleepers" are the crosswise components that support the rails, and concrete ones are commonly used today.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「バラスト」はレールの下に敷かれた砕石で、列車の重さを分散させ、レールの位置を安定させる役割があります。">🔊</button>「バラスト」はレールの<ruby>下<rt>した</rt></ruby>に<ruby>敷<rt>し</rt></ruby>かれた<ruby>砕石<rt>さいせき</rt></ruby>で、<ruby>列車<rt>れっしゃ</rt></ruby>の<ruby>重<rt>おも</rt></ruby>さを<ruby>分散<rt>ぶんさん</rt></ruby>させ、レールの<ruby>位置<rt>いち</rt></ruby>を<ruby>安定<rt>あんてい</rt></ruby>させる<ruby>役割<rt>やくわり</rt></ruby>があります。</p>
+    <p class="en">"Ballast" is the crushed stone laid beneath the rails, which spreads out the weight of the train and helps keep the rails in a stable position.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🛤️</div>
+    <div class="icon-caption"><span class="jp">レール・まくらぎ・バラストの点検</span><span class="en">Inspecting rails, sleepers, and ballast</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp">レールを<ruby>支<rt>ささ</rt></ruby>える<ruby>横<rt>よこ</rt></ruby>の<ruby>部材<rt>ぶざい</rt></ruby>で、コンクリート<ruby>製<rt>せい</rt></ruby>のものが<ruby>多<rt>おお</rt></ruby>いものは<b>どれですか</b>。</p>
+    <p class="q-en">What is the crosswise component that supports the rails, often made of concrete?</p>
+      <div class="opt" data-val="A"><span class="jp">A. まくらぎ</span><span class="en">Sleeper</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. バラスト</span><span class="en">Ballast</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 台車</span><span class="en">Bogie</span></div>
+    <div class="explain"><div class="jp">まくらぎはレールを支える横の部材で、コンクリート製のものが多く使われています。</div><div class="en">Sleepers are the crosswise components that support the rails, and concrete ones are commonly used.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch04" data-chapter="ch04">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第4章　電気設備整備の基本</span><span class="en">Chapter 4: Electrical Equipment Maintenance Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「電気設備整備」は、電路設備や変電所、信号保安設備などを新設・改良・修繕する仕事です。">🔊</button>「<ruby>電気設備整備<rt>でんきせつびせいび</rt></ruby>」は、<ruby>電路設備<rt>でんろせつび</rt></ruby>や<ruby>変電所<rt>へんでんしょ</rt></ruby>、<ruby>信号保安設備<rt>しんごうほあんせつび</rt></ruby>などを<ruby>新設<rt>しんせつ</rt></ruby>・<ruby>改良<rt>かいりょう</rt></ruby>・<ruby>修繕<rt>しゅうぜん</rt></ruby>する<ruby>仕事<rt>しごと</rt></ruby>です。</p>
+    <p class="en">"Electrical equipment maintenance" is the work of building, improving, and repairing power line equipment, substations, signal safety equipment, and more.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「変電所」は、列車を動かすための電気を、ちょうどよい電圧に変えて送る設備です。">🔊</button>「<ruby>変電所<rt>へんでんしょ</rt></ruby>」は、<ruby>列車<rt>れっしゃ</rt></ruby>を<ruby>動<rt>うご</rt></ruby>かすための<ruby>電気<rt>でんき</rt></ruby>を、ちょうどよい<ruby>電圧<rt>でんあつ</rt></ruby>に<ruby>変<rt>か</rt></ruby>えて<ruby>送<rt>おく</rt></ruby>る<ruby>設備<rt>せつび</rt></ruby>です。</p>
+    <p class="en">A "substation" is a facility that converts electricity into the right voltage to power the trains.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「信号保安設備」は、列車の運転士に進んでよいかを知らせ、列車どうしの衝突を防ぐための大切な設備です。">🔊</button>「<ruby>信号保安設備<rt>しんごうほあんせつび</rt></ruby>」は、<ruby>列車<rt>れっしゃ</rt></ruby>の<ruby>運転士<rt>うんてんし</rt></ruby>に<ruby>進<rt>すす</rt></ruby>んでよいかを<ruby>知<rt>し</rt></ruby>らせ、<ruby>列車<rt>れっしゃ</rt></ruby>どうしの<ruby>衝突<rt>しょうとつ</rt></ruby>を<ruby>防<rt>ふせ</rt></ruby>ぐための<ruby>大切<rt>たいせつ</rt></ruby>な<ruby>設備<rt>せつび</rt></ruby>です。</p>
+    <p class="en">"Signal safety equipment" tells train drivers whether it is safe to proceed, and is essential equipment for preventing collisions between trains.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「踏切保安設備」は、踏切の遮断機や警報機などのことで、正常に動くように定期的に点検します。">🔊</button>「<ruby>踏切保安設備<rt>ふみきりほあんせつび</rt></ruby>」は、<ruby>踏切<rt>ふみきり</rt></ruby>の<ruby>遮断機<rt>しゃだんき</rt></ruby>や<ruby>警報機<rt>けいほうき</rt></ruby>などのことで、<ruby>正常<rt>せいじょう</rt></ruby>に<ruby>動<rt>うご</rt></ruby>くように<ruby>定期的<rt>ていきてき</rt></ruby>に<ruby>点検<rt>てんけん</rt></ruby>します。</p>
+    <p class="en">"Level-crossing safety equipment" refers to things like crossing barriers and warning devices, which are regularly inspected to make sure they work properly.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">⚡</div>
+    <div class="icon-caption"><span class="jp">信号保安設備と踏切保安設備</span><span class="en">Signal safety equipment and level-crossing safety equipment</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>列車<rt>れっしゃ</rt></ruby>を<ruby>動<rt>うご</rt></ruby>かすための<ruby>電気<rt>でんき</rt></ruby>を、ちょうどよい<ruby>電圧<rt>でんあつ</rt></ruby>に<ruby>変<rt>か</rt></ruby>えて<ruby>送<rt>おく</rt></ruby>る<ruby>設備<rt>せつび</rt></ruby>は<b>どれですか</b>。</p>
+    <p class="q-en">Which facility converts electricity into the right voltage to power the trains?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 変電所</span><span class="en">Substation</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 踏切保安設備</span><span class="en">Level-crossing safety equipment</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 台車</span><span class="en">Bogie</span></div>
+    <div class="explain"><div class="jp">変電所は、列車を動かすための電気をちょうどよい電圧に変えて送る設備です。</div><div class="en">A substation is a facility that converts electricity into the right voltage to power the trains.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch05" data-chapter="ch05">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第5章　車両整備の基本</span><span class="en">Chapter 5: Rolling Stock Maintenance Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「車両整備」は、鉄道車両が安全に走れるように検査や整備を行う仕事です。">🔊</button>「<ruby>車両整備<rt>しゃりょうせいび</rt></ruby>」は、<ruby>鉄道車両<rt>てつどうしゃりょう</rt></ruby>が<ruby>安全<rt>あんぜん</rt></ruby>に<ruby>走<rt>はし</rt></ruby>れるように<ruby>検査<rt>けんさ</rt></ruby>や<ruby>整備<rt>せいび</rt></ruby>を<ruby>行<rt>おこな</rt></ruby>う<ruby>仕事<rt>しごと</rt></ruby>です。</p>
+    <p class="en">"Rolling stock maintenance" is the work of inspecting and servicing railway vehicles so they can run safely.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「列車検査」は、運行の合間に短時間で行う、ブレーキや連結器などの基本的な確認です。">🔊</button>「<ruby>列車検査<rt>れっしゃけんさ</rt></ruby>」は、<ruby>運行<rt>うんこう</rt></ruby>の<ruby>合間<rt>あいま</rt></ruby>に<ruby>短時間<rt>たんじかん</rt></ruby>で<ruby>行<rt>おこな</rt></ruby>う、ブレーキや<ruby>連結器<rt>れんけつき</rt></ruby>などの<ruby>基本的<rt>きほんてき</rt></ruby>な<ruby>確認<rt>かくにん</rt></ruby>です。</p>
+    <p class="en">"Train inspection" is a brief check performed between runs, confirming basic items such as the brakes and couplers.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「定期検査」は、より長い期間ごとに、車両を詳しく分解して点検する、より本格的な検査です。">🔊</button>「<ruby>定期検査<rt>ていきけんさ</rt></ruby>」は、より<ruby>長<rt>なが</rt></ruby>い<ruby>期間<rt>きかん</rt></ruby>ごとに、<ruby>車両<rt>しゃりょう</rt></ruby>を<ruby>詳<rt>くわ</rt></ruby>しく<ruby>分解<rt>ぶんかい</rt></ruby>して<ruby>点検<rt>てんけん</rt></ruby>する、より<ruby>本格的<rt>ほんかくてき</rt></ruby>な<ruby>検査<rt>けんさ</rt></ruby>です。</p>
+    <p class="en">"Periodic inspection" is a more thorough inspection carried out at longer intervals, in which the vehicle is disassembled in detail for checking.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「台車」は、車体を支えて車輪を動かす装置で、乗り心地や安全性に大きく関わります。">🔊</button>「<ruby>台車<rt>だいしゃ</rt></ruby>」は、<ruby>車体<rt>しゃたい</rt></ruby>を<ruby>支<rt>ささ</rt></ruby>えて<ruby>車輪<rt>しゃりん</rt></ruby>を<ruby>動<rt>うご</rt></ruby>かす<ruby>装置<rt>そうち</rt></ruby>で、<ruby>乗<rt>の</rt></ruby>り<ruby>心地<rt>ごこち</rt></ruby>や<ruby>安全性<rt>あんぜんせい</rt></ruby>に<ruby>大<rt>おお</rt></ruby>きく<ruby>関<rt>かか</rt></ruby>わります。</p>
+    <p class="en">A "bogie" is the mechanism that supports the car body and moves the wheels, and it greatly affects both ride comfort and safety.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🔍</div>
+    <div class="icon-caption"><span class="jp">列車検査と定期検査</span><span class="en">Train inspection and periodic inspection</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>運行<rt>うんこう</rt></ruby>の<ruby>合間<rt>あいま</rt></ruby>に<ruby>短時間<rt>たんじかん</rt></ruby>で<ruby>行<rt>おこな</rt></ruby>う、ブレーキなどの<ruby>基本的<rt>きほんてき</rt></ruby>な<ruby>確認<rt>かくにん</rt></ruby>を<b>何といいますか</b>。</p>
+    <p class="q-en">What is the brief check between runs, confirming basic items like the brakes, called?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 列車検査</span><span class="en">Train inspection</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 定期検査</span><span class="en">Periodic inspection</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 危険予知</span><span class="en">Hazard prediction</span></div>
+    <div class="explain"><div class="jp">運行の合間に短時間で行う、ブレーキや連結器などの基本的な確認を列車検査といいます。</div><div class="en">The brief check performed between runs, confirming basic items such as the brakes and couplers, is called train inspection.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch06" data-chapter="ch06">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第6章　車両製造の基本</span><span class="en">Chapter 6: Rolling Stock Manufacturing Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「車両製造」は、鉄道車両や部品を作る仕事で、素材加工から試験検査まで幅広い工程があります。">🔊</button>「<ruby>車両製造<rt>しゃりょうせいぞう</rt></ruby>」は、<ruby>鉄道車両<rt>てつどうしゃりょう</rt></ruby>や<ruby>部品<rt>ぶひん</rt></ruby>を<ruby>作<rt>つく</rt></ruby>る<ruby>仕事<rt>しごと</rt></ruby>で、<ruby>素材加工<rt>そざいかこう</rt></ruby>から<ruby>試験検査<rt>しけんけんさ</rt></ruby>まで<ruby>幅広<rt>はばひろ</rt></ruby>い<ruby>工程<rt>こうてい</rt></ruby>があります。</p>
+    <p class="en">"Rolling stock manufacturing" is the work of building railway vehicles and their parts, spanning a wide range of processes from material processing to testing and inspection.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「構体組立て」は、車両の骨組みとなる金属の部材を組み立てる作業です。">🔊</button>「<ruby>構体組立<rt>こうたいくみた</rt></ruby>て」は、<ruby>車両<rt>しゃりょう</rt></ruby>の<ruby>骨組<rt>ほねぐ</rt></ruby>みとなる<ruby>金属<rt>きんぞく</rt></ruby>の<ruby>部材<rt>ぶざい</rt></ruby>を<ruby>組<rt>く</rt></ruby>み<ruby>立<rt>た</rt></ruby>てる<ruby>作業<rt>さぎょう</rt></ruby>です。</p>
+    <p class="en">"Car-body assembly" is the work of assembling the metal frame members that form the skeleton of the vehicle.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「溶接」は、金属の部材どうしを熱で溶かしてつなぎ合わせる作業で、強度を保つために正確な技術が必要です。">🔊</button>「<ruby>溶接<rt>ようせつ</rt></ruby>」は、<ruby>金属<rt>きんぞく</rt></ruby>の<ruby>部材<rt>ぶざい</rt></ruby>どうしを<ruby>熱<rt>ねつ</rt></ruby>で<ruby>溶<rt>と</rt></ruby>かしてつなぎ<ruby>合<rt>あ</rt></ruby>わせる<ruby>作業<rt>さぎょう</rt></ruby>で、<ruby>強度<rt>きょうど</rt></ruby>を<ruby>保<rt>たも</rt></ruby>つために<ruby>正確<rt>せいかく</rt></ruby>な<ruby>技術<rt>ぎじゅつ</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>です。</p>
+    <p class="en">"Welding" is the work of joining metal parts together by melting them with heat, and it requires precise technique to maintain strength.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「ぎ装」は、車内の座席や配線、空調などを取り付ける仕上げの工程です。">🔊</button>「ぎ<ruby>装<rt>そう</rt></ruby>」は、<ruby>車内<rt>しゃない</rt></ruby>の<ruby>座席<rt>ざせき</rt></ruby>や<ruby>配線<rt>はいせん</rt></ruby>、<ruby>空調<rt>くうちょう</rt></ruby>などを<ruby>取<rt>と</rt></ruby>り<ruby>付<rt>つ</rt></ruby>ける<ruby>仕上<rt>しあ</rt></ruby>げの<ruby>工程<rt>こうてい</rt></ruby>です。</p>
+    <p class="en">"Outfitting" is the finishing process of installing interior seats, wiring, air conditioning, and other components.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🏭</div>
+    <div class="icon-caption"><span class="jp">構体組立てと溶接・ぎ装</span><span class="en">Car-body assembly, welding, and outfitting</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>金属<rt>きんぞく</rt></ruby>の<ruby>部材<rt>ぶざい</rt></ruby>どうしを<ruby>熱<rt>ねつ</rt></ruby>で<ruby>溶<rt>と</rt></ruby>かしてつなぎ<ruby>合<rt>あ</rt></ruby>わせる<ruby>作業<rt>さぎょう</rt></ruby>を<b>何といいますか</b>。</p>
+    <p class="q-en">What is the process of joining metal parts together by melting them with heat called?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 溶接</span><span class="en">Welding</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. ぎ装</span><span class="en">Outfitting</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 構体組立て</span><span class="en">Car-body assembly</span></div>
+    <div class="explain"><div class="jp">金属の部材どうしを熱で溶かしてつなぎ合わせる作業を溶接といいます。</div><div class="en">The process of joining metal parts together by melting them with heat is called welding.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch07" data-chapter="ch07">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第7章　運輸係員（駅の仕事）</span><span class="en">Chapter 7: Transport Staff — Station Work</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「運輸係員」の仕事には、駅の設備管理や、お客様への「旅客案内」が含まれます。">🔊</button>「<ruby>運輸係員<rt>うんゆかかりいん</rt></ruby>」の<ruby>仕事<rt>しごと</rt></ruby>には、<ruby>駅<rt>えき</rt></ruby>の<ruby>設備管理<rt>せつびかんり</rt></ruby>や、お<ruby>客様<rt>きゃくさま</rt></ruby>への「<ruby>旅客案内<rt>りょかくあんない</rt></ruby>」が<ruby>含<rt>ふく</rt></ruby>まれます。</p>
+    <p class="en">The work of "transport staff" includes managing station facilities and providing "passenger guidance" to customers.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「ポイント操作」とは、列車が進む線路を切り替える分岐器を操作することです。">🔊</button>「ポイント<ruby>操作<rt>そうさ</rt></ruby>」とは、<ruby>列車<rt>れっしゃ</rt></ruby>が<ruby>進<rt>すす</rt></ruby>む<ruby>線路<rt>せんろ</rt></ruby>を<ruby>切<rt>き</rt></ruby>り<ruby>替<rt>か</rt></ruby>える<ruby>分岐器<rt>ぶんきき</rt></ruby>を<ruby>操作<rt>そうさ</rt></ruby>することです。</p>
+    <p class="en">"Switch operation" means operating the points that change which track a train travels onto.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="車両の連結や切り離しを行う「入換え」のときは、周りに「合図」を送って安全を確認します。">🔊</button><ruby>車両<rt>しゃりょう</rt></ruby>の<ruby>連結<rt>れんけつ</rt></ruby>や<ruby>切<rt>き</rt></ruby>り<ruby>離<rt>はな</rt></ruby>しを<ruby>行<rt>おこな</rt></ruby>う「<ruby>入換<rt>いれか</rt></ruby>え」のときは、<ruby>周<rt>まわ</rt></ruby>りに「<ruby>合図<rt>あいず</rt></ruby>」を<ruby>送<rt>おく</rt></ruby>って<ruby>安全<rt>あんぜん</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>します。</p>
+    <p class="en">When "shunting" — coupling or uncoupling railway cars — workers send "signals" to those around them to confirm safety.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="貨物を取り扱う駅では、「貨物取扱業務」も運輸係員の大切な仕事です。">🔊</button><ruby>貨物<rt>かもつ</rt></ruby>を<ruby>取<rt>と</rt></ruby>り<ruby>扱<rt>あつか</rt></ruby>う<ruby>駅<rt>えき</rt></ruby>では、「<ruby>貨物取扱業務<rt>かもつとりあつかいぎょうむ</rt></ruby>」も<ruby>運輸係員<rt>うんゆかかりいん</rt></ruby>の<ruby>大切<rt>たいせつ</rt></ruby>な<ruby>仕事<rt>しごと</rt></ruby>です。</p>
+    <p class="en">At stations that handle freight, "freight handling duties" are also important work for transport staff.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🚉</div>
+    <div class="icon-caption"><span class="jp">ポイント操作と旅客案内</span><span class="en">Switch operation and passenger guidance</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>列車<rt>れっしゃ</rt></ruby>が<ruby>進<rt>すす</rt></ruby>む<ruby>線路<rt>せんろ</rt></ruby>を<ruby>切<rt>き</rt></ruby>り<ruby>替<rt>か</rt></ruby>える<ruby>分岐器<rt>ぶんきき</rt></ruby>を<ruby>操作<rt>そうさ</rt></ruby>することを<b>何といいますか</b>。</p>
+    <p class="q-en">What is it called when workers operate the points that change which track a train travels onto?</p>
+      <div class="opt" data-val="A"><span class="jp">A. ポイント操作</span><span class="en">Switch operation</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 入換え合図</span><span class="en">Shunting signal</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 運行管理</span><span class="en">Train operation management</span></div>
+    <div class="explain"><div class="jp">列車が進む線路を切り替える分岐器を操作することをポイント操作といいます。</div><div class="en">Operating the points that change which track a train travels onto is called switch operation.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch08" data-chapter="ch08">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第8章　運輸係員（車掌と運転士）</span><span class="en">Chapter 8: Transport Staff — Conductor and Train Driver</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「車掌」は、列車内でドアの開閉や放送、安全確認などを担当します。">🔊</button>「<ruby>車掌<rt>しゃしょう</rt></ruby>」は、<ruby>列車内<rt>れっしゃない</rt></ruby>でドアの<ruby>開閉<rt>かいへい</rt></ruby>や<ruby>放送<rt>ほうそう</rt></ruby>、<ruby>安全確認<rt>あんぜんかくにん</rt></ruby>などを<ruby>担当<rt>たんとう</rt></ruby>します。</p>
+    <p class="en">A "conductor" is responsible for opening and closing doors, making announcements, and confirming safety inside the train.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「運転士」は、列車を操縦し、信号や速度を確認しながら、安全かつ正確に運転する仕事です。">🔊</button>「<ruby>運転士<rt>うんてんし</rt></ruby>」は、<ruby>列車<rt>れっしゃ</rt></ruby>を<ruby>操縦<rt>そうじゅう</rt></ruby>し、<ruby>信号<rt>しんごう</rt></ruby>や<ruby>速度<rt>そくど</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>しながら、<ruby>安全<rt>あんぜん</rt></ruby>かつ<ruby>正確<rt>せいかく</rt></ruby>に<ruby>運転<rt>うんてん</rt></ruby>する<ruby>仕事<rt>しごと</rt></ruby>です。</p>
+    <p class="en">A "train driver" operates the train, checking signals and speed to drive safely and accurately.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="列車が時刻表どおりに安全に走るように、「ダイヤ」(運行計画)にもとづいて運行を管理します。">🔊</button><ruby>列車<rt>れっしゃ</rt></ruby>が<ruby>時刻表<rt>じこくひょう</rt></ruby>どおりに<ruby>安全<rt>あんぜん</rt></ruby>に<ruby>走<rt>はし</rt></ruby>るように、「ダイヤ」(<ruby>運行計画<rt>うんこうけいかく</rt></ruby>)にもとづいて<ruby>運行<rt>うんこう</rt></ruby>を<ruby>管理<rt>かんり</rt></ruby>します。</p>
+    <p class="en">Train operations are managed based on the "diagram" (operating schedule) so that trains run safely according to timetable.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="車掌も運転士も、お客様と接する場面が多いため、高い日本語能力が求められます。">🔊</button><ruby>車掌<rt>しゃしょう</rt></ruby>も<ruby>運転士<rt>うんてんし</rt></ruby>も、お<ruby>客様<rt>きゃくさま</rt></ruby>と<ruby>接<rt>せっ</rt></ruby>する<ruby>場面<rt>ばめん</rt></ruby>が<ruby>多<rt>おお</rt></ruby>いため、<ruby>高<rt>たか</rt></ruby>い<ruby>日本語<rt>にほんご</rt></ruby><ruby>能力<rt>のうりょく</rt></ruby>が<ruby>求<rt>もと</rt></ruby>められます。</p>
+    <p class="en">Both conductors and train drivers often interact with passengers, so a high level of Japanese ability is required.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🚂</div>
+    <div class="icon-caption"><span class="jp">車掌業務と運転士業務</span><span class="en">Conductor duties and train driver duties</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>列車内<rt>れっしゃない</rt></ruby>でドアの<ruby>開閉<rt>かいへい</rt></ruby>や<ruby>放送<rt>ほうそう</rt></ruby>を<ruby>担当<rt>たんとう</rt></ruby>するのは<b>誰ですか</b>。</p>
+    <p class="q-en">Who is responsible for opening and closing doors and making announcements inside the train?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 車掌</span><span class="en">Conductor</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 運転士</span><span class="en">Train driver</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 変電所の作業員</span><span class="en">A substation worker</span></div>
+    <div class="explain"><div class="jp">車掌は、列車内でドアの開閉や放送、安全確認などを担当します。</div><div class="en">A conductor is responsible for opening and closing doors, making announcements, and confirming safety inside the train.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch09" data-chapter="ch09">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第9章　異常時の対応</span><span class="en">Chapter 9: Responding to Abnormal Situations</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="鉄道の現場では、いつもと違う「異常時」にどう対応するかを、あらかじめしっかり学んでおく必要があります。">🔊</button><ruby>鉄道<rt>てつどう</rt></ruby>の<ruby>現場<rt>げんば</rt></ruby>では、いつもと<ruby>違<rt>ちが</rt></ruby>う「<ruby>異常時<rt>いじょうじ</rt></ruby>」にどう<ruby>対応<rt>たいおう</rt></ruby>するかを、あらかじめしっかり<ruby>学<rt>まな</rt></ruby>んでおく<ruby>必要<rt>ひつよう</rt></ruby>があります。</p>
+    <p class="en">At railway worksites, it is necessary to thoroughly learn in advance how to respond to "abnormal situations" that differ from the usual.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="危険を感じたときは、ためらわずに「緊急停止」の操作を行い、列車を止めます。">🔊</button><ruby>危険<rt>きけん</rt></ruby>を<ruby>感<rt>かん</rt></ruby>じたときは、ためらわずに「<ruby>緊急停止<rt>きんきゅうていし</rt></ruby>」の<ruby>操作<rt>そうさ</rt></ruby>を<ruby>行<rt>おこな</rt></ruby>い、<ruby>列車<rt>れっしゃ</rt></ruby>を<ruby>止<rt>と</rt></ruby>めます。</p>
+    <p class="en">When sensing danger, workers do not hesitate to perform an "emergency stop" to halt the train.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="火災や事故が起きたときは、お客様を安全な場所に導く「避難誘導」を落ち着いて行います。">🔊</button><ruby>火災<rt>かさい</rt></ruby>や<ruby>事故<rt>じこ</rt></ruby>が<ruby>起<rt>お</rt></ruby>きたときは、お<ruby>客様<rt>きゃくさま</rt></ruby>を<ruby>安全<rt>あんぜん</rt></ruby>な<ruby>場所<rt>ばしょ</rt></ruby>に<ruby>導<rt>みちび</rt></ruby>く「<ruby>避難誘導<rt>ひなんゆうどう</rt></ruby>」を<ruby>落<rt>お</rt></ruby>ち<ruby>着<rt>つ</rt></ruby>いて<ruby>行<rt>おこな</rt></ruby>います。</p>
+    <p class="en">If a fire or accident occurs, workers calmly carry out "evacuation guidance," leading passengers to a safe location.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="異常を見つけたときは、自分だけで判断せず、すぐに指令や先輩に報告することが「事故防止」につながります。">🔊</button><ruby>異常<rt>いじょう</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけたときは、<ruby>自分<rt>じぶん</rt></ruby>だけで<ruby>判断<rt>はんだん</rt></ruby>せず、すぐに<ruby>指令<rt>しれい</rt></ruby>や<ruby>先輩<rt>せんぱい</rt></ruby>に<ruby>報告<rt>ほうこく</rt></ruby>することが「<ruby>事故防止<rt>じこぼうし</rt></ruby>」につながります。</p>
+    <p class="en">When you notice something abnormal, immediately reporting it to the control center or a senior worker — rather than judging on your own — leads to "accident prevention."</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🚨</div>
+    <div class="icon-caption"><span class="jp">緊急停止と避難誘導</span><span class="en">Emergency stops and evacuation guidance</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>危険<rt>きけん</rt></ruby>を<ruby>感<rt>かん</rt></ruby>じたときにためらわずに<ruby>行<rt>おこな</rt></ruby>うべき<ruby>操作<rt>そうさ</rt></ruby>は<b>どれですか</b>。</p>
+    <p class="q-en">What action should be taken without hesitation when sensing danger?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 緊急停止</span><span class="en">Emergency stop</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. ポイント操作</span><span class="en">Switch operation</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. ぎ装</span><span class="en">Outfitting</span></div>
+    <div class="explain"><div class="jp">危険を感じたときは、ためらわずに緊急停止の操作を行い、列車を止めます。</div><div class="en">When sensing danger, workers do not hesitate to perform an emergency stop to halt the train.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch10" data-chapter="ch10">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第10章　検査記録と品質管理</span><span class="en">Chapter 10: Inspection Records and Quality Control</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="どの業務区分でも、「保守点検」の結果を正確に「検査記録」として残すことが求められます。">🔊</button>どの<ruby>業務区分<rt>ぎょうむくぶん</rt></ruby>でも、「<ruby>保守点検<rt>ほしゅてんけん</rt></ruby>」の<ruby>結果<rt>けっか</rt></ruby>を<ruby>正確<rt>せいかく</rt></ruby>に「<ruby>検査記録<rt>けんさきろく</rt></ruby>」として<ruby>残<rt>のこ</rt></ruby>すことが<ruby>求<rt>もと</rt></ruby>められます。</p>
+    <p class="en">In every work category, it is required to accurately keep the results of "maintenance inspection" as "inspection records."</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="レールのすり減り具合や部品の寸法などは、「測定器具」を使って正確に測ります。">🔊</button>レールのすり<ruby>減<rt>へ</rt></ruby>り<ruby>具合<rt>ぐあい</rt></ruby>や<ruby>部品<rt>ぶひん</rt></ruby>の<ruby>寸法<rt>すんぽう</rt></ruby>などは、「<ruby>測定器具<rt>そくていきぐ</rt></ruby>」を<ruby>使<rt>つか</rt></ruby>って<ruby>正確<rt>せいかく</rt></ruby>に<ruby>測<rt>はか</rt></ruby>ります。</p>
+    <p class="en">Things like the degree of rail wear or the dimensions of parts are measured accurately using "measuring instruments."</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「品質管理」では、あらかじめ決められた基準を満たしているかを確認し、基準から外れたものは使用しません。">🔊</button>「<ruby>品質管理<rt>ひんしつかんり</rt></ruby>」では、あらかじめ<ruby>決<rt>き</rt></ruby>められた<ruby>基準<rt>きじゅん</rt></ruby>を<ruby>満<rt>み</rt></ruby>たしているかを<ruby>確認<rt>かくにん</rt></ruby>し、<ruby>基準<rt>きじゅん</rt></ruby>から<ruby>外<rt>はず</rt></ruby>れたものは<ruby>使用<rt>しよう</rt></ruby>しません。</p>
+    <p class="en">In "quality control," workers confirm whether items meet the predetermined standards, and anything that falls outside those standards is not used.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="記録を正しく残しておくことで、次の点検のときに変化に気づきやすくなります。">🔊</button><ruby>記録<rt>きろく</rt></ruby>を<ruby>正<rt>ただ</rt></ruby>しく<ruby>残<rt>のこ</rt></ruby>しておくことで、<ruby>次<rt>つぎ</rt></ruby>の<ruby>点検<rt>てんけん</rt></ruby>のときに<ruby>変化<rt>へんか</rt></ruby>に<ruby>気<rt>き</rt></ruby>づきやすくなります。</p>
+    <p class="en">Keeping accurate records makes it easier to notice changes at the time of the next inspection.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">📏</div>
+    <div class="icon-caption"><span class="jp">測定器具と保守点検の記録</span><span class="en">Measuring instruments and maintenance inspection records</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp">レールのすり<ruby>減<rt>へ</rt></ruby>り<ruby>具合<rt>ぐあい</rt></ruby>や<ruby>部品<rt>ぶひん</rt></ruby>の<ruby>寸法<rt>すんぽう</rt></ruby>を<ruby>正確<rt>せいかく</rt></ruby>に<ruby>測<rt>はか</rt></ruby>るために<ruby>使<rt>つか</rt></ruby>うものは<b>どれですか</b>。</p>
+    <p class="q-en">What is used to accurately measure things like the degree of rail wear or the dimensions of parts?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 測定器具</span><span class="en">Measuring instruments</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. ダイヤ</span><span class="en">Train schedule (diagram)</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 台車</span><span class="en">Bogie</span></div>
+    <div class="explain"><div class="jp">レールのすり減り具合や部品の寸法などは、測定器具を使って正確に測ります。</div><div class="en">Things like the degree of rail wear or the dimensions of parts are measured accurately using measuring instruments.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch11" data-chapter="ch11">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第11章　報連相と判断練習</span><span class="en">Chapter 11: Workplace Communication and Judgment Practice</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="鉄道の現場でも、報告・連絡・相談、いわゆる「報連相」がとても大切です。">🔊</button><ruby>鉄道<rt>てつどう</rt></ruby>の<ruby>現場<rt>げんば</rt></ruby>でも、<ruby>報告<rt>ほうこく</rt></ruby>・<ruby>連絡<rt>れんらく</rt></ruby>・<ruby>相談<rt>そうだん</rt></ruby>、いわゆる「<ruby>報連相<rt>ほうれんそう</rt></ruby>」がとても<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">At railway worksites too, "reporting, contacting, and consulting" — known as horenso — is extremely important.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="作業中に設備の異常に気づいたときは、自分だけで判断せず、すぐに指令や先輩に報告します。">🔊</button><ruby>作業中<rt>さぎょうちゅう</rt></ruby>に<ruby>設備<rt>せつび</rt></ruby>の<ruby>異常<rt>いじょう</rt></ruby>に<ruby>気<rt>き</rt></ruby>づいたときは、<ruby>自分<rt>じぶん</rt></ruby>だけで<ruby>判断<rt>はんだん</rt></ruby>せず、すぐに<ruby>指令<rt>しれい</rt></ruby>や<ruby>先輩<rt>せんぱい</rt></ruby>に<ruby>報告<rt>ほうこく</rt></ruby>します。</p>
+    <p class="en">If you notice an equipment abnormality during work, don't judge the situation on your own — report it to the control center or a senior worker right away.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="作業の予定が変わりそうなときは、早めに連絡して、関係者と情報を共有します。">🔊</button><ruby>作業<rt>さぎょう</rt></ruby>の<ruby>予定<rt>よてい</rt></ruby>が<ruby>変<rt>か</rt></ruby>わりそうなときは、<ruby>早<rt>はや</rt></ruby>めに<ruby>連絡<rt>れんらく</rt></ruby>して、<ruby>関係者<rt>かんけいしゃ</rt></ruby>と<ruby>情報<rt>じょうほう</rt></ruby>を<ruby>共有<rt>きょうゆう</rt></ruby>します。</p>
+    <p class="en">When the work schedule looks like it might change, contact others early and share information with everyone involved.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="判断に迷ったときは、一人で決めずに、まわりのスタッフに相談することが、安全な鉄道の運行につながります。">🔊</button><ruby>判断<rt>はんだん</rt></ruby>に<ruby>迷<rt>まよ</rt></ruby>ったときは、<ruby>一人<rt>ひとり</rt></ruby>で<ruby>決<rt>き</rt></ruby>めずに、まわりのスタッフに<ruby>相談<rt>そうだん</rt></ruby>することが、<ruby>安全<rt>あんぜん</rt></ruby>な<ruby>鉄道<rt>てつどう</rt></ruby>の<ruby>運行<rt>うんこう</rt></ruby>につながります。</p>
+    <p class="en">When you are unsure what to do, consulting with the staff around you instead of deciding alone leads to safe railway operation.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">💬</div>
+    <div class="icon-caption"><span class="jp">報連相と判断力</span><span class="en">Workplace communication and good judgment</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>点検中<rt>てんけんちゅう</rt></ruby>に、レールに<ruby>普段<rt>ふだん</rt></ruby>と<ruby>違<rt>ちが</rt></ruby>うひび<ruby>割<rt>わ</rt></ruby>れを<ruby>見<rt>み</rt></ruby>つけました。<b>もっとも適切な行動</b>はどれですか。</p>
+    <p class="q-en">While inspecting, you find a crack in the rail that looks different from usual. What is the most appropriate action?</p>
+      <div class="opt" data-val="A"><span class="jp">A. すぐに指令や先輩に報告し、指示を受ける</span><span class="en">Report it to the control center or a senior worker right away and receive instructions</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 気にせずそのまま次の作業に進む</span><span class="en">Ignore it and move on to the next task</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 自分の判断だけで応急処置をして済ませる</span><span class="en">Decide alone to make a temporary fix and leave it at that</span></div>
+    <div class="explain"><div class="jp">設備の異常に気づいたときは、自分だけで判断せず、すぐに指令や先輩に報告します。</div><div class="en">When you notice an equipment abnormality, you should not judge the situation on your own — report it to the control center or a senior worker right away.</div></div>
+  </div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>作業中<rt>さぎょうちゅう</rt></ruby>に、<ruby>危険<rt>きけん</rt></ruby>を<ruby>感<rt>かん</rt></ruby>じる<ruby>場面<rt>ばめん</rt></ruby>がありました。<b>最初にすること</b>はどれですか。</p>
+    <p class="q-en">While working, you sense a dangerous situation. What should you do first?</p>
+      <div class="opt" data-val="A"><span class="jp">A. ためらわずに緊急停止の操作を行う</span><span class="en">Perform an emergency stop without hesitation</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 様子を見てから判断する</span><span class="en">Wait and see before deciding</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 周りに伝えずに一人で対応する</span><span class="en">Handle it alone without telling anyone around you</span></div>
+    <div class="explain"><div class="jp">危険を感じたときは、ためらわずに緊急停止の操作を行い、列車を止めます。</div><div class="en">When sensing danger, workers do not hesitate to perform an emergency stop to halt the train.</div></div>
+  </div>
+</div>
+</section>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+function safeGet(key){ try{ return JSON.parse(localStorage.getItem(key) || '{}'); }catch(e){ return {}; } }
+function safeSet(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+var readChapters = safeGet('railwayssw_read');
+
+document.querySelectorAll('.chapter-card').forEach(function(c){
+  c.addEventListener('click', function(){ goToTarget(this.dataset.target); });
+});
+
+var allTocLinks = document.querySelectorAll('.toc-link');
+
+function showHome(){
+  document.getElementById('view-home').style.display = 'block';
+  document.getElementById('view-content').style.display = 'none';
+  document.getElementById('mobile-title').textContent = 'Railway SSW';
+  clearActiveTOC();
+}
+function showContent(){
+  document.getElementById('view-home').style.display = 'none';
+  document.getElementById('view-content').style.display = 'block';
+}
+function clearActiveTOC(){ allTocLinks.forEach(function(l){ l.classList.remove('active'); }); }
+function goToTarget(id){
+  showContent();
+  var el = document.getElementById(id);
+  if (el){ el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  setActiveTOC(id);
+  if (window.innerWidth <= 980) closeSidebar();
+  markRead(id);
+}
+function setActiveTOC(id){
+  clearActiveTOC();
+  var link = document.querySelector('.toc-link[data-target="'+id+'"]');
+  if (link) link.classList.add('active');
+}
+function markRead(id){
+  if (!readChapters[id]){ readChapters[id] = true; safeSet('railwayssw_read', readChapters); updateProgress(); }
+}
+function updateProgress(){
+  var total = document.querySelectorAll('.toc-link').length;
+  var n = Object.keys(readChapters).length;
+  if (n > total) n = total;
+  var pct = total ? Math.round(n/total*100) : 0;
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-text').textContent = n+' / '+total+' read';
+  var hs = document.getElementById('home-progress-stat');
+  if (hs) hs.querySelector('b').textContent = pct+'%';
+}
+document.querySelectorAll('.toc-link').forEach(function(el){
+  el.addEventListener('click', function(){ goToTarget(this.dataset.target); });
+});
+document.querySelector('.brand').addEventListener('click', showHome);
+document.querySelector('.brand').style.cursor = 'pointer';
+
+function speakJP(text){
+  if (!text) return;
+  if (!('speechSynthesis' in window)){ alert('Text-to-speech is not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+function injectScoreBadges(){
+  document.querySelectorAll('.sec').forEach(function(sec){
+    var qblocks = sec.querySelectorAll('.q-block');
+    if (!qblocks.length) return;
+    var title = sec.querySelector('.sec-title');
+    if (!title || title.querySelector('.section-score-inline')) return;
+    var span = document.createElement('span');
+    span.className = 'section-score-inline';
+    span.style.marginLeft = 'auto';
+    span.dataset.total = qblocks.length;
+    span.dataset.correct = '0';
+    span.textContent = '0 / ' + qblocks.length;
+    title.style.flexDirection = 'row';
+    title.style.alignItems = 'center';
+    title.appendChild(span);
+  });
+}
+injectScoreBadges();
+
+document.addEventListener('click', function(e){
+  var spk = e.target.closest('.spk');
+  if (spk){ e.stopPropagation(); speakJP(spk.getAttribute('data-jp')); return; }
+
+  var opt = e.target.closest('.opt');
+  if (opt){
+    var qblock = opt.closest('.q-block');
+    if (!qblock || qblock.classList.contains('answered')) return;
+    var chosen = opt.getAttribute('data-val');
+    var answer = qblock.getAttribute('data-answer');
+    qblock.classList.add('answered');
+    qblock.querySelectorAll('.opt').forEach(function(o){
+      var v = o.getAttribute('data-val');
+      if (v === answer) o.classList.add('correct');
+      else if (v === chosen) o.classList.add('wrong');
+    });
+    var sec = qblock.closest('.sec');
+    if (sec){
+      var badge = sec.querySelector('.section-score-inline');
+      if (badge && chosen === answer){ badge.dataset.correct = (parseInt(badge.dataset.correct,10) + 1); }
+      if (badge) badge.textContent = badge.dataset.correct + ' / ' + badge.dataset.total;
+    }
+    return;
+  }
+});
+
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); }
+document.getElementById('menu-toggle').addEventListener('click', function(){
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+updateProgress();
+showHome();
+</script>
+</body>
+</html>
