@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aviation SSW — Theory Practice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --teal:#12395d; --teal-dark:#0b2945; --teal-light:#315E7F;
+  --caution:#d62828; --caution-dark:#b91f1f;
+  --ink:#16232E; --muted:#5A6B79; --border:#DCE4EA; --paper:#F5F8FA; --card:#FFFFFF;
+  --good:#1F7A4D; --bad:#B3261E; --radius:14px; --shadow:0 2px 10px rgba(11,95,165,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); line-height:1.55;}
+.jp{font-family:'Noto Sans JP','Inter',sans-serif;}
+ruby rt{font-size:0.55em; color:var(--muted);}
+
+header{background:linear-gradient(135deg,var(--teal) 0%,var(--teal-dark) 100%); color:#fff; padding:22px 24px; position:sticky; top:0; z-index:20; box-shadow:0 2px 10px rgba(0,0,0,0.15);}
+header h1{margin:0; font-size:19px; font-weight:800; display:flex; align-items:center; gap:10px;}
+header p{margin:4px 0 0 0; font-size:12.5px; color:#BFD6E6;}
+
+#tabs{display:flex; gap:6px; padding:14px 24px 0 24px; background:var(--card); border-bottom:1px solid var(--border); overflow-x:auto;}
+.tab-btn{padding:11px 18px; border:none; background:none; font-size:13.5px; font-weight:700; color:var(--muted); cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap;}
+.tab-btn.active{color:var(--teal-dark); border-bottom-color:var(--caution);}
+.tab-panel{display:none; max-width:820px; margin:0 auto; padding:24px 20px 80px 20px;}
+.tab-panel.active{display:block;}
+
+.stat-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;}
+.stat-pill{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:10px 16px; box-shadow:var(--shadow); font-size:12.5px; color:var(--muted);}
+.stat-pill b{color:var(--teal-dark); font-size:16px; display:block;}
+
+.filter-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+.filter-chip{padding:7px 14px; border-radius:20px; border:1.5px solid var(--border); background:var(--card); font-size:12px; font-weight:600; cursor:pointer; color:var(--muted);}
+.filter-chip.active{background:var(--teal); border-color:var(--teal); color:#fff;}
+
+#flash-stage{display:flex; flex-direction:column; align-items:center; gap:18px;}
+.flashcard{width:100%; max-width:480px; min-height:220px; background:var(--card); border-radius:20px; box-shadow:var(--shadow); border:1px solid var(--border); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 24px; cursor:pointer; text-align:center; position:relative;}
+.flashcard .badge{position:absolute; top:14px; left:16px; font-size:10.5px; color:var(--muted); background:#EEF3F7; padding:3px 9px; border-radius:20px;}
+.flashcard .term-jp{font-size:28px; font-weight:800; display:flex; align-items:center; gap:10px;}
+.flashcard .term-reading{font-size:13px; color:var(--muted); margin-top:6px;}
+.flashcard .term-en{font-size:17px; color:var(--teal-dark); font-weight:700; margin-top:14px;}
+.flashcard .hint{position:absolute; bottom:12px; font-size:11px; color:#9DB3C4;}
+.flash-controls{display:flex; gap:12px;}
+.btn{padding:11px 20px; border-radius:10px; border:none; font-size:13.5px; font-weight:700; cursor:pointer; background:var(--teal); color:#fff;}
+.btn.secondary{background:var(--card); color:var(--teal-dark); border:1.5px solid var(--border);}
+.btn.yellow{background:var(--caution); color:var(--teal-dark);}
+.btn:active{transform:scale(0.97);}
+#flash-progress{font-size:12.5px; color:var(--muted);}
+
+.q-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px 22px; margin-bottom:16px; box-shadow:var(--shadow);}
+.q-card .q-meta{font-size:10.5px; color:var(--muted); background:#EEF3F7; display:inline-block; padding:2px 9px; border-radius:20px; margin-bottom:8px;}
+.q-jp{font-size:15px; font-weight:700; margin:0 0 2px 0;}
+.q-en{font-size:12.5px; color:var(--muted); margin:0 0 12px 0;}
+.opt{padding:10px 14px; border-radius:9px; border:1.5px solid var(--border); margin-bottom:7px; cursor:pointer; background:#fff;}
+.opt:hover{border-color:var(--teal-light);}
+.opt .jp{font-size:13.5px;}
+.opt .en{font-size:11.5px; color:var(--muted);}
+.q-card.answered .opt{cursor:default; pointer-events:none;}
+.q-card.answered .opt.correct{background:#E7F5EC; border-color:var(--good);}
+.q-card.answered .opt.wrong{background:#FBEAE9; border-color:var(--bad);}
+.explain{display:none; margin-top:10px; padding:10px 12px; background:#EEF3F7; border-left:3px solid var(--teal); border-radius:6px; font-size:12.5px;}
+.q-card.answered .explain{display:block;}
+.explain .jp{font-weight:600; margin-bottom:3px;}
+.explain .en{color:var(--muted);}
+
+.spk{flex-shrink:0; border:none; background:var(--caution); color:var(--teal-dark); border-radius:50%; width:24px;height:24px; font-size:11px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.2);}
+.spk:active{transform:scale(0.9);}
+
+.empty-msg{text-align:center; color:var(--muted); padding:40px 0; font-size:13.5px;}
+#quiz-summary{background:var(--card); border-radius:var(--radius); padding:18px 20px; margin-bottom:18px; box-shadow:var(--shadow); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
+#quiz-summary b{font-size:20px; color:var(--teal-dark);}
+</style>
+</head>
+<body>
+<header>
+  <h1>✈️ Aviation SSW — Theory Practice</h1>
+  <p>Vocabulary flashcards and a self-graded knowledge quiz — companion to the full study guide</p>
+</header>
+<div id="tabs">
+  <button class="tab-btn active" data-tab="vocab">📇 Vocabulary</button>
+  <button class="tab-btn" data-tab="mcq">📝 Knowledge Quiz</button>
+</div>
+
+<div class="tab-panel active" id="panel-vocab">
+  <div class="stat-row">
+    <div class="stat-pill"><b id="vocab-total">0</b>Total terms</div>
+    <div class="stat-pill"><b id="vocab-pos">0</b>Current card</div>
+  </div>
+  <div class="filter-row" id="vocab-filters"></div>
+  <div id="flash-stage">
+    <div class="flashcard" id="flashcard">
+      <div class="badge" id="flash-badge">Ch.1</div>
+      <div id="flash-front">
+        <div class="term-jp"><span id="flash-jp"></span><button class="spk" id="flash-spk">🔊</button></div>
+        <div class="term-reading" id="flash-reading"></div>
+      </div>
+      <div id="flash-back" style="display:none;">
+        <div class="term-en" id="flash-en"></div>
+      </div>
+      <div class="hint">Tap card to flip / タップして裏返す</div>
+    </div>
+    <div id="flash-progress"></div>
+    <div class="flash-controls">
+      <button class="btn secondary" id="flash-prev">← Prev</button>
+      <button class="btn yellow" id="flash-shuffle">🔀 Shuffle</button>
+      <button class="btn" id="flash-next">Next →</button>
+    </div>
+  </div>
+</div>
+
+<div class="tab-panel" id="panel-mcq">
+  <div id="quiz-summary">
+    <div><b id="mcq-score">0</b> / <span id="mcq-total-inline">0</span> correct</div>
+    <button class="btn secondary" id="mcq-reset">↺ Reset Quiz</button>
+  </div>
+  <div class="filter-row" id="mcq-filters"></div>
+  <div id="mcq-list"></div>
+</div>
+
+<script>
+var DATA = {"vocab": [{"jp": "航空分野", "reading": "こうくうぶんや", "en": "the aviation field", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "グランドハンドリング", "reading": "ぐらんどはんどりんぐ", "en": "ground handling", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "航空機整備", "reading": "こうくうきせいび", "en": "aircraft maintenance", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "指導者", "reading": "しどうしゃ", "en": "supervisor (instructor)", "chapter": "ch01", "chapter_label": "第1章"}, {"jp": "安全", "reading": "あんぜん", "en": "safety", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "保安", "reading": "ほあん", "en": "security", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "イヤーマフ", "reading": "いやーまふ", "en": "ear muffs", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "立入禁止区域", "reading": "たちいりきんしくいき", "en": "restricted (no-entry) area", "chapter": "ch02", "chapter_label": "第2章"}, {"jp": "マーシャリング", "reading": "まーしゃりんぐ", "en": "marshalling", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "けん引", "reading": "けんいん", "en": "towing", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "誘導", "reading": "ゆうどう", "en": "guidance", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "搭乗橋", "reading": "とうじょうきょう", "en": "boarding bridge", "chapter": "ch03", "chapter_label": "第3章"}, {"jp": "手荷物", "reading": "てにもつ", "en": "baggage", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "貨物", "reading": "かもつ", "en": "cargo", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "積み込み", "reading": "つみこみ", "en": "loading", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "積み降ろし", "reading": "つみおろし", "en": "unloading", "chapter": "ch04", "chapter_label": "第4章"}, {"jp": "客室清掃", "reading": "きゃくしつせいそう", "en": "cabin cleaning", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "機用品", "reading": "きようひん", "en": "in-flight supplies", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "遺失物", "reading": "いしつぶつ", "en": "lost item", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "機内食", "reading": "きないしょく", "en": "in-flight meal", "chapter": "ch05", "chapter_label": "第5章"}, {"jp": "航空燃料", "reading": "こうくうねんりょう", "en": "aviation fuel", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "給油", "reading": "きゅうゆ", "en": "refueling", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "静電気", "reading": "せいでんき", "en": "static electricity", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "引火", "reading": "いんか", "en": "ignition (catching fire)", "chapter": "ch06", "chapter_label": "第6章"}, {"jp": "運航整備", "reading": "うんこうせいび", "en": "line maintenance", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "機体整備", "reading": "きたいせいび", "en": "airframe maintenance", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "装備品", "reading": "そうびひん", "en": "equipment", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "原動機", "reading": "げんどうき", "en": "powerplant (engine)", "chapter": "ch07", "chapter_label": "第7章"}, {"jp": "締結", "reading": "ていけつ", "en": "fastening", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "ボルト", "reading": "ぼると", "en": "bolt", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "トルク", "reading": "とるく", "en": "torque", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "割りピン", "reading": "わりぴん", "en": "cotter pin", "chapter": "ch08", "chapter_label": "第8章"}, {"jp": "電気計測", "reading": "でんきけいそく", "en": "electrical measurement", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "テスター", "reading": "てすたー", "en": "tester (multimeter)", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "導通", "reading": "どうつう", "en": "continuity", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "絶縁", "reading": "ぜつえん", "en": "insulation", "chapter": "ch09", "chapter_label": "第9章"}, {"jp": "品質管理", "reading": "ひんしつかんり", "en": "quality control", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "記録", "reading": "きろく", "en": "record", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "検査", "reading": "けんさ", "en": "inspection", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "工具管理", "reading": "こうぐかんり", "en": "tool control", "chapter": "ch10", "chapter_label": "第10章"}, {"jp": "報告", "reading": "ほうこく", "en": "report", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "連絡", "reading": "れんらく", "en": "contact", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "相談", "reading": "そうだん", "en": "consultation", "chapter": "ch11", "chapter_label": "第11章"}, {"jp": "判断", "reading": "はんだん", "en": "judgment", "chapter": "ch11", "chapter_label": "第11章"}], "mcq": [{"q_jp": "<ruby>特定技能<rt>とくていぎのう</rt></ruby>「<ruby>航空<rt>こうくう</rt></ruby>」の<ruby>仕事<rt>しごと</rt></ruby>には、グランドハンドリングとあと<b>もう<ruby>一<rt>ひと</rt></ruby>つ</b>は<ruby>何<rt>なに</rt></ruby>ですか。", "q_en": "Besides ground handling, what is the other job type in the aviation SSW field?", "options": [{"val": "A", "jp": "航空機整備", "en": "Aircraft maintenance"}, {"val": "B", "jp": "新しい飛行機の設計", "en": "Designing new airplanes"}, {"val": "C", "jp": "空港の建設", "en": "Airport construction"}], "answer": "A", "explain_jp": "航空分野の特定技能には、グランドハンドリングと航空機整備の二つの仕事があります。", "explain_en": "The aviation SSW field has two kinds of work: ground handling and aircraft maintenance.", "chapter": "ch01", "chapter_label": "第1章"}, {"q_jp": "<ruby>空港<rt>くうこう</rt></ruby>での<ruby>作業<rt>さぎょう</rt></ruby>で、テロや<ruby>犯罪<rt>はんざい</rt></ruby>を<ruby>防<rt>ふせ</rt></ruby>ぐためのルールのことを<ruby>何<rt>なん</rt></ruby>といいますか。", "q_en": "What is the term for the rules that prevent terrorism and crime while working at an airport?", "options": [{"val": "A", "jp": "保安", "en": "Security"}, {"val": "B", "jp": "給油", "en": "Refueling"}, {"val": "C", "jp": "積み込み", "en": "Loading"}], "answer": "A", "explain_jp": "テロや犯罪を防ぐためのルールを「保安」といい、立入禁止区域のルールなどを厳しく守ります。", "explain_en": "The rules that prevent terrorism and crime are called \"security\" (hoan), and rules such as those for restricted areas are strictly followed.", "chapter": "ch02", "chapter_label": "第2章"}, {"q_jp": "<ruby>手<rt>て</rt></ruby>やライトの<ruby>合図<rt>あいず</rt></ruby>で<ruby>飛行機<rt>ひこうき</rt></ruby>を<ruby>駐機<rt>ちゅうき</rt></ruby>スポットに<ruby>誘導<rt>ゆうどう</rt></ruby>することを<ruby>何<rt>なん</rt></ruby>といいますか。", "q_en": "What is it called when an aircraft is guided into its parking spot using hand or light signals?", "options": [{"val": "A", "jp": "マーシャリング", "en": "Marshalling"}, {"val": "B", "jp": "積み込み", "en": "Loading"}, {"val": "C", "jp": "客室清掃", "en": "Cabin cleaning"}], "answer": "A", "explain_jp": "手やライトの合図で飛行機を誘導することをマーシャリングといいます。", "explain_en": "Guiding an aircraft using hand or light signals is called marshalling.", "chapter": "ch03", "chapter_label": "第3章"}, {"q_jp": "<ruby>手荷物<rt>てにもつ</rt></ruby>や<ruby>貨物<rt>かもつ</rt></ruby>を<ruby>積<rt>つ</rt></ruby>み<ruby>込<rt>こ</rt></ruby>むとき、<b>もっとも</b><ruby>大切<rt>たいせつ</rt></ruby>なことはどれですか。", "q_en": "When loading baggage and cargo, what is most important?", "options": [{"val": "A", "jp": "指示書どおりに重さや置き場所を守る", "en": "Follow the loading instructions for weight and placement"}, {"val": "B", "jp": "できるだけ早く適当に積む", "en": "Load it as fast as possible, without worrying about placement"}, {"val": "C", "jp": "重い荷物から目立つ場所に積む", "en": "Load the heaviest items in the most visible spot first"}], "answer": "A", "explain_jp": "重さや置き場所のバランスを間違えると飛行機の安全な飛行に影響するため、指示書どおりに積み付けることが最も大切です。", "explain_en": "Loading incorrectly in terms of weight or placement can affect the aircraft's safe flight, so following the loading instructions exactly is most important.", "chapter": "ch04", "chapter_label": "第4章"}, {"q_jp": "<ruby>客室清掃<rt>きゃくしつせいそう</rt></ruby>の<ruby>作業<rt>さぎょう</rt></ruby>で、<ruby>座席<rt>ざせき</rt></ruby>の<ruby>下<rt>した</rt></ruby>で<ruby>忘<rt>わす</rt></ruby>れ<ruby>物<rt>もの</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけたとき、どうしますか。", "q_en": "If you find a lost item under a seat while cleaning the cabin, what should you do?", "options": [{"val": "A", "jp": "決められた手順で届け出る", "en": "Report it following the set procedure"}, {"val": "B", "jp": "自分の判断でそのまま持ち帰る", "en": "Take it home yourself based on your own judgment"}, {"val": "C", "jp": "気づかなかったことにする", "en": "Pretend you didn't notice it"}], "answer": "A", "explain_jp": "遺失物を見つけたら、決められた手順で届け出ることが大切です。", "explain_en": "When a lost item is found, it is important to report it following the set procedure.", "chapter": "ch05", "chapter_label": "第5章"}, {"q_jp": "<ruby>航空燃料<rt>こうくうねんりょう</rt></ruby>の<ruby>給油<rt>きゅうゆ</rt></ruby><ruby>中<rt>ちゅう</rt></ruby>に<ruby>火花<rt>ひばな</rt></ruby>の<ruby>発生<rt>はっせい</rt></ruby>を<ruby>防<rt>ふせ</rt></ruby>ぐために<ruby>行<rt>おこな</rt></ruby>うことはどれですか。", "q_en": "What is done during aviation fuel refueling to prevent sparks from occurring?", "options": [{"val": "A", "jp": "給油車と飛行機を接地(アース)する", "en": "Ground (earth) the fuel truck and the aircraft"}, {"val": "B", "jp": "スマートフォンでライトを照らす", "en": "Shine a light using a smartphone"}, {"val": "C", "jp": "燃料をできるだけ早く入れる", "en": "Pump the fuel as fast as possible"}], "answer": "A", "explain_jp": "静電気から火花が発生すると危険なため、給油車と飛行機を接地(アース)して静電気を逃がします。", "explain_en": "Because sparks from static electricity are dangerous, the fuel truck and aircraft are grounded (earthed) to release static electricity.", "chapter": "ch06", "chapter_label": "第6章"}, {"q_jp": "<ruby>特定技能<rt>とくていぎのう</rt></ruby>1<ruby>号<rt>ごう</rt></ruby>の<ruby>航空機整備<rt>こうくうきせいび</rt></ruby>の<ruby>仕事<rt>しごと</rt></ruby>について、<b><ruby>正<rt>ただ</rt></ruby>しい</b><ruby>説明<rt>せつめい</rt></ruby>はどれですか。", "q_en": "Which statement about Specified Skilled Worker (i) aircraft maintenance work is correct?", "options": [{"val": "A", "jp": "資格を持つ航空整備士の指示に従う補助的な作業を行う", "en": "They perform assistant-level work under the instructions of a qualified aircraft maintenance engineer"}, {"val": "B", "jp": "一人で自由にすべての整備を判断して行ってよい", "en": "They may decide and carry out all maintenance freely, alone"}, {"val": "C", "jp": "航空機の設計を担当する", "en": "They are responsible for designing aircraft"}], "answer": "A", "explain_jp": "特定技能1号の航空機整備の仕事は、資格を持つ航空整備士の指示に従う補助的な作業に限られます。", "explain_en": "Specified Skilled Worker (i) aircraft maintenance work is limited to assistant-level tasks performed under the instructions of a qualified aircraft maintenance engineer.", "chapter": "ch07", "chapter_label": "第7章"}, {"q_jp": "<ruby>飛行中<rt>ひこうちゅう</rt></ruby>の<ruby>振動<rt>しんどう</rt></ruby>でボルトが<ruby>緩<rt>ゆる</rt></ruby>まないようにするために<ruby>大切<rt>たいせつ</rt></ruby>なことはどれですか。", "q_en": "What is important for preventing bolts from loosening due to vibration during flight?", "options": [{"val": "A", "jp": "決められたトルクで正確に締める", "en": "Tighten precisely to the specified torque"}, {"val": "B", "jp": "できるだけ強く締めればよい", "en": "Just tighten it as hard as possible"}, {"val": "C", "jp": "ボルトを油で滑りやすくする", "en": "Make the bolt slippery with oil"}], "answer": "A", "explain_jp": "決められたトルクで正確に締め、さらに割りピンやワイヤーで固定することで、ボルトが緩むのを防ぎます。", "explain_en": "Tightening precisely to the specified torque, and additionally securing it with a cotter pin or wire, prevents the bolt from loosening.", "chapter": "ch08", "chapter_label": "第8章"}, {"q_jp": "テスターを<ruby>使<rt>つか</rt></ruby>って<ruby>電気<rt>でんき</rt></ruby>が<ruby>流<rt>なが</rt></ruby>れるかどうかを<ruby>調<rt>しら</rt></ruby>べることを<ruby>何<rt>なん</rt></ruby>といいますか。", "q_en": "What is it called when a tester is used to check whether electricity flows properly?", "options": [{"val": "A", "jp": "導通の確認", "en": "Checking continuity"}, {"val": "B", "jp": "締結作業", "en": "Fastening work"}, {"val": "C", "jp": "客室清掃", "en": "Cabin cleaning"}], "answer": "A", "explain_jp": "テスターを使って電圧や導通(電気が流れるかどうか)を調べることを電気計測といいます。", "explain_en": "Using a tester to check voltage and continuity (whether electricity flows properly) is called electrical measurement.", "chapter": "ch09", "chapter_label": "第9章"}, {"q_jp": "<ruby>整備<rt>せいび</rt></ruby>で<ruby>使<rt>つか</rt></ruby>った<ruby>工具<rt>こうぐ</rt></ruby>を<ruby>機体<rt>きたい</rt></ruby>の<ruby>中<rt>なか</rt></ruby>に<ruby>置<rt>お</rt></ruby>き<ruby>忘<rt>わす</rt></ruby>れると、どうなるおそれがありますか。", "q_en": "What could happen if a tool used during maintenance is left inside the aircraft by mistake?", "options": [{"val": "A", "jp": "大きな事故につながるおそれがある", "en": "It could lead to a serious accident"}, {"val": "B", "jp": "燃費がよくなる", "en": "Fuel efficiency could improve"}, {"val": "C", "jp": "客室清掃が早く終わる", "en": "Cabin cleaning could finish faster"}], "answer": "A", "explain_jp": "工具を機体の中に置き忘れると大きな事故につながるおそれがあるため、作業の前後で工具の数を必ず確認します。", "explain_en": "Leaving a tool inside the aircraft could lead to a serious accident, so the number of tools is always checked before and after work.", "chapter": "ch10", "chapter_label": "第10章"}, {"q_jp": "<ruby>手荷物<rt>てにもつ</rt></ruby>の<ruby>積<rt>つ</rt></ruby>み<ruby>込<rt>こ</rt></ruby>み<ruby>中<rt>ちゅう</rt></ruby>に、<ruby>指示書<rt>しじしょ</rt></ruby>と<ruby>実際<rt>じっさい</rt></ruby>の<ruby>重<rt>おも</rt></ruby>さが<ruby>違<rt>ちが</rt></ruby>うことに<ruby>気<rt>き</rt></ruby>づきました。<b>もっとも<ruby>適切<rt>てきせつ</rt></ruby>な</b><ruby>行動<rt>こうどう</rt></ruby>はどれですか。", "q_en": "While loading baggage, you notice that the actual weight differs from what the loading instructions state. What is the most appropriate action?", "options": [{"val": "A", "jp": "すぐに指導者に報告し、指示を受ける", "en": "Report it to the instructor right away and receive instructions"}, {"val": "B", "jp": "自分の判断でそのまま積み込みを続ける", "en": "Continue loading as planned, based on your own judgment"}, {"val": "C", "jp": "気づかなかったことにして作業を終える", "en": "Pretend you didn't notice and finish the job"}], "answer": "A", "explain_jp": "重さや置き場所の間違いは飛行機の安全な飛行に影響するため、自分だけで判断せず、すぐに指導者に報告して指示を受けます。", "explain_en": "A mistake in weight or placement can affect the aircraft's safe flight, so instead of deciding alone, you should report it to the instructor right away and receive instructions.", "chapter": "ch11", "chapter_label": "第11章"}, {"q_jp": "<ruby>整備作業中<rt>せいびさぎょうちゅう</rt></ruby>に、<ruby>工具<rt>こうぐ</rt></ruby>が1<ruby>本<rt>ぽん</rt></ruby>足りないことに<ruby>気<rt>き</rt></ruby>づきました。<b><ruby>最初<rt>さいしょ</rt></ruby>に</b>することはどれですか。", "q_en": "During maintenance work, you notice that one tool is missing. What should you do first?", "options": [{"val": "A", "jp": "すぐに指導者に報告して、いっしょに探す", "en": "Report it to the instructor immediately and search for it together"}, {"val": "B", "jp": "見つからなくてもそのまま作業を終わらせる", "en": "Finish the job as planned even if it isn't found"}, {"val": "C", "jp": "工具がなくても気にせず次の作業に進む", "en": "Don't worry about it and move on to the next task"}], "answer": "A", "explain_jp": "工具を機体の中に置き忘れると大きな事故につながるおそれがあるため、足りないことに気づいたらすぐに指導者に報告し、いっしょに探します。", "explain_en": "Leaving a tool inside the aircraft could lead to a serious accident, so if you notice one is missing, report it to the instructor immediately and search for it together.", "chapter": "ch11", "chapter_label": "第11章"}]};
+function esc(s){ return (s||'').toString(); }
+function speakJP(text){
+  if (!text) return;
+  if (!('speechSynthesis' in window)){ alert('Text-to-speech not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* FLASHCARDS */
+var vocabAll = DATA.vocab.slice();
+var vocabFiltered = vocabAll.slice();
+var flashIdx = 0, flashFlipped = false;
+var chLabels = Array.from(new Set(vocabAll.map(function(v){ return v.chapter_label; })));
+var chFilterEl = document.getElementById('vocab-filters');
+var allChip = document.createElement('div'); allChip.className='filter-chip active'; allChip.textContent='All'; allChip.dataset.ch='all';
+chFilterEl.appendChild(allChip);
+chLabels.forEach(function(ch){
+  var chip = document.createElement('div'); chip.className='filter-chip'; chip.textContent=ch; chip.dataset.ch=ch;
+  chFilterEl.appendChild(chip);
+});
+chFilterEl.addEventListener('click', function(e){
+  var chip = e.target.closest('.filter-chip'); if(!chip) return;
+  chFilterEl.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+  chip.classList.add('active');
+  var ch = chip.dataset.ch;
+  vocabFiltered = ch === 'all' ? vocabAll.slice() : vocabAll.filter(function(v){ return v.chapter_label === ch; });
+  flashIdx = 0; renderFlash();
+});
+document.getElementById('vocab-total').textContent = vocabAll.length;
+
+function renderFlash(){
+  if (!vocabFiltered.length){ document.getElementById('flash-jp').textContent='No cards'; return; }
+  if (flashIdx >= vocabFiltered.length) flashIdx = 0;
+  if (flashIdx < 0) flashIdx = vocabFiltered.length - 1;
+  var v = vocabFiltered[flashIdx];
+  flashFlipped = false;
+  document.getElementById('flash-front').style.display='block';
+  document.getElementById('flash-back').style.display='none';
+  document.getElementById('flash-badge').textContent = v.chapter_label;
+  document.getElementById('flash-jp').textContent = v.jp || '';
+  document.getElementById('flash-reading').textContent = v.reading || '';
+  document.getElementById('flash-en').textContent = v.en || '';
+  document.getElementById('flash-progress').textContent = (flashIdx+1)+' / '+vocabFiltered.length;
+  document.getElementById('vocab-pos').textContent = flashIdx+1;
+}
+document.getElementById('flashcard').addEventListener('click', function(e){
+  if (e.target.closest('.spk')) return;
+  flashFlipped = !flashFlipped;
+  document.getElementById('flash-front').style.display = flashFlipped ? 'none' : 'block';
+  document.getElementById('flash-back').style.display = flashFlipped ? 'block' : 'none';
+});
+document.getElementById('flash-spk').addEventListener('click', function(e){
+  e.stopPropagation();
+  var v = vocabFiltered[flashIdx];
+  speakJP(v ? v.jp : '');
+});
+document.getElementById('flash-next').addEventListener('click', function(){ flashIdx++; renderFlash(); });
+document.getElementById('flash-prev').addEventListener('click', function(){ flashIdx--; renderFlash(); });
+document.getElementById('flash-shuffle').addEventListener('click', function(){
+  for (var i = vocabFiltered.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i+1));
+    var tmp = vocabFiltered[i]; vocabFiltered[i] = vocabFiltered[j]; vocabFiltered[j] = tmp;
+  }
+  flashIdx = 0; renderFlash();
+});
+renderFlash();
+
+/* MCQ */
+var mcqAll = DATA.mcq.slice();
+var mcqScore = 0;
+document.getElementById('mcq-total-inline').textContent = mcqAll.length;
+var mcqChFilterEl = document.getElementById('mcq-filters');
+var mcqAllChip = document.createElement('div'); mcqAllChip.className='filter-chip active'; mcqAllChip.textContent='All'; mcqAllChip.dataset.ch='all';
+mcqChFilterEl.appendChild(mcqAllChip);
+Array.from(new Set(mcqAll.map(function(m){ return m.chapter_label; }))).forEach(function(ch){
+  var chip = document.createElement('div'); chip.className='filter-chip'; chip.textContent=ch; chip.dataset.ch=ch;
+  mcqChFilterEl.appendChild(chip);
+});
+mcqChFilterEl.addEventListener('click', function(e){
+  var chip = e.target.closest('.filter-chip'); if(!chip) return;
+  mcqChFilterEl.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+  chip.classList.add('active');
+  renderMCQ(chip.dataset.ch);
+});
+function renderMCQ(filterCh){
+  var list = document.getElementById('mcq-list');
+  list.innerHTML = '';
+  var items = (!filterCh || filterCh === 'all') ? mcqAll : mcqAll.filter(function(m){ return m.chapter_label === filterCh; });
+  if (!items.length){ list.innerHTML = '<div class="empty-msg">No questions in this filter.</div>'; return; }
+  items.forEach(function(m){
+    var card = document.createElement('div');
+    card.className = 'q-card';
+    card.dataset.answer = m.answer;
+    var optsHtml = '';
+    (m.options||[]).forEach(function(o){
+      optsHtml += '<div class="opt" data-val="'+o.val+'"><span class="jp">'+o.val+'. '+esc(o.jp)+'</span><span class="en">'+esc(o.en)+'</span></div>';
+    });
+    card.innerHTML =
+      '<div class="q-meta">'+esc(m.chapter_label)+'</div>'+
+      '<p class="q-jp"><button class="spk" data-jp="'+esc(m.q_jp).replace(/<[^>]+>/g,'').replace(/"/g,'&quot;')+'">🔊</button>'+esc(m.q_jp)+'</p>'+
+      '<p class="q-en">'+esc(m.q_en)+'</p>'+
+      optsHtml+
+      '<div class="explain"><div class="jp">'+esc(m.explain_jp)+'</div><div class="en">'+esc(m.explain_en)+'</div></div>';
+    list.appendChild(card);
+  });
+  mcqScore = 0;
+  document.getElementById('mcq-score').textContent = mcqScore;
+  document.getElementById('mcq-total-inline').textContent = items.length;
+}
+document.getElementById('mcq-reset').addEventListener('click', function(){
+  var activeChip = mcqChFilterEl.querySelector('.filter-chip.active');
+  renderMCQ(activeChip ? activeChip.dataset.ch : 'all');
+});
+renderMCQ('all');
+document.getElementById('mcq-list').addEventListener('click', function(e){
+  var opt = e.target.closest('.opt');
+  if (!opt) return;
+  var card = opt.closest('.q-card');
+  if (card.classList.contains('answered')) return;
+  var chosen = opt.dataset.val;
+  var answer = card.dataset.answer;
+  card.classList.add('answered');
+  card.querySelectorAll('.opt').forEach(function(o){
+    if (o.dataset.val === answer) o.classList.add('correct');
+    else if (o.dataset.val === chosen) o.classList.add('wrong');
+  });
+  if (chosen === answer){ mcqScore++; document.getElementById('mcq-score').textContent = mcqScore; }
+});
+
+document.addEventListener('click', function(e){
+  var spk = e.target.closest('.spk');
+  if (spk && spk.id !== 'flash-spk'){ speakJP(spk.getAttribute('data-jp')); }
+});
+</script>
+</body>
+</html>

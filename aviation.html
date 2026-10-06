@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aviation SSW — Japanese with Raza Sensei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#12395d; --navy-dark:#0b2945; --navy-light:#315E7F;
+  --steel:#7A8490; --rust:#d62828; --rust-dark:#b91f1f;
+  --ink:#16232E; --muted:#5A6B79; --border:#DCE4EA; --paper:#F5F8FA; --card:#FFFFFF;
+  --good:#1F7A4D; --bad:#B3261E; --radius:14px; --shadow:0 2px 10px rgba(11,95,165,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); line-height:1.55;}
+.jp{font-family:'Noto Sans JP','Inter',sans-serif;}
+ruby rt{font-size:0.55em; color:var(--muted);}
+
+#app{display:flex; min-height:100vh;}
+#sidebar{width:290px; flex-shrink:0; background:var(--navy-dark); color:#fff; height:100vh; position:sticky; top:0; overflow-y:auto; padding-bottom:30px;}
+.brand{display:flex; align-items:center; gap:10px; padding:20px 18px 16px 18px; border-bottom:1px solid rgba(255,255,255,0.12); cursor:pointer;}
+.brand .logo{width:40px;height:40px;border-radius:10px;background:var(--rust); display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.brand-text{font-weight:800;font-size:13.5px;line-height:1.25;}
+.brand-text small{display:block;font-weight:500;font-size:11px;color:#A8C2D6;}
+#toc{padding:10px 8px 0 8px;}
+.toc-link{display:flex; align-items:center; gap:8px; padding:10px 12px; margin:3px 2px; font-size:12.5px; color:#C9DBE9; border-radius:9px; cursor:pointer;}
+.toc-icon{font-size:15px;}
+.toc-link:hover{background:rgba(255,255,255,0.08); color:#fff;}
+.toc-link.active{background:var(--rust); color:#fff; font-weight:700;}
+#sidebar-footer{padding:16px 18px; font-size:10.5px; color:#87A2B8; border-top:1px solid rgba(255,255,255,0.1); margin-top:14px;}
+
+#menu-toggle{display:none; position:fixed; top:14px; left:14px; z-index:50; width:42px;height:42px;border-radius:10px;background:var(--navy-dark);color:#fff; border:none; font-size:18px; box-shadow:var(--shadow); cursor:pointer;}
+
+#main{flex:1; min-width:0;}
+#topbar{position:sticky; top:0; z-index:20; background:var(--card); border-bottom:1px solid var(--border); padding:14px 32px; display:flex; align-items:center; justify-content:space-between;}
+#mobile-title{font-weight:800; font-size:14px; color:var(--navy-dark);}
+#progress-wrap{display:flex; align-items:center; gap:10px; font-size:12px; color:var(--muted);}
+#progress-track{width:130px; height:7px; background:var(--border); border-radius:5px; overflow:hidden;}
+#progress-fill{height:100%; background:linear-gradient(90deg,var(--rust),var(--navy-light)); width:0%; transition:width .3s;}
+
+#content{max-width:880px; margin:0 auto; padding:0 32px 100px 32px;}
+
+.home-hero{background:linear-gradient(135deg,var(--navy) 0%, var(--navy-dark) 100%); color:#fff; border-radius:20px; padding:44px 38px; margin:32px 0 28px 0; position:relative; overflow:hidden;}
+.home-hero::after{content:"✈️"; position:absolute; right:24px; bottom:-16px; font-size:130px; opacity:0.15; transform:rotate(-8deg);}
+.home-hero h2{margin:0 0 10px 0; font-size:23px; font-weight:800;}
+.home-hero p{margin:0; color:#D3E2ED; max-width:560px; font-size:14.5px;}
+.home-stats{display:flex; gap:14px; margin-top:24px; flex-wrap:wrap;}
+.home-stat{background:rgba(255,255,255,0.1); border-radius:12px; padding:12px 18px; min-width:100px;}
+.home-stat b{display:block; font-size:22px;}
+.home-stat span{font-size:11px; color:#BBD3E4;}
+.chapter-cards{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px;}
+@media(max-width:700px){.chapter-cards{grid-template-columns:1fr;}}
+.chapter-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; cursor:pointer; box-shadow:var(--shadow); border-top:4px solid var(--rust); transition:transform .15s;}
+.chapter-card:hover{transform:translateY(-2px);}
+.card-icon{font-size:26px;}
+.chapter-card h3{margin:8px 0 4px 0; font-size:14.5px;}
+.chapter-card p{margin:0; font-size:12px; color:var(--muted);}
+.footer-credit{text-align:center; color:var(--muted); font-size:12px; margin:40px 0 10px 0;}
+
+.chapter-section{padding-top:8px;}
+.chapter-banner{background:var(--navy-dark); color:#fff; border-radius:16px; padding:24px 26px; margin:28px 0 20px 0; border-left:6px solid var(--rust);}
+.chapter-banner-eyebrow{font-size:11px; letter-spacing:.05em; color:var(--rust); font-weight:700; text-transform:uppercase;}
+.chapter-banner-title{margin:6px 0 0 0; display:flex; flex-direction:column; gap:2px;}
+.chapter-banner-title .jp{font-size:19px; font-weight:800;}
+.chapter-banner-title .en{font-size:12.5px; color:#BFD6E6; font-weight:500;}
+
+.sec{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:22px 24px; margin-bottom:18px; box-shadow:var(--shadow);}
+.sec-title{display:flex; flex-direction:column; gap:2px; margin-bottom:14px; padding-bottom:12px; border-bottom:2px solid #EAEEF2;}
+.sec-title .jp{font-weight:800; font-size:15.5px; color:var(--navy-dark);}
+.sec-title .en{font-size:12px; color:var(--muted); font-weight:600;}
+
+.para{margin-bottom:14px;}
+.para .jp{font-size:15px; display:flex; align-items:flex-start; gap:8px; margin:0 0 4px 0;}
+.para .en{font-size:13px; color:var(--muted); margin:0; padding-left:34px;}
+
+.spk{flex-shrink:0; border:none; background:var(--rust); color:#fff; border-radius:50%; width:26px;height:26px; font-size:12px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.2); margin-top:1px;}
+.spk:hover{background:var(--rust-dark);}
+.spk:active{transform:scale(0.92);}
+
+.steps{margin:10px 0 16px 0; padding:14px 16px; background:#EEF3F7; border-radius:12px;}
+.step{margin-bottom:9px;}
+.step:last-child{margin-bottom:0;}
+.step-jp{font-size:14px;}
+.step-en{font-size:12px; color:var(--muted); margin-top:1px;}
+
+.icon-card{background:#EEF3F7; border:1px dashed var(--border); border-radius:12px; padding:20px; text-align:center; margin:16px 0;}
+.icon-visual{font-size:50px; line-height:1; margin-bottom:10px; letter-spacing:4px;}
+.icon-caption{display:flex; flex-direction:column; gap:2px;}
+.icon-caption .jp{font-size:12.5px; font-weight:600; color:var(--navy-dark);}
+.icon-caption .en{font-size:11px; color:var(--muted);}
+
+.q-block{background:#EEF3F7; border-radius:12px; padding:16px 18px; margin:14px 0; border:1px solid var(--border);}
+.q-jp{font-size:14.5px; font-weight:700; margin:0 0 2px 0;}
+.q-en{font-size:12px; color:var(--muted); margin:0 0 12px 0;}
+.opt{padding:10px 14px; border-radius:9px; border:1.5px solid var(--border); margin-bottom:7px; cursor:pointer; background:#fff; display:flex; flex-direction:column; gap:1px;}
+.opt:hover{border-color:var(--navy-light);}
+.opt .jp{font-size:13.5px;}
+.opt .en{font-size:11.5px; color:var(--muted);}
+.q-block.answered .opt{cursor:default; pointer-events:none;}
+.q-block.answered .opt.correct{background:#E7F5EC; border-color:var(--good);}
+.q-block.answered .opt.wrong{background:#FBEAE9; border-color:var(--bad);}
+.explain{display:none; margin-top:10px; padding:10px 12px; background:#fff; border-left:3px solid var(--navy); border-radius:6px; font-size:12.5px;}
+.q-block.answered .explain{display:block;}
+.explain .jp{font-weight:600; margin-bottom:3px;}
+.explain .en{color:var(--muted);}
+.section-score-inline{background:var(--navy); color:#fff; padding:2px 9px; border-radius:20px; font-size:11px !important;}
+
+@media(max-width:980px){
+  #sidebar{position:fixed; left:-310px; top:0; z-index:40; transition:left .2s; width:270px; box-shadow:4px 0 20px rgba(0,0,0,0.3);}
+  #sidebar.open{left:0;}
+  #menu-toggle{display:flex; align-items:center; justify-content:center;}
+  #content{padding:0 16px 100px 16px;}
+  #topbar{padding:14px 16px 14px 64px;}
+  .home-hero{padding:30px 22px;}
+}
+</style>
+</head>
+<body>
+<button id="menu-toggle">☰</button>
+<div id="app">
+  <aside id="sidebar">
+    <div class="brand"><div class="logo">✈️</div><div class="brand-text">Aviation<br>SSW<small>Japanese with Raza Sensei</small></div></div>
+    <div id="toc">
+    <div class="toc-link" data-target="ch01"><span class="toc-icon">✈</span>第1章　航空分野の仕事</div>
+    <div class="toc-link" data-target="ch02"><span class="toc-icon">🦺</span>第2章　空港と整備現場の安全・保安</div>
+    <div class="toc-link" data-target="ch03"><span class="toc-icon">🚦</span>第3章　グランドハンドリング：ランプ業務</div>
+    <div class="toc-link" data-target="ch04"><span class="toc-icon">🧳</span>第4章　グランドハンドリング：手荷物・貨物の取り扱い</div>
+    <div class="toc-link" data-target="ch05"><span class="toc-icon">🧹</span>第5章　グランドハンドリング：客室清掃と旅客サービス</div>
+    <div class="toc-link" data-target="ch06"><span class="toc-icon">⛽</span>第6章　航空燃料の取り扱い基礎</div>
+    <div class="toc-link" data-target="ch07"><span class="toc-icon">🔧</span>第7章　航空機整備の仕事</div>
+    <div class="toc-link" data-target="ch08"><span class="toc-icon">🔩</span>第8章　締結作業の基礎</div>
+    <div class="toc-link" data-target="ch09"><span class="toc-icon">🔌</span>第9章　電気計測の基礎</div>
+    <div class="toc-link" data-target="ch10"><span class="toc-icon">📋</span>第10章　工具・品質管理と記録</div>
+    <div class="toc-link" data-target="ch11"><span class="toc-icon">💬</span>第11章　報連相と判断練習</div>
+    </div>
+    <div id="sidebar-footer">特定技能「航空分野」<br>Bilingual Study Guide · Ruby Furigana · Audio<br><br>Original study material — not affiliated with or reproducing any official test-prep publisher's text.</div>
+  </aside>
+  <main id="main">
+    <div id="topbar">
+      <div id="mobile-title">Aviation SSW</div>
+      <div id="progress-wrap"><div id="progress-track"><div id="progress-fill"></div></div><span id="progress-text">0 / 11 read</span></div>
+    </div>
+    <div id="content">
+      <div id="view-home">
+        <div class="home-hero">
+          <h2>特定技能「航空分野」<br>Aviation — SSW Exam Prep</h2>
+          <p>An original bilingual study guide covering this field's two job types — airport ground handling (ramp operations, baggage &amp; cargo, cabin cleaning, aviation fuel) and aircraft maintenance (fastening work, electrical measurement, tool control) — plus airport safety &amp; security and workplace communication — with furigana and tap-to-listen audio.</p>
+          <div class="home-stats">
+            <div class="home-stat"><b>11</b><span>Chapters</span></div>
+            <div class="home-stat"><b>🔊</b><span>Audio</span></div>
+            <div class="home-stat" id="home-progress-stat"><b>0%</b><span>Completed</span></div>
+          </div>
+        </div>
+        <div class="chapter-cards" id="chapter-cards">
+<div class="chapter-card" data-target="ch01"><div class="card-icon">✈️🧑‍🔧</div><h3>第1章　航空分野の仕事</h3><p>What Aviation Field Work Involves</p></div>
+<div class="chapter-card" data-target="ch02"><div class="card-icon">🦺🚨</div><h3>第2章　空港と整備現場の安全・保安</h3><p>Airport and Workshop Safety and Security</p></div>
+<div class="chapter-card" data-target="ch03"><div class="card-icon">🚦✈️</div><h3>第3章　グランドハンドリング：ランプ業務</h3><p>Ground Handling: Ramp Operations</p></div>
+<div class="chapter-card" data-target="ch04"><div class="card-icon">🧳📦</div><h3>第4章　グランドハンドリング：手荷物・貨物の取り扱い</h3><p>Ground Handling: Baggage and Cargo Handling</p></div>
+<div class="chapter-card" data-target="ch05"><div class="card-icon">🧹🍽️</div><h3>第5章　グランドハンドリング：客室清掃と旅客サービス</h3><p>Ground Handling: Cabin Cleaning and Passenger Services</p></div>
+<div class="chapter-card" data-target="ch06"><div class="card-icon">⛽✈️</div><h3>第6章　航空燃料の取り扱い基礎</h3><p>Aviation Fuel Handling Basics</p></div>
+<div class="chapter-card" data-target="ch07"><div class="card-icon">🔧🛩️</div><h3>第7章　航空機整備の仕事</h3><p>Aircraft Maintenance Work Overview</p></div>
+<div class="chapter-card" data-target="ch08"><div class="card-icon">🔩🛠️</div><h3>第8章　締結作業の基礎</h3><p>Fastening Work Basics</p></div>
+<div class="chapter-card" data-target="ch09"><div class="card-icon">🔌📟</div><h3>第9章　電気計測の基礎</h3><p>Electrical Measurement Basics</p></div>
+<div class="chapter-card" data-target="ch10"><div class="card-icon">📋🔍</div><h3>第10章　工具・品質管理と記録</h3><p>Tools, Quality Control, and Records</p></div>
+<div class="chapter-card" data-target="ch11"><div class="card-icon">💬🤝</div><h3>第11章　報連相と判断練習</h3><p>Workplace Communication and Judgment Practice</p></div>
+        </div>
+        <p class="footer-credit">Japanese with Raza Sensei · SSW Aviation System · Original bilingual study guide, icons &amp; text independently authored</p>
+      </div>
+      <div id="view-content" style="display:none;">
+<section class="chapter-section" id="ch01" data-chapter="ch01">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第1章　航空分野の仕事</span><span class="en">What Aviation Field Work Involves</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="航空分野の特定技能には、空港での「グランドハンドリング」と、「航空機整備」という二つの仕事があります。">🔊</button><ruby>航空分野<rt>こうくうぶんや</rt></ruby>の<ruby>特定技能<rt>とくていぎのう</rt></ruby>には、<ruby>空港<rt>くうこう</rt></ruby>での「グランドハンドリング」と、「<ruby>航空機整備<rt>こうくうきせいび</rt></ruby>」という<ruby>二<rt>ふた</rt></ruby>つの<ruby>仕事<rt>しごと</rt></ruby>があります。</p>
+    <p class="en">The Aviation field under the Specified Skilled Worker system has two kinds of work: airport "ground handling" and "aircraft maintenance."</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="グランドハンドリングは、飛行機が安全に出発・到着できるように、地上でサポートする仕事です。">🔊</button>グランドハンドリングは、<ruby>飛行機<rt>ひこうき</rt></ruby>が<ruby>安全<rt>あんぜん</rt></ruby>に<ruby>出発<rt>しゅっぱつ</rt></ruby>・<ruby>到着<rt>とうちゃく</rt></ruby>できるように、<ruby>地上<rt>ちじょう</rt></ruby>でサポートする<ruby>仕事<rt>しごと</rt></ruby>です。</p>
+    <p class="en">Ground handling is the job of supporting aircraft on the ground so that they can depart and arrive safely.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="航空機整備は、飛行機や関連設備を点検・修理して、安全な状態を保つ仕事です。">🔊</button><ruby>航空機整備<rt>こうくうきせいび</rt></ruby>は、<ruby>飛行機<rt>ひこうき</rt></ruby>や<ruby>関連設備<rt>かんれんせつび</rt></ruby>を<ruby>点検<rt>てんけん</rt></ruby>・<ruby>修理<rt>しゅうり</rt></ruby>して、<ruby>安全<rt>あんぜん</rt></ruby>な<ruby>状態<rt>じょうたい</rt></ruby>を<ruby>保<rt>たも</rt></ruby>つ<ruby>仕事<rt>しごと</rt></ruby>です。</p>
+    <p class="en">Aircraft maintenance is the job of inspecting and repairing aircraft and related equipment to keep them in safe condition.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="どちらの仕事も、資格を持つ指導者の監督のもとで行われ、安全管理が最も大切にされています。">🔊</button>どちらの<ruby>仕事<rt>しごと</rt></ruby>も、<ruby>資格<rt>しかく</rt></ruby>を<ruby>持<rt>も</rt></ruby>つ<ruby>指導者<rt>しどうしゃ</rt></ruby>の<ruby>監督<rt>かんとく</rt></ruby>のもとで<ruby>行<rt>おこな</rt></ruby>われ、<ruby>安全管理<rt>あんぜんかんり</rt></ruby>が<ruby>最<rt>もっと</rt></ruby>も<ruby>大切<rt>たいせつ</rt></ruby>にされています。</p>
+    <p class="en">Both kinds of work are carried out under the supervision of a qualified instructor, and safety management is treated as the most important priority.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">✈️🧑‍🔧</div>
+    <div class="icon-caption"><span class="jp">航空分野で働く人たち</span><span class="en">People working in the aviation field</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>特定技能<rt>とくていぎのう</rt></ruby>「<ruby>航空<rt>こうくう</rt></ruby>」の<ruby>仕事<rt>しごと</rt></ruby>には、グランドハンドリングとあと<b>もう<ruby>一<rt>ひと</rt></ruby>つ</b>は<ruby>何<rt>なに</rt></ruby>ですか。</p>
+    <p class="q-en">Besides ground handling, what is the other job type in the aviation SSW field?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 航空機整備</span><span class="en">Aircraft maintenance</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 新しい飛行機の設計</span><span class="en">Designing new airplanes</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 空港の建設</span><span class="en">Airport construction</span></div>
+    <div class="explain"><div class="jp">航空分野の特定技能には、グランドハンドリングと航空機整備の二つの仕事があります。</div><div class="en">The aviation SSW field has two kinds of work: ground handling and aircraft maintenance.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch02" data-chapter="ch02">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第2章　空港と整備現場の安全・保安</span><span class="en">Airport and Workshop Safety and Security</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="空港では、飛行機のエンジン音がとても大きいため、イヤーマフなどの保護具を着用して耳を守ります。">🔊</button><ruby>空港<rt>くうこう</rt></ruby>では、<ruby>飛行機<rt>ひこうき</rt></ruby>のエンジン<ruby>音<rt>おと</rt></ruby>がとても<ruby>大<rt>おお</rt></ruby>きいため、イヤーマフなどの<ruby>保護具<rt>ほごぐ</rt></ruby>を<ruby>着用<rt>ちゃくよう</rt></ruby>して<ruby>耳<rt>みみ</rt></ruby>を<ruby>守<rt>まも</rt></ruby>ります。</p>
+    <p class="en">Because aircraft engines are extremely loud, workers wear protective equipment such as ear muffs to protect their hearing.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="安全とあわせて「保安」もとても重要で、テロや犯罪を防ぐために立入禁止区域のルールを厳しく守ります。">🔊</button><ruby>安全<rt>あんぜん</rt></ruby>とあわせて「<ruby>保安<rt>ほあん</rt></ruby>」もとても<ruby>重要<rt>じゅうよう</rt></ruby>で、テロや<ruby>犯罪<rt>はんざい</rt></ruby>を<ruby>防<rt>ふせ</rt></ruby>ぐために<ruby>立入禁止区域<rt>たちいりきんしくいき</rt></ruby>のルールを<ruby>厳<rt>きび</rt></ruby>しく<ruby>守<rt>まも</rt></ruby>ります。</p>
+    <p class="en">Along with safety, "security" is also extremely important — rules about restricted areas are strictly followed to prevent terrorism and crime.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="動いている飛行機や車両の近くで作業するときは、まわりをよく確認し、反射材の付いた服を着て目立つようにします。">🔊</button><ruby>動<rt>うご</rt></ruby>いている<ruby>飛行機<rt>ひこうき</rt></ruby>や<ruby>車両<rt>しゃりょう</rt></ruby>の<ruby>近<rt>ちか</rt></ruby>くで<ruby>作業<rt>さぎょう</rt></ruby>するときは、まわりをよく<ruby>確認<rt>かくにん</rt></ruby>し、<ruby>反射材<rt>はんしゃざい</rt></ruby>の<ruby>付<rt>つ</rt></ruby>いた<ruby>服<rt>ふく</rt></ruby>を<ruby>着<rt>き</rt></ruby>て<ruby>目立<rt>めだ</rt></ruby>つようにします。</p>
+    <p class="en">When working near moving aircraft or vehicles, workers check their surroundings carefully and wear reflective clothing to be clearly visible.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="整備現場でも、油や燃料による火災を防ぐため、火気の取り扱いに十分な注意が必要です。">🔊</button><ruby>整備現場<rt>せいびげんば</rt></ruby>でも、<ruby>油<rt>あぶら</rt></ruby>や<ruby>燃料<rt>ねんりょう</rt></ruby>による<ruby>火災<rt>かさい</rt></ruby>を<ruby>防<rt>ふせ</rt></ruby>ぐため、<ruby>火気<rt>かき</rt></ruby>の<ruby>取<rt>と</rt></ruby>り<ruby>扱<rt>あつか</rt></ruby>いに<ruby>十分<rt>じゅうぶん</rt></ruby>な<ruby>注意<rt>ちゅうい</rt></ruby>が<ruby>必要<rt>ひつよう</rt></ruby>です。</p>
+    <p class="en">In the maintenance workshop too, great care is needed when handling fire and flames to prevent fires caused by oil or fuel.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🦺🚨</div>
+    <div class="icon-caption"><span class="jp">空港で働くための安全対策</span><span class="en">Safety measures for working at an airport</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>空港<rt>くうこう</rt></ruby>での<ruby>作業<rt>さぎょう</rt></ruby>で、テロや<ruby>犯罪<rt>はんざい</rt></ruby>を<ruby>防<rt>ふせ</rt></ruby>ぐためのルールのことを<ruby>何<rt>なん</rt></ruby>といいますか。</p>
+    <p class="q-en">What is the term for the rules that prevent terrorism and crime while working at an airport?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 保安</span><span class="en">Security</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 給油</span><span class="en">Refueling</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 積み込み</span><span class="en">Loading</span></div>
+    <div class="explain"><div class="jp">テロや犯罪を防ぐためのルールを「保安」といい、立入禁止区域のルールなどを厳しく守ります。</div><div class="en">The rules that prevent terrorism and crime are called "security" (hoan), and rules such as those for restricted areas are strictly followed.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch03" data-chapter="ch03">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第3章　グランドハンドリング：ランプ業務</span><span class="en">Ground Handling: Ramp Operations</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="飛行機が駐機スポットに安全に入れるように、手やライトの合図で誘導することを「マーシャリング」といいます。">🔊</button><ruby>飛行機<rt>ひこうき</rt></ruby>が<ruby>駐機<rt>ちゅうき</rt></ruby>スポットに<ruby>安全<rt>あんぜん</rt></ruby>に<ruby>入<rt>はい</rt></ruby>れるように、<ruby>手<rt>て</rt></ruby>やライトの<ruby>合図<rt>あいず</rt></ruby>で<ruby>誘導<rt>ゆうどう</rt></ruby>することを「マーシャリング」といいます。</p>
+    <p class="en">Guiding an aircraft with hand or light signals so it can safely enter its parking spot is called "marshalling."</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="飛行機を車両で押したり引いたりする「けん引」の作業では、指導者の補佐として周囲の安全を確認します。">🔊</button><ruby>飛行機<rt>ひこうき</rt></ruby>を<ruby>車両<rt>しゃりょう</rt></ruby>で<ruby>押<rt>お</rt></ruby>したり<ruby>引<rt>ひ</rt></ruby>いたりする「けん<ruby>引<rt>いん</rt></ruby>」の<ruby>作業<rt>さぎょう</rt></ruby>では、<ruby>指導者<rt>しどうしゃ</rt></ruby>の<ruby>補佐<rt>ほさ</rt></ruby>として<ruby>周囲<rt>しゅうい</rt></ruby>の<ruby>安全<rt>あんぜん</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>します。</p>
+    <p class="en">In "towing" work, where a vehicle pushes or pulls the aircraft, workers assist the instructor by checking that the surrounding area is safe.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="乗客が乗り降りする搭乗橋の操作を補助することも、ランプ業務の一つです。">🔊</button><ruby>乗客<rt>じょうきゃく</rt></ruby>が<ruby>乗<rt>の</rt></ruby>り<ruby>降<rt>お</rt></ruby>りする<ruby>搭乗橋<rt>とうじょうきょう</rt></ruby>の<ruby>操作<rt>そうさ</rt></ruby>を<ruby>補助<rt>ほじょ</rt></ruby>することも、ランプ<ruby>業務<rt>ぎょうむ</rt></ruby>の<ruby>一<rt>ひと</rt></ruby>つです。</p>
+    <p class="en">Assisting with the operation of the boarding bridge that passengers use to get on and off the plane is also part of ramp operations.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="ランプでの作業は時間との勝負ですが、急いでいるときこそ、安全確認を省かないようにします。">🔊</button>ランプでの<ruby>作業<rt>さぎょう</rt></ruby>は<ruby>時間<rt>じかん</rt></ruby>との<ruby>勝負<rt>しょうぶ</rt></ruby>ですが、<ruby>急<rt>いそ</rt></ruby>いでいるときこそ、<ruby>安全確認<rt>あんぜんかくにん</rt></ruby>を<ruby>省<rt>はぶ</rt></ruby>かないようにします。</p>
+    <p class="en">Ramp work is a race against time, but it is precisely when things feel rushed that safety checks must never be skipped.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-jp">①<ruby>飛行機<rt>ひこうき</rt></ruby>の<ruby>周<rt>まわ</rt></ruby>りに<ruby>人<rt>ひと</rt></ruby>や<ruby>物<rt>もの</rt></ruby>がないか<ruby>確認<rt>かくにん</rt></ruby>する</div>
+      <div class="step-en">① Check that there are no people or objects around the aircraft</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">②<ruby>決<rt>き</rt></ruby>められた<ruby>合図<rt>あいず</rt></ruby>で<ruby>誘導<rt>ゆうどう</rt></ruby>やけん<ruby>引<rt>いん</rt></ruby>の<ruby>補佐<rt>ほさ</rt></ruby>をする</div>
+      <div class="step-en">② Assist with guidance or towing using the set signals</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">③<ruby>停止位置<rt>ていしいち</rt></ruby>を<ruby>指導者<rt>しどうしゃ</rt></ruby>とともに<ruby>確認<rt>かくにん</rt></ruby>する</div>
+      <div class="step-en">③ Confirm the stopping position together with the instructor</div>
+    </div>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🚦✈️</div>
+    <div class="icon-caption"><span class="jp">ランプ（駐機場）での誘導とけん引補佐</span><span class="en">Guidance and towing assistance on the ramp (aircraft parking area)</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>手<rt>て</rt></ruby>やライトの<ruby>合図<rt>あいず</rt></ruby>で<ruby>飛行機<rt>ひこうき</rt></ruby>を<ruby>駐機<rt>ちゅうき</rt></ruby>スポットに<ruby>誘導<rt>ゆうどう</rt></ruby>することを<ruby>何<rt>なん</rt></ruby>といいますか。</p>
+    <p class="q-en">What is it called when an aircraft is guided into its parking spot using hand or light signals?</p>
+      <div class="opt" data-val="A"><span class="jp">A. マーシャリング</span><span class="en">Marshalling</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 積み込み</span><span class="en">Loading</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 客室清掃</span><span class="en">Cabin cleaning</span></div>
+    <div class="explain"><div class="jp">手やライトの合図で飛行機を誘導することをマーシャリングといいます。</div><div class="en">Guiding an aircraft using hand or light signals is called marshalling.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch04" data-chapter="ch04">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第4章　グランドハンドリング：手荷物・貨物の取り扱い</span><span class="en">Ground Handling: Baggage and Cargo Handling</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="乗客の手荷物や貨物は、専用の車両で飛行機まで運ばれ、貨物室に積み込まれます。">🔊</button><ruby>乗客<rt>じょうきゃく</rt></ruby>の<ruby>手荷物<rt>てにもつ</rt></ruby>や<ruby>貨物<rt>かもつ</rt></ruby>は、<ruby>専用<rt>せんよう</rt></ruby>の<ruby>車両<rt>しゃりょう</rt></ruby>で<ruby>飛行機<rt>ひこうき</rt></ruby>まで<ruby>運<rt>はこ</rt></ruby>ばれ、<ruby>貨物室<rt>かもつしつ</rt></ruby>に<ruby>積<rt>つ</rt></ruby>み<ruby>込<rt>こ</rt></ruby>まれます。</p>
+    <p class="en">Passengers' baggage and cargo are transported to the aircraft by special vehicles and loaded into the cargo hold.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="重さや置き場所のバランスを間違えると飛行機の安全な飛行に影響するため、指示書どおりに積み付けます。">🔊</button><ruby>重<rt>おも</rt></ruby>さや<ruby>置<rt>お</rt></ruby>き<ruby>場所<rt>ばしょ</rt></ruby>のバランスを<ruby>間違<rt>まちが</rt></ruby>えると<ruby>飛行機<rt>ひこうき</rt></ruby>の<ruby>安全<rt>あんぜん</rt></ruby>な<ruby>飛行<rt>ひこう</rt></ruby>に<ruby>影響<rt>えいきょう</rt></ruby>するため、<ruby>指示書<rt>しじしょ</rt></ruby>どおりに<ruby>積<rt>つ</rt></ruby>み<ruby>付<rt>つ</rt></ruby>けます。</p>
+    <p class="en">Loading incorrectly in terms of weight or placement can affect the aircraft's safe flight, so items are loaded exactly according to the loading instructions.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="壊れやすい荷物や危険物は、特別な取り扱いのルールに従って運びます。">🔊</button><ruby>壊<rt>こわ</rt></ruby>れやすい<ruby>荷物<rt>にもつ</rt></ruby>や<ruby>危険物<rt>きけんぶつ</rt></ruby>は、<ruby>特別<rt>とくべつ</rt></ruby>な<ruby>取<rt>と</rt></ruby>り<ruby>扱<rt>あつか</rt></ruby>いのルールに<ruby>従<rt>したが</rt></ruby>って<ruby>運<rt>はこ</rt></ruby>びます。</p>
+    <p class="en">Fragile items and dangerous goods are handled according to special handling rules.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="到着した飛行機からは、手荷物を速やかに積み降ろして、乗客のもとへ届けます。">🔊</button><ruby>到着<rt>とうちゃく</rt></ruby>した<ruby>飛行機<rt>ひこうき</rt></ruby>からは、<ruby>手荷物<rt>てにもつ</rt></ruby>を<ruby>速<rt>すみ</rt></ruby>やかに<ruby>積<rt>つ</rt></ruby>み<ruby>降<rt>お</rt></ruby>ろして、<ruby>乗客<rt>じょうきゃく</rt></ruby>のもとへ<ruby>届<rt>とど</rt></ruby>けます。</p>
+    <p class="en">Baggage is promptly unloaded from arriving aircraft and delivered to passengers.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🧳📦</div>
+    <div class="icon-caption"><span class="jp">手荷物と貨物の積み込み・積み降ろし</span><span class="en">Loading and unloading baggage and cargo</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>手荷物<rt>てにもつ</rt></ruby>や<ruby>貨物<rt>かもつ</rt></ruby>を<ruby>積<rt>つ</rt></ruby>み<ruby>込<rt>こ</rt></ruby>むとき、<b>もっとも</b><ruby>大切<rt>たいせつ</rt></ruby>なことはどれですか。</p>
+    <p class="q-en">When loading baggage and cargo, what is most important?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 指示書どおりに重さや置き場所を守る</span><span class="en">Follow the loading instructions for weight and placement</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. できるだけ早く適当に積む</span><span class="en">Load it as fast as possible, without worrying about placement</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 重い荷物から目立つ場所に積む</span><span class="en">Load the heaviest items in the most visible spot first</span></div>
+    <div class="explain"><div class="jp">重さや置き場所のバランスを間違えると飛行機の安全な飛行に影響するため、指示書どおりに積み付けることが最も大切です。</div><div class="en">Loading incorrectly in terms of weight or placement can affect the aircraft's safe flight, so following the loading instructions exactly is most important.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch05" data-chapter="ch05">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第5章　グランドハンドリング：客室清掃と旅客サービス</span><span class="en">Ground Handling: Cabin Cleaning and Passenger Services</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="飛行機が到着すると、次の乗客のために短い時間で客室を清掃します。">🔊</button><ruby>飛行機<rt>ひこうき</rt></ruby>が<ruby>到着<rt>とうちゃく</rt></ruby>すると、<ruby>次<rt>つぎ</rt></ruby>の<ruby>乗客<rt>じょうきゃく</rt></ruby>のために<ruby>短<rt>みじか</rt></ruby>い<ruby>時間<rt>じかん</rt></ruby>で<ruby>客室<rt>きゃくしつ</rt></ruby>を<ruby>清掃<rt>せいそう</rt></ruby>します。</p>
+    <p class="en">When an aircraft arrives, the cabin is cleaned in a short amount of time to prepare it for the next passengers.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="ゴミの回収や座席まわりの整頓のほか、毛布や雑誌などの機用品の補充も行います。">🔊</button>ゴミの<ruby>回収<rt>かいしゅう</rt></ruby>や<ruby>座席<rt>ざせき</rt></ruby>まわりの<ruby>整頓<rt>せいとん</rt></ruby>のほか、<ruby>毛布<rt>もうふ</rt></ruby>や<ruby>雑誌<rt>ざっし</rt></ruby>などの<ruby>機用品<rt>きようひん</rt></ruby>の<ruby>補充<rt>ほじゅう</rt></ruby>も<ruby>行<rt>おこな</rt></ruby>います。</p>
+    <p class="en">In addition to collecting trash and tidying up around the seats, workers also restock in-flight supplies such as blankets and magazines.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="座席の下やポケットに忘れ物がないか確認し、遺失物を見つけたら決められた手順で届け出ます。">🔊</button><ruby>座席<rt>ざせき</rt></ruby>の<ruby>下<rt>した</rt></ruby>やポケットに<ruby>忘<rt>わす</rt></ruby>れ<ruby>物<rt>もの</rt></ruby>がないか<ruby>確認<rt>かくにん</rt></ruby>し、<ruby>遺失物<rt>いしつぶつ</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけたら<ruby>決<rt>き</rt></ruby>められた<ruby>手順<rt>てじゅん</rt></ruby>で<ruby>届<rt>とど</rt></ruby>け<ruby>出<rt>で</rt></ruby>ます。</p>
+    <p class="en">Workers check under seats and in seat pockets for anything left behind, and if a lost item is found, they report it following the set procedure.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="機内食や飲み物を運び込んだり入れ替えたりする作業も、この仕事に含まれます。">🔊</button><ruby>機内食<rt>きないしょく</rt></ruby>や<ruby>飲<rt>の</rt></ruby>み<ruby>物<rt>もの</rt></ruby>を<ruby>運<rt>はこ</rt></ruby>び<ruby>込<rt>こ</rt></ruby>んだり<ruby>入<rt>い</rt></ruby>れ<ruby>替<rt>か</rt></ruby>えたりする<ruby>作業<rt>さぎょう</rt></ruby>も、この<ruby>仕事<rt>しごと</rt></ruby>に<ruby>含<rt>ふく</rt></ruby>まれます。</p>
+    <p class="en">Transporting and replenishing in-flight meals and drinks is also part of this job.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🧹🍽️</div>
+    <div class="icon-caption"><span class="jp">客室清掃と機内保守</span><span class="en">Cabin cleaning and in-cabin servicing</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>客室清掃<rt>きゃくしつせいそう</rt></ruby>の<ruby>作業<rt>さぎょう</rt></ruby>で、<ruby>座席<rt>ざせき</rt></ruby>の<ruby>下<rt>した</rt></ruby>で<ruby>忘<rt>わす</rt></ruby>れ<ruby>物<rt>もの</rt></ruby>を<ruby>見<rt>み</rt></ruby>つけたとき、どうしますか。</p>
+    <p class="q-en">If you find a lost item under a seat while cleaning the cabin, what should you do?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 決められた手順で届け出る</span><span class="en">Report it following the set procedure</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 自分の判断でそのまま持ち帰る</span><span class="en">Take it home yourself based on your own judgment</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 気づかなかったことにする</span><span class="en">Pretend you didn't notice it</span></div>
+    <div class="explain"><div class="jp">遺失物を見つけたら、決められた手順で届け出ることが大切です。</div><div class="en">When a lost item is found, it is important to report it following the set procedure.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch06" data-chapter="ch06">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第6章　航空燃料の取り扱い基礎</span><span class="en">Aviation Fuel Handling Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="飛行機には専用の航空燃料が給油されます。給油は専門の資格を持つ作業者が行います。">🔊</button><ruby>飛行機<rt>ひこうき</rt></ruby>には<ruby>専用<rt>せんよう</rt></ruby>の<ruby>航空燃料<rt>こうくうねんりょう</rt></ruby>が<ruby>給油<rt>きゅうゆ</rt></ruby>されます。<ruby>給油<rt>きゅうゆ</rt></ruby>は<ruby>専門<rt>せんもん</rt></ruby>の<ruby>資格<rt>しかく</rt></ruby>を<ruby>持<rt>も</rt></ruby>つ<ruby>作業者<rt>さぎょうしゃ</rt></ruby>が<ruby>行<rt>おこな</rt></ruby>います。</p>
+    <p class="en">Aircraft are refueled with dedicated aviation fuel. Refueling is carried out by workers who hold specialized qualifications.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="航空燃料は引火しやすいため、給油中は火気を近づけず、スマートフォンの使用も控えます。">🔊</button><ruby>航空燃料<rt>こうくうねんりょう</rt></ruby>は<ruby>引火<rt>いんか</rt></ruby>しやすいため、<ruby>給油<rt>きゅうゆ</rt></ruby><ruby>中<rt>ちゅう</rt></ruby>は<ruby>火気<rt>かき</rt></ruby>を<ruby>近<rt>ちか</rt></ruby>づけず、スマートフォンの<ruby>使用<rt>しよう</rt></ruby>も<ruby>控<rt>ひか</rt></ruby>えます。</p>
+    <p class="en">Because aviation fuel ignites easily, no open flames are allowed nearby during refueling, and even smartphone use is avoided.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="静電気から火花が発生すると危険なため、給油車と飛行機を接地(アース)して静電気を逃がします。">🔊</button><ruby>静電気<rt>せいでんき</rt></ruby>から<ruby>火花<rt>ひばな</rt></ruby>が<ruby>発生<rt>はっせい</rt></ruby>すると<ruby>危険<rt>きけん</rt></ruby>なため、<ruby>給油車<rt>きゅうゆしゃ</rt></ruby>と<ruby>飛行機<rt>ひこうき</rt></ruby>を<ruby>接地<rt>せっち</rt></ruby>(アース)して<ruby>静電気<rt>せいでんき</rt></ruby>を<ruby>逃<rt>に</rt></ruby>がします。</p>
+    <p class="en">Because sparks from static electricity are dangerous, the fuel truck and aircraft are grounded (earthed) to release static electricity.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="給油の周りでは緊急時にすぐ対応できるように、消火器などの準備もしておきます。">🔊</button><ruby>給油<rt>きゅうゆ</rt></ruby>の<ruby>周<rt>まわ</rt></ruby>りでは<ruby>緊急時<rt>きんきゅうじ</rt></ruby>にすぐ<ruby>対応<rt>たいおう</rt></ruby>できるように、<ruby>消火器<rt>しょうかき</rt></ruby>などの<ruby>準備<rt>じゅんび</rt></ruby>もしておきます。</p>
+    <p class="en">A fire extinguisher and other emergency equipment are kept ready nearby so that workers can respond immediately if something goes wrong during refueling.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">⛽✈️</div>
+    <div class="icon-caption"><span class="jp">航空燃料の給油作業</span><span class="en">Refueling aircraft with aviation fuel</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>航空燃料<rt>こうくうねんりょう</rt></ruby>の<ruby>給油<rt>きゅうゆ</rt></ruby><ruby>中<rt>ちゅう</rt></ruby>に<ruby>火花<rt>ひばな</rt></ruby>の<ruby>発生<rt>はっせい</rt></ruby>を<ruby>防<rt>ふせ</rt></ruby>ぐために<ruby>行<rt>おこな</rt></ruby>うことはどれですか。</p>
+    <p class="q-en">What is done during aviation fuel refueling to prevent sparks from occurring?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 給油車と飛行機を接地(アース)する</span><span class="en">Ground (earth) the fuel truck and the aircraft</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. スマートフォンでライトを照らす</span><span class="en">Shine a light using a smartphone</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 燃料をできるだけ早く入れる</span><span class="en">Pump the fuel as fast as possible</span></div>
+    <div class="explain"><div class="jp">静電気から火花が発生すると危険なため、給油車と飛行機を接地(アース)して静電気を逃がします。</div><div class="en">Because sparks from static electricity are dangerous, the fuel truck and aircraft are grounded (earthed) to release static electricity.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch07" data-chapter="ch07">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第7章　航空機整備の仕事</span><span class="en">Aircraft Maintenance Work Overview</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="航空機整備には、いくつかの専門分野があります。">🔊</button><ruby>航空機整備<rt>こうくうきせいび</rt></ruby>には、いくつかの<ruby>専門分野<rt>せんもんぶんや</rt></ruby>があります。</p>
+    <p class="en">Aircraft maintenance is divided into several specialized areas.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="運航整備は、フライトの合間に機体を目視で点検したり、燃料の補給状況を確認したりする整備です。">🔊</button><ruby>運航整備<rt>うんこうせいび</rt></ruby>は、フライトの<ruby>合間<rt>あいま</rt></ruby>に<ruby>機体<rt>きたい</rt></ruby>を<ruby>目視<rt>もくし</rt></ruby>で<ruby>点検<rt>てんけん</rt></ruby>したり、<ruby>燃料<rt>ねんりょう</rt></ruby>の<ruby>補給状況<rt>ほきゅうじょうきょう</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>したりする<ruby>整備<rt>せいび</rt></ruby>です。</p>
+    <p class="en">Line maintenance involves visually inspecting the aircraft between flights and checking that it has been refueled properly.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="機体整備では、機体の部品を点検・交換・修理し、装備品・原動機整備では、脚部や計器類、エンジンなどの専門的な部品を担当します。">🔊</button><ruby>機体整備<rt>きたいせいび</rt></ruby>では、<ruby>機体<rt>きたい</rt></ruby>の<ruby>部品<rt>ぶひん</rt></ruby>を<ruby>点検<rt>てんけん</rt></ruby>・<ruby>交換<rt>こうかん</rt></ruby>・<ruby>修理<rt>しゅうり</rt></ruby>し、<ruby>装備品<rt>そうびひん</rt></ruby>・<ruby>原動機整備<rt>げんどうきせいび</rt></ruby>では、<ruby>脚部<rt>きゃくぶ</rt></ruby>や<ruby>計器類<rt>けいきるい</rt></ruby>、エンジンなどの<ruby>専門的<rt>せんもんてき</rt></ruby>な<ruby>部品<rt>ぶひん</rt></ruby>を<ruby>担当<rt>たんとう</rt></ruby>します。</p>
+    <p class="en">Airframe maintenance involves inspecting, replacing, and repairing airframe parts, while equipment and powerplant maintenance covers specialized components such as landing gear, instruments, and engines.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="特定技能1号の仕事は、締結作業や電気計測、部品交換の補助など、資格を持つ航空整備士の指示に従う補助的な作業に限られます。">🔊</button><ruby>特定技能<rt>とくていぎのう</rt></ruby>1<ruby>号<rt>ごう</rt></ruby>の<ruby>仕事<rt>しごと</rt></ruby>は、<ruby>締結作業<rt>ていけつさぎょう</rt></ruby>や<ruby>電気計測<rt>でんきけいそく</rt></ruby>、<ruby>部品交換<rt>ぶひんこうかん</rt></ruby>の<ruby>補助<rt>ほじょ</rt></ruby>など、<ruby>資格<rt>しかく</rt></ruby>を<ruby>持<rt>も</rt></ruby>つ<ruby>航空整備士<rt>こうくうせいびし</rt></ruby>の<ruby>指示<rt>しじ</rt></ruby>に<ruby>従<rt>したが</rt></ruby>う<ruby>補助的<rt>ほじょてき</rt></ruby>な<ruby>作業<rt>さぎょう</rt></ruby>に<ruby>限<rt>かぎ</rt></ruby>られます。</p>
+    <p class="en">Specified Skilled Worker (i) tasks are limited to assistant-level work performed under the instructions of a qualified aircraft maintenance engineer, such as fastening work, electrical measurement, and helping with parts replacement.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🔧🛩️</div>
+    <div class="icon-caption"><span class="jp">航空機整備のさまざまな専門分野</span><span class="en">The different specialized areas of aircraft maintenance</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>特定技能<rt>とくていぎのう</rt></ruby>1<ruby>号<rt>ごう</rt></ruby>の<ruby>航空機整備<rt>こうくうきせいび</rt></ruby>の<ruby>仕事<rt>しごと</rt></ruby>について、<b><ruby>正<rt>ただ</rt></ruby>しい</b><ruby>説明<rt>せつめい</rt></ruby>はどれですか。</p>
+    <p class="q-en">Which statement about Specified Skilled Worker (i) aircraft maintenance work is correct?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 資格を持つ航空整備士の指示に従う補助的な作業を行う</span><span class="en">They perform assistant-level work under the instructions of a qualified aircraft maintenance engineer</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 一人で自由にすべての整備を判断して行ってよい</span><span class="en">They may decide and carry out all maintenance freely, alone</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 航空機の設計を担当する</span><span class="en">They are responsible for designing aircraft</span></div>
+    <div class="explain"><div class="jp">特定技能1号の航空機整備の仕事は、資格を持つ航空整備士の指示に従う補助的な作業に限られます。</div><div class="en">Specified Skilled Worker (i) aircraft maintenance work is limited to assistant-level tasks performed under the instructions of a qualified aircraft maintenance engineer.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch08" data-chapter="ch08">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第8章　締結作業の基礎</span><span class="en">Fastening Work Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="締結作業とは、ボルトやナットを使って部品どうしをしっかりと固定する作業です。">🔊</button><ruby>締結作業<rt>ていけつさぎょう</rt></ruby>とは、ボルトやナットを<ruby>使<rt>つか</rt></ruby>って<ruby>部品<rt>ぶひん</rt></ruby>どうしをしっかりと<ruby>固定<rt>こてい</rt></ruby>する<ruby>作業<rt>さぎょう</rt></ruby>です。</p>
+    <p class="en">Fastening work is the task of securely joining parts together using bolts and nuts.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="飛行中の振動でボルトが緩まないように、決められたトルク(締め付ける力)で正確に締めます。">🔊</button><ruby>飛行中<rt>ひこうちゅう</rt></ruby>の<ruby>振動<rt>しんどう</rt></ruby>でボルトが<ruby>緩<rt>ゆる</rt></ruby>まないように、<ruby>決<rt>き</rt></ruby>められたトルク(<ruby>締<rt>し</rt></ruby>め<ruby>付<rt>つ</rt></ruby>ける<ruby>力<rt>ちから</rt></ruby>)で<ruby>正確<rt>せいかく</rt></ruby>に<ruby>締<rt>し</rt></ruby>めます。</p>
+    <p class="en">To prevent bolts from loosening due to vibration during flight, they are tightened precisely to a specified torque (tightening force).</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="さらに安全のため、割りピンやワイヤーでボルトが回らないように固定することもあります。">🔊</button>さらに<ruby>安全<rt>あんぜん</rt></ruby>のため、<ruby>割<rt>わ</rt></ruby>りピンやワイヤーでボルトが<ruby>回<rt>まわ</rt></ruby>らないように<ruby>固定<rt>こてい</rt></ruby>することもあります。</p>
+    <p class="en">For extra safety, a cotter pin or wire is sometimes used to keep the bolt from turning.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="締結作業が終わったら、資格を持つ整備士が最終確認をして記録に残します。">🔊</button><ruby>締結作業<rt>ていけつさぎょう</rt></ruby>が<ruby>終<rt>お</rt></ruby>わったら、<ruby>資格<rt>しかく</rt></ruby>を<ruby>持<rt>も</rt></ruby>つ<ruby>整備士<rt>せいびし</rt></ruby>が<ruby>最終確認<rt>さいしゅうかくにん</rt></ruby>をして<ruby>記録<rt>きろく</rt></ruby>に<ruby>残<rt>のこ</rt></ruby>します。</p>
+    <p class="en">After fastening work is finished, a qualified mechanic performs a final check and keeps a record of it.</p>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-jp">①<ruby>正<rt>ただ</rt></ruby>しいボルトとナットを<ruby>選<rt>えら</rt></ruby>ぶ</div>
+      <div class="step-en">① Select the correct bolt and nut</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">②<ruby>決<rt>き</rt></ruby>められたトルクで<ruby>締<rt>し</rt></ruby>める</div>
+      <div class="step-en">② Tighten to the specified torque</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">③<ruby>割<rt>わ</rt></ruby>りピンやワイヤーで<ruby>固定<rt>こてい</rt></ruby>する</div>
+      <div class="step-en">③ Secure with a cotter pin or wire</div>
+    </div>
+    <div class="step">
+      <div class="step-jp">④<ruby>整備士<rt>せいびし</rt></ruby>の<ruby>最終確認<rt>さいしゅうかくにん</rt></ruby>を<ruby>受<rt>う</rt></ruby>ける</div>
+      <div class="step-en">④ Receive the mechanic's final check</div>
+    </div>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🔩🛠️</div>
+    <div class="icon-caption"><span class="jp">航空機のボルトとナットの締結</span><span class="en">Fastening aircraft bolts and nuts</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>飛行中<rt>ひこうちゅう</rt></ruby>の<ruby>振動<rt>しんどう</rt></ruby>でボルトが<ruby>緩<rt>ゆる</rt></ruby>まないようにするために<ruby>大切<rt>たいせつ</rt></ruby>なことはどれですか。</p>
+    <p class="q-en">What is important for preventing bolts from loosening due to vibration during flight?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 決められたトルクで正確に締める</span><span class="en">Tighten precisely to the specified torque</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. できるだけ強く締めればよい</span><span class="en">Just tighten it as hard as possible</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. ボルトを油で滑りやすくする</span><span class="en">Make the bolt slippery with oil</span></div>
+    <div class="explain"><div class="jp">決められたトルクで正確に締め、さらに割りピンやワイヤーで固定することで、ボルトが緩むのを防ぎます。</div><div class="en">Tightening precisely to the specified torque, and additionally securing it with a cotter pin or wire, prevents the bolt from loosening.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch09" data-chapter="ch09">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第9章　電気計測の基礎</span><span class="en">Electrical Measurement Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="飛行機には照明や計器、コンピューターなど、たくさんの電気系統があります。">🔊</button><ruby>飛行機<rt>ひこうき</rt></ruby>には<ruby>照明<rt>しょうめい</rt></ruby>や<ruby>計器<rt>けいき</rt></ruby>、コンピューターなど、たくさんの<ruby>電気系統<rt>でんきけいとう</rt></ruby>があります。</p>
+    <p class="en">An aircraft has many electrical systems, including lighting, instruments, and computers.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="電気計測では、テスターという器具を使って、電圧や導通(電気が流れるかどうか)を調べます。">🔊</button><ruby>電気計測<rt>でんきけいそく</rt></ruby>では、テスターという<ruby>器具<rt>きぐ</rt></ruby>を<ruby>使<rt>つか</rt></ruby>って、<ruby>電圧<rt>でんあつ</rt></ruby>や<ruby>導通<rt>どうつう</rt></ruby>(<ruby>電気<rt>でんき</rt></ruby>が<ruby>流<rt>なが</rt></ruby>れるかどうか)を<ruby>調<rt>しら</rt></ruby>べます。</p>
+    <p class="en">In electrical measurement, a device called a tester is used to check voltage and continuity (whether electricity flows properly).</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="配線の絶縁が悪くなると、電気が正しく流れず、装置が正常に動かなくなることがあります。">🔊</button><ruby>配線<rt>はいせん</rt></ruby>の<ruby>絶縁<rt>ぜつえん</rt></ruby>が<ruby>悪<rt>わる</rt></ruby>くなると、<ruby>電気<rt>でんき</rt></ruby>が<ruby>正<rt>ただ</rt></ruby>しく<ruby>流<rt>なが</rt></ruby>れず、<ruby>装置<rt>そうち</rt></ruby>が<ruby>正常<rt>せいじょう</rt></ruby>に<ruby>動<rt>うご</rt></ruby>かなくなることがあります。</p>
+    <p class="en">If a wire's insulation deteriorates, electricity may not flow correctly, and the equipment may stop working normally.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="計測結果は正確に記録し、数値が基準を外れていたら整備士にすぐ報告します。">🔊</button><ruby>計測結果<rt>けいそくけっか</rt></ruby>は<ruby>正確<rt>せいかく</rt></ruby>に<ruby>記録<rt>きろく</rt></ruby>し、<ruby>数値<rt>すうち</rt></ruby>が<ruby>基準<rt>きじゅん</rt></ruby>を<ruby>外<rt>はず</rt></ruby>れていたら<ruby>整備士<rt>せいびし</rt></ruby>にすぐ<ruby>報告<rt>ほうこく</rt></ruby>します。</p>
+    <p class="en">Measurement results are recorded accurately, and if a value falls outside the standard range, it is reported to the mechanic right away.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🔌📟</div>
+    <div class="icon-caption"><span class="jp">テスターを使った電気計測</span><span class="en">Electrical measurement using a tester</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp">テスターを<ruby>使<rt>つか</rt></ruby>って<ruby>電気<rt>でんき</rt></ruby>が<ruby>流<rt>なが</rt></ruby>れるかどうかを<ruby>調<rt>しら</rt></ruby>べることを<ruby>何<rt>なん</rt></ruby>といいますか。</p>
+    <p class="q-en">What is it called when a tester is used to check whether electricity flows properly?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 導通の確認</span><span class="en">Checking continuity</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 締結作業</span><span class="en">Fastening work</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 客室清掃</span><span class="en">Cabin cleaning</span></div>
+    <div class="explain"><div class="jp">テスターを使って電圧や導通(電気が流れるかどうか)を調べることを電気計測といいます。</div><div class="en">Using a tester to check voltage and continuity (whether electricity flows properly) is called electrical measurement.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch10" data-chapter="ch10">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第10章　工具・品質管理と記録</span><span class="en">Tools, Quality Control, and Records</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="整備で使った工具を機体の中に置き忘れると、大きな事故につながるおそれがあるため、工具管理は航空整備でとても重要です。">🔊</button><ruby>整備<rt>せいび</rt></ruby>で<ruby>使<rt>つか</rt></ruby>った<ruby>工具<rt>こうぐ</rt></ruby>を<ruby>機体<rt>きたい</rt></ruby>の<ruby>中<rt>なか</rt></ruby>に<ruby>置<rt>お</rt></ruby>き<ruby>忘<rt>わす</rt></ruby>れると、<ruby>大<rt>おお</rt></ruby>きな<ruby>事故<rt>じこ</rt></ruby>につながるおそれがあるため、<ruby>工具管理<rt>こうぐかんり</rt></ruby>は<ruby>航空整備<rt>こうくうせいび</rt></ruby>でとても<ruby>重要<rt>じゅうよう</rt></ruby>です。</p>
+    <p class="en">Leaving a tool inside the aircraft by mistake could lead to a serious accident, so tool control is extremely important in aircraft maintenance.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="作業の前と後で工具の数を数えて、すべてそろっているか必ず確認します。">🔊</button><ruby>作業<rt>さぎょう</rt></ruby>の<ruby>前<rt>まえ</rt></ruby>と<ruby>後<rt>あと</rt></ruby>で<ruby>工具<rt>こうぐ</rt></ruby>の<ruby>数<rt>かず</rt></ruby>を<ruby>数<rt>かぞ</rt></ruby>えて、すべてそろっているか<ruby>必<rt>かなら</rt></ruby>ず<ruby>確認<rt>かくにん</rt></ruby>します。</p>
+    <p class="en">The number of tools is counted both before and after work to make absolutely sure that all of them are accounted for.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="品質管理のため、検査に合格した作業には印(サイン)をつけて、だれが確認したかが分かるようにします。">🔊</button><ruby>品質管理<rt>ひんしつかんり</rt></ruby>のため、<ruby>検査<rt>けんさ</rt></ruby>に<ruby>合格<rt>ごうかく</rt></ruby>した<ruby>作業<rt>さぎょう</rt></ruby>には<ruby>印<rt>しるし</rt></ruby>(サイン)をつけて、だれが<ruby>確認<rt>かくにん</rt></ruby>したかが<ruby>分<rt>わ</rt></ruby>かるようにします。</p>
+    <p class="en">For quality control, work that has passed inspection is marked with a sign-off so that it is clear who checked it.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="すべての整備作業は、いつ、だれが、何をしたかを記録に残し、あとで確認できるようにします。">🔊</button>すべての<ruby>整備作業<rt>せいびさぎょう</rt></ruby>は、いつ、だれが、<ruby>何<rt>なに</rt></ruby>をしたかを<ruby>記録<rt>きろく</rt></ruby>に<ruby>残<rt>のこ</rt></ruby>し、あとで<ruby>確認<rt>かくにん</rt></ruby>できるようにします。</p>
+    <p class="en">All maintenance work is recorded with when, who, and what was done, so it can be checked later.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">📋🔍</div>
+    <div class="icon-caption"><span class="jp">工具の管理と作業記録</span><span class="en">Tool control and work records</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>整備<rt>せいび</rt></ruby>で<ruby>使<rt>つか</rt></ruby>った<ruby>工具<rt>こうぐ</rt></ruby>を<ruby>機体<rt>きたい</rt></ruby>の<ruby>中<rt>なか</rt></ruby>に<ruby>置<rt>お</rt></ruby>き<ruby>忘<rt>わす</rt></ruby>れると、どうなるおそれがありますか。</p>
+    <p class="q-en">What could happen if a tool used during maintenance is left inside the aircraft by mistake?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 大きな事故につながるおそれがある</span><span class="en">It could lead to a serious accident</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 燃費がよくなる</span><span class="en">Fuel efficiency could improve</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 客室清掃が早く終わる</span><span class="en">Cabin cleaning could finish faster</span></div>
+    <div class="explain"><div class="jp">工具を機体の中に置き忘れると大きな事故につながるおそれがあるため、作業の前後で工具の数を必ず確認します。</div><div class="en">Leaving a tool inside the aircraft could lead to a serious accident, so the number of tools is always checked before and after work.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch11" data-chapter="ch11">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第11章　報連相と判断練習</span><span class="en">Workplace Communication and Judgment Practice</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="空港や整備現場では、報告・連絡・相談、いわゆる「報連相」がとても大切です。">🔊</button><ruby>空港<rt>くうこう</rt></ruby>や<ruby>整備現場<rt>せいびげんば</rt></ruby>では、<ruby>報告<rt>ほうこく</rt></ruby>・<ruby>連絡<rt>れんらく</rt></ruby>・<ruby>相談<rt>そうだん</rt></ruby>、いわゆる「<ruby>報連相<rt>ほうれんそう</rt></ruby>」がとても<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">In an airport or maintenance workshop, "reporting, contacting, and consulting" — known as horenso — is extremely important.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="作業中に予想していなかった異常に気づいたときは、自分だけで判断せず、すぐに指導者に報告します。">🔊</button><ruby>作業中<rt>さぎょうちゅう</rt></ruby>に<ruby>予想<rt>よそう</rt></ruby>していなかった<ruby>異常<rt>いじょう</rt></ruby>に<ruby>気<rt>き</rt></ruby>づいたときは、<ruby>自分<rt>じぶん</rt></ruby>だけで<ruby>判断<rt>はんだん</rt></ruby>せず、すぐに<ruby>指導者<rt>しどうしゃ</rt></ruby>に<ruby>報告<rt>ほうこく</rt></ruby>します。</p>
+    <p class="en">If you notice something unexpected during work, don't judge the situation on your own — report it to your instructor right away.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="フライトの時間が近づいていても、安全に関わることは早めに連絡して指示を受けます。">🔊</button>フライトの<ruby>時間<rt>じかん</rt></ruby>が<ruby>近<rt>ちか</rt></ruby>づいていても、<ruby>安全<rt>あんぜん</rt></ruby>に<ruby>関<rt>かか</rt></ruby>わることは<ruby>早<rt>はや</rt></ruby>めに<ruby>連絡<rt>れんらく</rt></ruby>して<ruby>指示<rt>しじ</rt></ruby>を<ruby>受<rt>う</rt></ruby>けます。</p>
+    <p class="en">Even when a flight's departure time is approaching, anything related to safety is reported early so instructions can be received.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="判断に迷ったときは、一人で決めずに、まわりのスタッフに相談することが安全な作業につながります。">🔊</button><ruby>判断<rt>はんだん</rt></ruby>に<ruby>迷<rt>まよ</rt></ruby>ったときは、<ruby>一人<rt>ひとり</rt></ruby>で<ruby>決<rt>き</rt></ruby>めずに、まわりのスタッフに<ruby>相談<rt>そうだん</rt></ruby>することが<ruby>安全<rt>あんぜん</rt></ruby>な<ruby>作業<rt>さぎょう</rt></ruby>につながります。</p>
+    <p class="en">When you are unsure what to do, consulting with the staff around you instead of deciding alone leads to safer work.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">💬🤝</div>
+    <div class="icon-caption"><span class="jp">報連相と判断力</span><span class="en">Workplace communication and good judgment</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>手荷物<rt>てにもつ</rt></ruby>の<ruby>積<rt>つ</rt></ruby>み<ruby>込<rt>こ</rt></ruby>み<ruby>中<rt>ちゅう</rt></ruby>に、<ruby>指示書<rt>しじしょ</rt></ruby>と<ruby>実際<rt>じっさい</rt></ruby>の<ruby>重<rt>おも</rt></ruby>さが<ruby>違<rt>ちが</rt></ruby>うことに<ruby>気<rt>き</rt></ruby>づきました。<b>もっとも<ruby>適切<rt>てきせつ</rt></ruby>な</b><ruby>行動<rt>こうどう</rt></ruby>はどれですか。</p>
+    <p class="q-en">While loading baggage, you notice that the actual weight differs from what the loading instructions state. What is the most appropriate action?</p>
+      <div class="opt" data-val="A"><span class="jp">A. すぐに指導者に報告し、指示を受ける</span><span class="en">Report it to the instructor right away and receive instructions</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 自分の判断でそのまま積み込みを続ける</span><span class="en">Continue loading as planned, based on your own judgment</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 気づかなかったことにして作業を終える</span><span class="en">Pretend you didn't notice and finish the job</span></div>
+    <div class="explain"><div class="jp">重さや置き場所の間違いは飛行機の安全な飛行に影響するため、自分だけで判断せず、すぐに指導者に報告して指示を受けます。</div><div class="en">A mistake in weight or placement can affect the aircraft's safe flight, so instead of deciding alone, you should report it to the instructor right away and receive instructions.</div></div>
+  </div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>整備作業中<rt>せいびさぎょうちゅう</rt></ruby>に、<ruby>工具<rt>こうぐ</rt></ruby>が1<ruby>本<rt>ぽん</rt></ruby>足りないことに<ruby>気<rt>き</rt></ruby>づきました。<b><ruby>最初<rt>さいしょ</rt></ruby>に</b>することはどれですか。</p>
+    <p class="q-en">During maintenance work, you notice that one tool is missing. What should you do first?</p>
+      <div class="opt" data-val="A"><span class="jp">A. すぐに指導者に報告して、いっしょに探す</span><span class="en">Report it to the instructor immediately and search for it together</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 見つからなくてもそのまま作業を終わらせる</span><span class="en">Finish the job as planned even if it isn't found</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 工具がなくても気にせず次の作業に進む</span><span class="en">Don't worry about it and move on to the next task</span></div>
+    <div class="explain"><div class="jp">工具を機体の中に置き忘れると大きな事故につながるおそれがあるため、足りないことに気づいたらすぐに指導者に報告し、いっしょに探します。</div><div class="en">Leaving a tool inside the aircraft could lead to a serious accident, so if you notice one is missing, report it to the instructor immediately and search for it together.</div></div>
+  </div>
+</div>
+</section>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+function safeGet(key){ try{ return JSON.parse(localStorage.getItem(key) || '{}'); }catch(e){ return {}; } }
+function safeSet(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+var readChapters = safeGet('aviationssw_read');
+
+document.querySelectorAll('.chapter-card').forEach(function(c){
+  c.addEventListener('click', function(){ goToTarget(this.dataset.target); });
+});
+
+var allTocLinks = document.querySelectorAll('.toc-link');
+
+function showHome(){
+  document.getElementById('view-home').style.display = 'block';
+  document.getElementById('view-content').style.display = 'none';
+  document.getElementById('mobile-title').textContent = 'Aviation SSW';
+  clearActiveTOC();
+}
+function showContent(){
+  document.getElementById('view-home').style.display = 'none';
+  document.getElementById('view-content').style.display = 'block';
+}
+function clearActiveTOC(){ allTocLinks.forEach(function(l){ l.classList.remove('active'); }); }
+function goToTarget(id){
+  showContent();
+  var el = document.getElementById(id);
+  if (el){ el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  setActiveTOC(id);
+  if (window.innerWidth <= 980) closeSidebar();
+  markRead(id);
+}
+function setActiveTOC(id){
+  clearActiveTOC();
+  var link = document.querySelector('.toc-link[data-target="'+id+'"]');
+  if (link) link.classList.add('active');
+}
+function markRead(id){
+  if (!readChapters[id]){ readChapters[id] = true; safeSet('aviationssw_read', readChapters); updateProgress(); }
+}
+function updateProgress(){
+  var total = document.querySelectorAll('.toc-link').length;
+  var n = Object.keys(readChapters).length;
+  if (n > total) n = total;
+  var pct = total ? Math.round(n/total*100) : 0;
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-text').textContent = n+' / '+total+' read';
+  var hs = document.getElementById('home-progress-stat');
+  if (hs) hs.querySelector('b').textContent = pct+'%';
+}
+document.querySelectorAll('.toc-link').forEach(function(el){
+  el.addEventListener('click', function(){ goToTarget(this.dataset.target); });
+});
+document.querySelector('.brand').addEventListener('click', showHome);
+document.querySelector('.brand').style.cursor = 'pointer';
+
+function speakJP(text){
+  if (!text) return;
+  if (!('speechSynthesis' in window)){ alert('Text-to-speech is not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+function injectScoreBadges(){
+  document.querySelectorAll('.sec').forEach(function(sec){
+    var qblocks = sec.querySelectorAll('.q-block');
+    if (!qblocks.length) return;
+    var title = sec.querySelector('.sec-title');
+    if (!title || title.querySelector('.section-score-inline')) return;
+    var span = document.createElement('span');
+    span.className = 'section-score-inline';
+    span.style.marginLeft = 'auto';
+    span.dataset.total = qblocks.length;
+    span.dataset.correct = '0';
+    span.textContent = '0 / ' + qblocks.length;
+    title.style.flexDirection = 'row';
+    title.style.alignItems = 'center';
+    title.appendChild(span);
+  });
+}
+injectScoreBadges();
+
+document.addEventListener('click', function(e){
+  var spk = e.target.closest('.spk');
+  if (spk){ e.stopPropagation(); speakJP(spk.getAttribute('data-jp')); return; }
+
+  var opt = e.target.closest('.opt');
+  if (opt){
+    var qblock = opt.closest('.q-block');
+    if (!qblock || qblock.classList.contains('answered')) return;
+    var chosen = opt.getAttribute('data-val');
+    var answer = qblock.getAttribute('data-answer');
+    qblock.classList.add('answered');
+    qblock.querySelectorAll('.opt').forEach(function(o){
+      var v = o.getAttribute('data-val');
+      if (v === answer) o.classList.add('correct');
+      else if (v === chosen) o.classList.add('wrong');
+    });
+    var sec = qblock.closest('.sec');
+    if (sec){
+      var badge = sec.querySelector('.section-score-inline');
+      if (badge && chosen === answer){ badge.dataset.correct = (parseInt(badge.dataset.correct,10) + 1); }
+      if (badge) badge.textContent = badge.dataset.correct + ' / ' + badge.dataset.total;
+    }
+    return;
+  }
+});
+
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); }
+document.getElementById('menu-toggle').addEventListener('click', function(){
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+updateProgress();
+showHome();
+</script>
+</body>
+</html>
