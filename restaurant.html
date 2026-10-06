@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Restaurant SSW — Japanese with Raza Sensei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#12395d; --navy-dark:#0b2945; --navy-light:#315E7F;
+  --steel:#6B5C68; --rust:#d62828; --rust-dark:#b91f1f;
+  --ink:#241820; --muted:#6B5C68; --border:#E8DFE6; --paper:#FAF6F9; --card:#FFFFFF;
+  --good:#1F7A4D; --bad:#B3261E; --radius:14px; --shadow:0 2px 10px rgba(107,30,60,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); line-height:1.55;}
+.jp{font-family:'Noto Sans JP','Inter',sans-serif;}
+ruby rt{font-size:0.55em; color:var(--muted);}
+
+#app{display:flex; min-height:100vh;}
+#sidebar{width:290px; flex-shrink:0; background:var(--navy-dark); color:#fff; height:100vh; position:sticky; top:0; overflow-y:auto; padding-bottom:30px;}
+.brand{display:flex; align-items:center; gap:10px; padding:20px 18px 16px 18px; border-bottom:1px solid rgba(255,255,255,0.12); cursor:pointer;}
+.brand .logo{width:40px;height:40px;border-radius:10px;background:var(--rust); display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.brand-text{font-weight:800;font-size:13.5px;line-height:1.25;}
+.brand-text small{display:block;font-weight:500;font-size:11px;color:#A8C2D6;}
+#toc{padding:10px 8px 0 8px;}
+.toc-link{display:flex; align-items:center; gap:8px; padding:10px 12px; margin:3px 2px; font-size:12.5px; color:#C9DBE9; border-radius:9px; cursor:pointer;}
+.toc-icon{font-size:15px;}
+.toc-link:hover{background:rgba(255,255,255,0.08); color:#fff;}
+.toc-link.active{background:var(--rust); color:#fff; font-weight:700;}
+#sidebar-footer{padding:16px 18px; font-size:10.5px; color:#87A2B8; border-top:1px solid rgba(255,255,255,0.1); margin-top:14px;}
+
+#menu-toggle{display:none; position:fixed; top:14px; left:14px; z-index:50; width:42px;height:42px;border-radius:10px;background:var(--navy-dark);color:#fff; border:none; font-size:18px; box-shadow:var(--shadow); cursor:pointer;}
+
+#main{flex:1; min-width:0;}
+#topbar{position:sticky; top:0; z-index:20; background:var(--card); border-bottom:1px solid var(--border); padding:14px 32px; display:flex; align-items:center; justify-content:space-between;}
+#mobile-title{font-weight:800; font-size:14px; color:var(--navy-dark);}
+#progress-wrap{display:flex; align-items:center; gap:10px; font-size:12px; color:var(--muted);}
+#progress-track{width:130px; height:7px; background:var(--border); border-radius:5px; overflow:hidden;}
+#progress-fill{height:100%; background:linear-gradient(90deg,var(--rust),var(--navy-light)); width:0%; transition:width .3s;}
+
+#content{max-width:880px; margin:0 auto; padding:0 32px 100px 32px;}
+
+.home-hero{background:linear-gradient(135deg,var(--navy) 0%, var(--navy-dark) 100%); color:#fff; border-radius:20px; padding:44px 38px; margin:32px 0 28px 0; position:relative; overflow:hidden;}
+.home-hero::after{content:"🍽️"; position:absolute; right:24px; bottom:-16px; font-size:130px; opacity:0.15; transform:rotate(-8deg);}
+.home-hero h2{margin:0 0 10px 0; font-size:23px; font-weight:800;}
+.home-hero p{margin:0; color:#D3E2ED; max-width:560px; font-size:14.5px;}
+.home-stats{display:flex; gap:14px; margin-top:24px; flex-wrap:wrap;}
+.home-stat{background:rgba(255,255,255,0.1); border-radius:12px; padding:12px 18px; min-width:100px;}
+.home-stat b{display:block; font-size:22px;}
+.home-stat span{font-size:11px; color:#BBD3E4;}
+.chapter-cards{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px;}
+@media(max-width:700px){.chapter-cards{grid-template-columns:1fr;}}
+.chapter-card{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:18px 20px; cursor:pointer; box-shadow:var(--shadow); border-top:4px solid var(--rust); transition:transform .15s;}
+.chapter-card:hover{transform:translateY(-2px);}
+.card-icon{font-size:26px;}
+.chapter-card h3{margin:8px 0 4px 0; font-size:14.5px;}
+.chapter-card p{margin:0; font-size:12px; color:var(--muted);}
+.footer-credit{text-align:center; color:var(--muted); font-size:12px; margin:40px 0 10px 0;}
+
+.chapter-section{padding-top:8px;}
+.chapter-banner{background:var(--navy-dark); color:#fff; border-radius:16px; padding:24px 26px; margin:28px 0 20px 0; border-left:6px solid var(--rust);}
+.chapter-banner-eyebrow{font-size:11px; letter-spacing:.05em; color:var(--rust); font-weight:700; text-transform:uppercase;}
+.chapter-banner-title{margin:6px 0 0 0; display:flex; flex-direction:column; gap:2px;}
+.chapter-banner-title .jp{font-size:19px; font-weight:800;}
+.chapter-banner-title .en{font-size:12.5px; color:#BFD6E6; font-weight:500;}
+
+.sec{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:22px 24px; margin-bottom:18px; box-shadow:var(--shadow);}
+.sec-title{display:flex; flex-direction:column; gap:2px; margin-bottom:14px; padding-bottom:12px; border-bottom:2px solid #EAEEF2;}
+.sec-title .jp{font-weight:800; font-size:15.5px; color:var(--navy-dark);}
+.sec-title .en{font-size:12px; color:var(--muted); font-weight:600;}
+
+.para{margin-bottom:14px;}
+.para .jp{font-size:15px; display:flex; align-items:flex-start; gap:8px; margin:0 0 4px 0;}
+.para .en{font-size:13px; color:var(--muted); margin:0; padding-left:34px;}
+
+.spk{flex-shrink:0; border:none; background:var(--rust); color:#fff; border-radius:50%; width:26px;height:26px; font-size:12px; cursor:pointer; box-shadow:0 1px 3px rgba(0,0,0,0.2); margin-top:1px;}
+.spk:hover{background:var(--rust-dark);}
+.spk:active{transform:scale(0.92);}
+
+.steps{margin:10px 0 16px 0; padding:14px 16px; background:#EEF3F7; border-radius:12px;}
+.step{margin-bottom:9px;}
+.step:last-child{margin-bottom:0;}
+.step-jp{font-size:14px;}
+.step-en{font-size:12px; color:var(--muted); margin-top:1px;}
+
+.icon-card{background:#EEF3F7; border:1px dashed var(--border); border-radius:12px; padding:20px; text-align:center; margin:16px 0;}
+.icon-visual{font-size:50px; line-height:1; margin-bottom:10px; letter-spacing:4px;}
+.icon-caption{display:flex; flex-direction:column; gap:2px;}
+.icon-caption .jp{font-size:12.5px; font-weight:600; color:var(--navy-dark);}
+.icon-caption .en{font-size:11px; color:var(--muted);}
+
+.q-block{background:#EEF3F7; border-radius:12px; padding:16px 18px; margin:14px 0; border:1px solid var(--border);}
+.q-jp{font-size:14.5px; font-weight:700; margin:0 0 2px 0;}
+.q-en{font-size:12px; color:var(--muted); margin:0 0 12px 0;}
+.opt{padding:10px 14px; border-radius:9px; border:1.5px solid var(--border); margin-bottom:7px; cursor:pointer; background:#fff; display:flex; flex-direction:column; gap:1px;}
+.opt:hover{border-color:var(--navy-light);}
+.opt .jp{font-size:13.5px;}
+.opt .en{font-size:11.5px; color:var(--muted);}
+.q-block.answered .opt{cursor:default; pointer-events:none;}
+.q-block.answered .opt.correct{background:#E7F5EC; border-color:var(--good);}
+.q-block.answered .opt.wrong{background:#FBEAE9; border-color:var(--bad);}
+.explain{display:none; margin-top:10px; padding:10px 12px; background:#fff; border-left:3px solid var(--navy); border-radius:6px; font-size:12.5px;}
+.q-block.answered .explain{display:block;}
+.explain .jp{font-weight:600; margin-bottom:3px;}
+.explain .en{color:var(--muted);}
+.section-score-inline{background:var(--navy); color:#fff; padding:2px 9px; border-radius:20px; font-size:11px !important;}
+
+@media(max-width:980px){
+  #sidebar{position:fixed; left:-310px; top:0; z-index:40; transition:left .2s; width:270px; box-shadow:4px 0 20px rgba(0,0,0,0.3);}
+  #sidebar.open{left:0;}
+  #menu-toggle{display:flex; align-items:center; justify-content:center;}
+  #content{padding:0 16px 100px 16px;}
+  #topbar{padding:14px 16px 14px 64px;}
+  .home-hero{padding:30px 22px;}
+}
+</style>
+</head>
+<body>
+<button id="menu-toggle">☰</button>
+<div id="app">
+  <aside id="sidebar">
+    <div class="brand"><div class="logo">🍜</div><div class="brand-text">Restaurant<br>SSW<small>Japanese with Raza Sensei</small></div></div>
+    <div id="toc">
+    <div class="toc-link" data-target="ch01"><span class="toc-icon">🍽</span>第1章　外食業の仕事</div>
+    <div class="toc-link" data-target="ch02"><span class="toc-icon">🧼</span>第2章　一般衛生管理</div>
+    <div class="toc-link" data-target="ch03"><span class="toc-icon">📋</span>第3章　HACCPの考え方</div>
+    <div class="toc-link" data-target="ch04"><span class="toc-icon">🌡</span>第4章　食中毒の予防</div>
+    <div class="toc-link" data-target="ch05"><span class="toc-icon">🔪</span>第5章　食材と調理器具</div>
+    <div class="toc-link" data-target="ch06"><span class="toc-icon">🍳</span>第6章　調理の基本</div>
+    <div class="toc-link" data-target="ch07"><span class="toc-icon">🍱</span>第7章　盛り付けと提供</div>
+    <div class="toc-link" data-target="ch08"><span class="toc-icon">🙋</span>第8章　接客の基本</div>
+    <div class="toc-link" data-target="ch09"><span class="toc-icon">🍽</span>第9章　食の多様性への対応</div>
+    <div class="toc-link" data-target="ch10"><span class="toc-icon">💬</span>第10章　クレーム対応と店舗運営</div>
+    <div class="toc-link" data-target="ch11"><span class="toc-icon">💬</span>第11章　報連相と判断練習</div>
+    </div>
+    <div id="sidebar-footer">特定技能「外食業分野」<br>Bilingual Study Guide · Ruby Furigana · Audio<br><br>Original study material — not affiliated with or reproducing any official test-prep publisher's text.</div>
+  </aside>
+  <main id="main">
+    <div id="topbar">
+      <div id="mobile-title">Restaurant SSW</div>
+      <div id="progress-wrap"><div id="progress-track"><div id="progress-fill"></div></div><span id="progress-text">0 / 11 read</span></div>
+    </div>
+    <div id="content">
+      <div id="view-home">
+        <div class="home-hero">
+          <h2>特定技能「外食業分野」<br>Restaurant / Food Service — SSW Exam Prep</h2>
+          <p>An original bilingual study guide covering this field's core work — general hygiene management, HACCP basics, food poisoning prevention, ingredients &amp; cooking equipment, cooking fundamentals, plating &amp; serving, customer service, food diversity &amp; allergies, and complaint handling &amp; store operations — with furigana and tap-to-listen audio.</p>
+          <div class="home-stats">
+            <div class="home-stat"><b>11</b><span>Chapters</span></div>
+            <div class="home-stat"><b>🔊</b><span>Audio</span></div>
+            <div class="home-stat" id="home-progress-stat"><b>0%</b><span>Completed</span></div>
+          </div>
+        </div>
+        <div class="chapter-cards" id="chapter-cards">
+<div class="chapter-card" data-target="ch01"><div class="card-icon">🍽️</div><h3>第1章　外食業の仕事</h3><p>Chapter 1: Work in the Food Service Industry</p></div>
+<div class="chapter-card" data-target="ch02"><div class="card-icon">🧼</div><h3>第2章　一般衛生管理</h3><p>Chapter 2: General Hygiene Management</p></div>
+<div class="chapter-card" data-target="ch03"><div class="card-icon">📋</div><h3>第3章　HACCPの考え方</h3><p>Chapter 3: The HACCP Approach</p></div>
+<div class="chapter-card" data-target="ch04"><div class="card-icon">🌡️</div><h3>第4章　食中毒の予防</h3><p>Chapter 4: Preventing Food Poisoning</p></div>
+<div class="chapter-card" data-target="ch05"><div class="card-icon">🔪</div><h3>第5章　食材と調理器具</h3><p>Chapter 5: Ingredients and Cooking Equipment</p></div>
+<div class="chapter-card" data-target="ch06"><div class="card-icon">🍳</div><h3>第6章　調理の基本</h3><p>Chapter 6: Cooking Basics</p></div>
+<div class="chapter-card" data-target="ch07"><div class="card-icon">🍱</div><h3>第7章　盛り付けと提供</h3><p>Chapter 7: Plating and Serving</p></div>
+<div class="chapter-card" data-target="ch08"><div class="card-icon">🙋</div><h3>第8章　接客の基本</h3><p>Chapter 8: Customer Service Basics</p></div>
+<div class="chapter-card" data-target="ch09"><div class="card-icon">🍽️</div><h3>第9章　食の多様性への対応</h3><p>Chapter 9: Responding to Food Diversity</p></div>
+<div class="chapter-card" data-target="ch10"><div class="card-icon">💬</div><h3>第10章　クレーム対応と店舗運営</h3><p>Chapter 10: Handling Complaints and Store Operations</p></div>
+<div class="chapter-card" data-target="ch11"><div class="card-icon">💬</div><h3>第11章　報連相と判断練習</h3><p>Chapter 11: Workplace Communication and Judgment Practice</p></div>
+        </div>
+        <p class="footer-credit">Japanese with Raza Sensei · SSW Restaurant System · Original bilingual study guide, icons &amp; text independently authored</p>
+      </div>
+      <div id="view-content" style="display:none;">
+<section class="chapter-section" id="ch01" data-chapter="ch01">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第1章　外食業の仕事</span><span class="en">Chapter 1: Work in the Food Service Industry</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="外食業の特定技能は、レストランなどの飲食店で働く仕事です。">🔊</button><ruby>外食業<rt>がいしょくぎょう</rt></ruby>の<ruby>特定技能<rt>とくていぎのう</rt></ruby>は、レストランなどの<ruby>飲食店<rt>いんしょくてん</rt></ruby>で<ruby>働<rt>はたら</rt></ruby>く<ruby>仕事<rt>しごと</rt></ruby>です。</p>
+    <p class="en">Specified Skilled Worker "Food Service" is work done at restaurants and similar food-and-drink establishments.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="仕事の内容は、大きく飲食物調理、接客全般、店舗管理の3つに分けられます。">🔊</button><ruby>仕事<rt>しごと</rt></ruby>の<ruby>内容<rt>ないよう</rt></ruby>は、<ruby>大<rt>おお</rt></ruby>きく<ruby>飲食物調理<rt>いんしょくぶつちょうり</rt></ruby>、<ruby>接客全般<rt>せっきゃくぜんぱん</rt></ruby>、<ruby>店舗管理<rt>てんぽかんり</rt></ruby>の3つに<ruby>分<rt>わ</rt></ruby>けられます。</p>
+    <p class="en">The work is broadly divided into three areas: food and beverage preparation, general customer service, and store management.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="飲食物調理には、食材の準備から調理、盛り付けまでが含まれます。">🔊</button><ruby>飲食物調理<rt>いんしょくぶつちょうり</rt></ruby>には、<ruby>食材<rt>しょくざい</rt></ruby>の<ruby>準備<rt>じゅんび</rt></ruby>から<ruby>調理<rt>ちょうり</rt></ruby>、<ruby>盛<rt>も</rt></ruby>り<ruby>付<rt>つ</rt></ruby>けまでが<ruby>含<rt>ふく</rt></ruby>まれます。</p>
+    <p class="en">Food and beverage preparation includes everything from preparing ingredients, to cooking, to plating.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="接客全般には、注文を受けることや料理を運ぶこと、会計などが含まれます。">🔊</button><ruby>接客全般<rt>せっきゃくぜんぱん</rt></ruby>には、<ruby>注文<rt>ちゅうもん</rt></ruby>を<ruby>受<rt>う</rt></ruby>けることや<ruby>料理<rt>りょうり</rt></ruby>を<ruby>運<rt>はこ</rt></ruby>ぶこと、<ruby>会計<rt>かいけい</rt></ruby>などが<ruby>含<rt>ふく</rt></ruby>まれます。</p>
+    <p class="en">General customer service includes taking orders, bringing out food, and handling payment.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🍽️</div>
+    <div class="icon-caption"><span class="jp">飲食店で働く仕事</span><span class="en">Working at a restaurant or food-service establishment</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>外食業<rt>がいしょくぎょう</rt></ruby>の<ruby>仕事<rt>しごと</rt></ruby>の<ruby>内容<rt>ないよう</rt></ruby>として<b>あてはまらない</b>ものはどれですか。</p>
+    <p class="q-en">Which of the following is NOT one of the work areas in the Food Service Industry field?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 遠洋漁業</span><span class="en">Deep-sea fishing operations</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 飲食物調理</span><span class="en">Food and beverage preparation</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 接客全般</span><span class="en">General customer service</span></div>
+    <div class="explain"><div class="jp">外食業の仕事は、飲食物調理・接客全般・店舗管理の3つに分けられます。遠洋漁業はこの分野にはあてはまりません。</div><div class="en">Food Service work is divided into food and beverage preparation, general customer service, and store management. Deep-sea fishing is not part of this field.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch02" data-chapter="ch02">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第2章　一般衛生管理</span><span class="en">Chapter 2: General Hygiene Management</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="飲食店では、お客様に安全な料理を提供するために「衛生管理」がとても重要です。">🔊</button><ruby>飲食店<rt>いんしょくてん</rt></ruby>では、お<ruby>客様<rt>きゃくさま</rt></ruby>に<ruby>安全<rt>あんぜん</rt></ruby>な<ruby>料理<rt>りょうり</rt></ruby>を<ruby>提供<rt>ていきょう</rt></ruby>するために「<ruby>衛生管理<rt>えいせいかんり</rt></ruby>」がとても<ruby>重要<rt>じゅうよう</rt></ruby>です。</p>
+    <p class="en">At restaurants, "hygiene management" is extremely important for providing customers with safe food.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="調理を始める前や、トイレの後には、石けんを使って丁寧に「手洗い」をします。">🔊</button><ruby>調理<rt>ちょうり</rt></ruby>を<ruby>始<rt>はじ</rt></ruby>める<ruby>前<rt>まえ</rt></ruby>や、トイレの<ruby>後<rt>あと</rt></ruby>には、<ruby>石<rt>せっ</rt></ruby>けんを<ruby>使<rt>つか</rt></ruby>って<ruby>丁寧<rt>ていねい</rt></ruby>に「<ruby>手洗<rt>てあら</rt></ruby>い」をします。</p>
+    <p class="en">Before starting to cook, and after using the restroom, workers wash their hands carefully with soap.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="清潔な制服を着て、爪を短く切り、髪をまとめるなど、「身だしなみ」を整えることも大切です。">🔊</button><ruby>清潔<rt>せいけつ</rt></ruby>な<ruby>制服<rt>せいふく</rt></ruby>を<ruby>着<rt>き</rt></ruby>て、<ruby>爪<rt>つめ</rt></ruby>を<ruby>短<rt>みじか</rt></ruby>く<ruby>切<rt>き</rt></ruby>り、<ruby>髪<rt>かみ</rt></ruby>をまとめるなど、「<ruby>身<rt>み</rt></ruby>だしなみ」を<ruby>整<rt>ととの</rt></ruby>えることも<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">Maintaining proper "personal grooming" is also important — wearing a clean uniform, keeping nails short, and tying back hair.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="生の肉や魚を切ったまな板で、そのまま野菜を切らないなど、「交差汚染」を防ぐ工夫をします。">🔊</button><ruby>生<rt>なま</rt></ruby>の<ruby>肉<rt>にく</rt></ruby>や<ruby>魚<rt>さかな</rt></ruby>を<ruby>切<rt>き</rt></ruby>ったまな<ruby>板<rt>いた</rt></ruby>で、そのまま<ruby>野菜<rt>やさい</rt></ruby>を<ruby>切<rt>き</rt></ruby>らないなど、「<ruby>交差汚染<rt>こうさおせん</rt></ruby>」を<ruby>防<rt>ふせ</rt></ruby>ぐ<ruby>工夫<rt>くふう</rt></ruby>をします。</p>
+    <p class="en">Workers take care to prevent "cross-contamination," such as not cutting vegetables on a cutting board that was just used for raw meat or fish.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🧼</div>
+    <div class="icon-caption"><span class="jp">手洗いと身だしなみ</span><span class="en">Handwashing and personal grooming</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>生<rt>なま</rt></ruby>の<ruby>肉<rt>にく</rt></ruby>を<ruby>切<rt>き</rt></ruby>ったまな<ruby>板<rt>いた</rt></ruby>でそのまま<ruby>野菜<rt>やさい</rt></ruby>を<ruby>切<rt>き</rt></ruby>ってしまうことを<b>何といいますか</b>。</p>
+    <p class="q-en">What is it called when vegetables are cut on a cutting board that was just used for raw meat, risking contamination?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 交差汚染</span><span class="en">Cross-contamination</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 重要管理点</span><span class="en">Critical control point</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 身だしなみ</span><span class="en">Personal grooming</span></div>
+    <div class="explain"><div class="jp">生の肉や魚を切ったまな板でそのまま他の食材を切ってしまうことを交差汚染といい、防ぐための工夫が必要です。</div><div class="en">Cutting other ingredients on a cutting board just used for raw meat or fish is called cross-contamination, and steps must be taken to prevent it.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch03" data-chapter="ch03">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第3章　HACCPの考え方</span><span class="en">Chapter 3: The HACCP Approach</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「HACCP(ハサップ)」とは、食品の安全を守るための衛生管理の考え方です。">🔊</button>「HACCP(ハサップ)」とは、<ruby>食品<rt>しょくひん</rt></ruby>の<ruby>安全<rt>あんぜん</rt></ruby>を<ruby>守<rt>まも</rt></ruby>るための<ruby>衛生管理<rt>えいせいかんり</rt></ruby>の<ruby>考<rt>かんが</rt></ruby>え<ruby>方<rt>かた</rt></ruby>です。</p>
+    <p class="en">"HACCP" is an approach to hygiene management designed to protect the safety of food.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="まず、どの作業のどこに危険があるかを調べる「危害要因分析」を行います。">🔊</button>まず、どの<ruby>作業<rt>さぎょう</rt></ruby>のどこに<ruby>危険<rt>きけん</rt></ruby>があるかを<ruby>調<rt>しら</rt></ruby>べる「<ruby>危害要因分析<rt>きがいよういんぶんせき</rt></ruby>」を<ruby>行<rt>おこな</rt></ruby>います。</p>
+    <p class="en">First, "hazard analysis" is carried out to identify where in each task a danger might occur.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="特に注意して管理すべき工程を「重要管理点」(CCP)と呼び、温度や時間などを決めて管理します。">🔊</button><ruby>特<rt>とく</rt></ruby>に<ruby>注意<rt>ちゅうい</rt></ruby>して<ruby>管理<rt>かんり</rt></ruby>すべき<ruby>工程<rt>こうてい</rt></ruby>を「<ruby>重要管理点<rt>じゅうようかんりてん</rt></ruby>」(CCP)と<ruby>呼<rt>よ</rt></ruby>び、<ruby>温度<rt>おんど</rt></ruby>や<ruby>時間<rt>じかん</rt></ruby>などを<ruby>決<rt>き</rt></ruby>めて<ruby>管理<rt>かんり</rt></ruby>します。</p>
+    <p class="en">A process that requires especially careful control is called a "critical control point" (CCP), and it is managed by setting specific temperatures and times.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="管理した結果は「記録」に残し、問題が起きたときにすぐ確認できるようにします。">🔊</button><ruby>管理<rt>かんり</rt></ruby>した<ruby>結果<rt>けっか</rt></ruby>は「<ruby>記録<rt>きろく</rt></ruby>」に<ruby>残<rt>のこ</rt></ruby>し、<ruby>問題<rt>もんだい</rt></ruby>が<ruby>起<rt>お</rt></ruby>きたときにすぐ<ruby>確認<rt>かくにん</rt></ruby>できるようにします。</p>
+    <p class="en">The results of this monitoring are kept as "records," so they can be checked quickly if a problem arises.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">📋</div>
+    <div class="icon-caption"><span class="jp">危害要因分析と重要管理点</span><span class="en">Hazard analysis and critical control points</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>特<rt>とく</rt></ruby>に<ruby>注意<rt>ちゅうい</rt></ruby>して<ruby>管理<rt>かんり</rt></ruby>すべき<ruby>工程<rt>こうてい</rt></ruby>のことを<b>何といいますか</b>。</p>
+    <p class="q-en">What is a process that requires especially careful control called?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 重要管理点</span><span class="en">Critical control point</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 交差汚染</span><span class="en">Cross-contamination</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 火加減</span><span class="en">Heat control</span></div>
+    <div class="explain"><div class="jp">特に注意して管理すべき工程を重要管理点(CCP)と呼び、温度や時間などを決めて管理します。</div><div class="en">A process requiring especially careful control is called a critical control point (CCP), managed by setting specific temperatures and times.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch04" data-chapter="ch04">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第4章　食中毒の予防</span><span class="en">Chapter 4: Preventing Food Poisoning</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="細菌やウイルスが付いた食品を食べることで起こる病気を「食中毒」といいます。">🔊</button><ruby>細菌<rt>さいきん</rt></ruby>やウイルスが<ruby>付<rt>つ</rt></ruby>いた<ruby>食品<rt>しょくひん</rt></ruby>を<ruby>食<rt>た</rt></ruby>べることで<ruby>起<rt>お</rt></ruby>こる<ruby>病気<rt>びょうき</rt></ruby>を「<ruby>食中毒<rt>しょくちゅうどく</rt></ruby>」といいます。</p>
+    <p class="en">An illness caused by eating food contaminated with bacteria or viruses is called "food poisoning."</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="肉や魚は、中心までしっかり火を通し、「中心温度」を温度計で確認することが大切です。">🔊</button><ruby>肉<rt>にく</rt></ruby>や<ruby>魚<rt>さかな</rt></ruby>は、<ruby>中心<rt>ちゅうしん</rt></ruby>までしっかり<ruby>火<rt>ひ</rt></ruby>を<ruby>通<rt>とお</rt></ruby>し、「<ruby>中心温度<rt>ちゅうしんおんど</rt></ruby>」を<ruby>温度計<rt>おんどけい</rt></ruby>で<ruby>確認<rt>かくにん</rt></ruby>することが<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">It is important to cook meat and fish thoroughly all the way through, and to check the "core temperature" with a thermometer.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「ノロウイルス」は冬に多い食中毒の原因で、手洗いと加熱で予防できます。">🔊</button>「ノロウイルス」は<ruby>冬<rt>ふゆ</rt></ruby>に<ruby>多<rt>おお</rt></ruby>い<ruby>食中毒<rt>しょくちゅうどく</rt></ruby>の<ruby>原因<rt>げんいん</rt></ruby>で、<ruby>手洗<rt>てあら</rt></ruby>いと<ruby>加熱<rt>かねつ</rt></ruby>で<ruby>予防<rt>よぼう</rt></ruby>できます。</p>
+    <p class="en">"Norovirus" is a common cause of food poisoning in winter, and can be prevented through handwashing and thorough cooking.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="食材は「冷蔵冷凍」で正しい温度で保管し、常温に長く置かないようにします。">🔊</button><ruby>食材<rt>しょくざい</rt></ruby>は「<ruby>冷蔵冷凍<rt>れいぞうれいとう</rt></ruby>」で<ruby>正<rt>ただ</rt></ruby>しい<ruby>温度<rt>おんど</rt></ruby>で<ruby>保管<rt>ほかん</rt></ruby>し、<ruby>常温<rt>じょうおん</rt></ruby>に<ruby>長<rt>なが</rt></ruby>く<ruby>置<rt>お</rt></ruby>かないようにします。</p>
+    <p class="en">Ingredients are kept "refrigerated or frozen" at the correct temperature, and are not left at room temperature for long periods.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🌡️</div>
+    <div class="icon-caption"><span class="jp">温度管理と食中毒予防</span><span class="en">Temperature control and preventing food poisoning</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>冬<rt>ふゆ</rt></ruby>に<ruby>多<rt>おお</rt></ruby>い<ruby>食中毒<rt>しょくちゅうどく</rt></ruby>の<ruby>原因<rt>げんいん</rt></ruby>で、<ruby>手洗<rt>てあら</rt></ruby>いと<ruby>加熱<rt>かねつ</rt></ruby>で<ruby>予防<rt>よぼう</rt></ruby>できるものは<b>どれですか</b>。</p>
+    <p class="q-en">What is a common cause of food poisoning in winter that can be prevented by handwashing and thorough cooking?</p>
+      <div class="opt" data-val="A"><span class="jp">A. ノロウイルス</span><span class="en">Norovirus</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. HACCP</span><span class="en">HACCP</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 交差汚染</span><span class="en">Cross-contamination</span></div>
+    <div class="explain"><div class="jp">ノロウイルスは冬に多い食中毒の原因で、手洗いと加熱で予防できます。</div><div class="en">Norovirus is a common cause of food poisoning in winter, and can be prevented through handwashing and thorough cooking.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch05" data-chapter="ch05">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第5章　食材と調理器具</span><span class="en">Chapter 5: Ingredients and Cooking Equipment</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="料理を作る前には、「食材」の状態や賞味期限を確認します。">🔊</button><ruby>料理<rt>りょうり</rt></ruby>を<ruby>作<rt>つく</rt></ruby>る<ruby>前<rt>まえ</rt></ruby>には、「<ruby>食材<rt>しょくざい</rt></ruby>」の<ruby>状態<rt>じょうたい</rt></ruby>や<ruby>賞味期限<rt>しょうみきげん</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>します。</p>
+    <p class="en">Before cooking, workers check the condition and expiration dates of "ingredients."</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「調理器具」には包丁やまな板、なべ、フライパンなどがあり、それぞれ正しい使い方を覚えます。">🔊</button>「<ruby>調理器具<rt>ちょうりきぐ</rt></ruby>」には<ruby>包丁<rt>ほうちょう</rt></ruby>やまな<ruby>板<rt>いた</rt></ruby>、なべ、フライパンなどがあり、それぞれ<ruby>正<rt>ただ</rt></ruby>しい<ruby>使<rt>つか</rt></ruby>い<ruby>方<rt>かた</rt></ruby>を<ruby>覚<rt>おぼ</rt></ruby>えます。</p>
+    <p class="en">"Cooking equipment" includes knives, cutting boards, pots, and frying pans, and workers learn the correct way to use each one.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「包丁」を使うときは、刃の向きに気をつけ、指を切らないように集中して作業します。">🔊</button>「<ruby>包丁<rt>ほうちょう</rt></ruby>」を<ruby>使<rt>つか</rt></ruby>うときは、<ruby>刃<rt>は</rt></ruby>の<ruby>向<rt>む</rt></ruby>きに<ruby>気<rt>き</rt></ruby>をつけ、<ruby>指<rt>ゆび</rt></ruby>を<ruby>切<rt>き</rt></ruby>らないように<ruby>集中<rt>しゅうちゅう</rt></ruby>して<ruby>作業<rt>さぎょう</rt></ruby>します。</p>
+    <p class="en">When using a "knife," workers pay attention to the direction of the blade and focus carefully to avoid cutting their fingers.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「温度計」は、肉や魚の中心温度や、冷蔵庫の温度を確認するために使います。">🔊</button>「<ruby>温度計<rt>おんどけい</rt></ruby>」は、<ruby>肉<rt>にく</rt></ruby>や<ruby>魚<rt>さかな</rt></ruby>の<ruby>中心温度<rt>ちゅうしんおんど</rt></ruby>や、<ruby>冷蔵庫<rt>れいぞうこ</rt></ruby>の<ruby>温度<rt>おんど</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>するために<ruby>使<rt>つか</rt></ruby>います。</p>
+    <p class="en">A "thermometer" is used to check the core temperature of meat and fish, and the temperature inside refrigerators.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🔪</div>
+    <div class="icon-caption"><span class="jp">包丁と調理器具の扱い方</span><span class="en">Handling knives and cooking equipment</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>肉<rt>にく</rt></ruby>や<ruby>魚<rt>さかな</rt></ruby>の<ruby>中心温度<rt>ちゅうしんおんど</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>するために<ruby>使<rt>つか</rt></ruby>う<ruby>道具<rt>どうぐ</rt></ruby>は<b>どれですか</b>。</p>
+    <p class="q-en">Which tool is used to check the core temperature of meat and fish?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 温度計</span><span class="en">Thermometer</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 包丁</span><span class="en">Knife</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. まな板</span><span class="en">Cutting board</span></div>
+    <div class="explain"><div class="jp">温度計は、肉や魚の中心温度や冷蔵庫の温度を確認するために使います。</div><div class="en">A thermometer is used to check the core temperature of meat and fish, and the temperature inside refrigerators.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch06" data-chapter="ch06">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第6章　調理の基本</span><span class="en">Chapter 6: Cooking Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="調理の前に、食材を洗ったり切ったりする準備を「下ごしらえ」といいます。">🔊</button><ruby>調理<rt>ちょうり</rt></ruby>の<ruby>前<rt>まえ</rt></ruby>に、<ruby>食材<rt>しょくざい</rt></ruby>を<ruby>洗<rt>あら</rt></ruby>ったり<ruby>切<rt>き</rt></ruby>ったりする<ruby>準備<rt>じゅんび</rt></ruby>を「<ruby>下<rt>した</rt></ruby>ごしらえ」といいます。</p>
+    <p class="en">The preparation of washing and cutting ingredients before cooking is called "prep work."</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「加熱調理」には、焼く、煮る、蒸す、揚げるなど、さまざまな方法があります。">🔊</button>「<ruby>加熱調理<rt>かねつちょうり</rt></ruby>」には、<ruby>焼<rt>や</rt></ruby>く、<ruby>煮<rt>に</rt></ruby>る、<ruby>蒸<rt>む</rt></ruby>す、<ruby>揚<rt>あ</rt></ruby>げるなど、さまざまな<ruby>方法<rt>ほうほう</rt></ruby>があります。</p>
+    <p class="en">"Cooking with heat" includes various methods such as grilling, simmering, steaming, and deep-frying.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「味付け」では、しょうゆやみそなど日本の調味料の特徴を知り、バランスよく使います。">🔊</button>「<ruby>味付<rt>あじつ</rt></ruby>け」では、しょうゆやみそなど<ruby>日本<rt>にほん</rt></ruby>の<ruby>調味料<rt>ちょうみりょう</rt></ruby>の<ruby>特徴<rt>とくちょう</rt></ruby>を<ruby>知<rt>し</rt></ruby>り、バランスよく<ruby>使<rt>つか</rt></ruby>います。</p>
+    <p class="en">For "seasoning," workers learn the characteristics of Japanese seasonings such as soy sauce and miso, and use them in good balance.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="火の強さを調整する「火加減」は、おいしい料理を作る上でとても重要です。">🔊</button><ruby>火<rt>ひ</rt></ruby>の<ruby>強<rt>つよ</rt></ruby>さを<ruby>調整<rt>ちょうせい</rt></ruby>する「<ruby>火加減<rt>ひかげん</rt></ruby>」は、おいしい<ruby>料理<rt>りょうり</rt></ruby>を<ruby>作<rt>つく</rt></ruby>る<ruby>上<rt>うえ</rt></ruby>でとても<ruby>重要<rt>じゅうよう</rt></ruby>です。</p>
+    <p class="en">Adjusting "heat control" is extremely important for making delicious food.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🍳</div>
+    <div class="icon-caption"><span class="jp">下ごしらえと加熱調理</span><span class="en">Prep work and cooking with heat</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>焼<rt>や</rt></ruby>く、<ruby>煮<rt>に</rt></ruby>る、<ruby>蒸<rt>む</rt></ruby>す、<ruby>揚<rt>あ</rt></ruby>げるなどの<ruby>方法<rt>ほうほう</rt></ruby>をまとめて<b>何といいますか</b>。</p>
+    <p class="q-en">What is the collective term for methods such as grilling, simmering, steaming, and deep-frying?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 加熱調理</span><span class="en">Cooking with heat</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 下ごしらえ</span><span class="en">Prep work</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 盛り付け</span><span class="en">Plating</span></div>
+    <div class="explain"><div class="jp">焼く、煮る、蒸す、揚げるなどの方法をまとめて加熱調理といいます。</div><div class="en">Methods such as grilling, simmering, steaming, and deep-frying are collectively called cooking with heat.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch07" data-chapter="ch07">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第7章　盛り付けと提供</span><span class="en">Chapter 7: Plating and Serving</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="料理を皿に美しく並べることを「盛り付け」といい、彩りやバランスを考えます。">🔊</button><ruby>料理<rt>りょうり</rt></ruby>を<ruby>皿<rt>さら</rt></ruby>に<ruby>美<rt>うつく</rt></ruby>しく<ruby>並<rt>なら</rt></ruby>べることを「<ruby>盛<rt>も</rt></ruby>り<ruby>付<rt>つ</rt></ruby>け」といい、<ruby>彩<rt>いろど</rt></ruby>りやバランスを<ruby>考<rt>かんが</rt></ruby>えます。</p>
+    <p class="en">Arranging food attractively on a plate is called "plating," and workers think about color balance and composition.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="温かい料理は温かいうちに、冷たい料理は冷たいうちに、「提供温度」に気をつけてお客様に出します。">🔊</button><ruby>温<rt>あたた</rt></ruby>かい<ruby>料理<rt>りょうり</rt></ruby>は<ruby>温<rt>あたた</rt></ruby>かいうちに、<ruby>冷<rt>つめ</rt></ruby>たい<ruby>料理<rt>りょうり</rt></ruby>は<ruby>冷<rt>つめ</rt></ruby>たいうちに、「<ruby>提供温度<rt>ていきょうおんど</rt></ruby>」に<ruby>気<rt>き</rt></ruby>をつけてお<ruby>客様<rt>きゃくさま</rt></ruby>に<ruby>出<rt>だ</rt></ruby>します。</p>
+    <p class="en">Workers pay attention to "serving temperature," bringing hot dishes out while hot and cold dishes out while cold.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="異物が入っていないか、盛り付ける前に最終確認をします。">🔊</button><ruby>異物<rt>いぶつ</rt></ruby>が<ruby>入<rt>はい</rt></ruby>っていないか、<ruby>盛<rt>も</rt></ruby>り<ruby>付<rt>つ</rt></ruby>ける<ruby>前<rt>まえ</rt></ruby>に<ruby>最終確認<rt>さいしゅうかくにん</rt></ruby>をします。</p>
+    <p class="en">A final check is made before plating to ensure no foreign objects have gotten into the food.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="料理を運ぶときは、こぼさないように気をつけ、テーブルの正しい位置に置きます。">🔊</button><ruby>料理<rt>りょうり</rt></ruby>を<ruby>運<rt>はこ</rt></ruby>ぶときは、こぼさないように<ruby>気<rt>き</rt></ruby>をつけ、テーブルの<ruby>正<rt>ただ</rt></ruby>しい<ruby>位置<rt>いち</rt></ruby>に<ruby>置<rt>お</rt></ruby>きます。</p>
+    <p class="en">When carrying food, workers are careful not to spill it, and place it in the correct position on the table.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🍱</div>
+    <div class="icon-caption"><span class="jp">盛り付けと提供温度</span><span class="en">Plating and serving temperature</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>温<rt>あたた</rt></ruby>かい<ruby>料理<rt>りょうり</rt></ruby>は<ruby>温<rt>あたた</rt></ruby>かいうちに<ruby>出<rt>だ</rt></ruby>すなど、<ruby>気<rt>き</rt></ruby>をつけるべきことを<b>何といいますか</b>。</p>
+    <p class="q-en">What is it called when workers pay attention to serving hot dishes hot and cold dishes cold?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 提供温度</span><span class="en">Serving temperature</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 中心温度</span><span class="en">Core temperature</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 交差汚染</span><span class="en">Cross-contamination</span></div>
+    <div class="explain"><div class="jp">温かい料理は温かいうちに、冷たい料理は冷たいうちに提供温度に気をつけて出します。</div><div class="en">Workers pay attention to serving temperature, bringing hot dishes out while hot and cold dishes out while cold.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch08" data-chapter="ch08">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第8章　接客の基本</span><span class="en">Chapter 8: Customer Service Basics</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="お客様が来店したら、笑顔で「いらっしゃいませ」とあいさつし、席に案内します。">🔊</button>お<ruby>客様<rt>きゃくさま</rt></ruby>が<ruby>来店<rt>らいてん</rt></ruby>したら、<ruby>笑顔<rt>えがお</rt></ruby>で「いらっしゃいませ」とあいさつし、<ruby>席<rt>せき</rt></ruby>に<ruby>案内<rt>あんない</rt></ruby>します。</p>
+    <p class="en">When customers arrive, workers greet them with a smile, saying "Welcome," and show them to their seats.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「注文」を受けるときは、メニューの内容を正しく理解し、間違えないように復唱して確認します。">🔊</button>「<ruby>注文<rt>ちゅうもん</rt></ruby>」を<ruby>受<rt>う</rt></ruby>けるときは、メニューの<ruby>内容<rt>ないよう</rt></ruby>を<ruby>正<rt>ただ</rt></ruby>しく<ruby>理解<rt>りかい</rt></ruby>し、<ruby>間違<rt>まちが</rt></ruby>えないように<ruby>復唱<rt>ふくしょう</rt></ruby>して<ruby>確認<rt>かくにん</rt></ruby>します。</p>
+    <p class="en">When taking an "order," workers understand the menu correctly and repeat the order back to the customer to confirm it.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="お客様と話すときは、「敬語」(丁寧な言葉)を使い、気持ちよく過ごしてもらえるようにします。">🔊</button>お<ruby>客様<rt>きゃくさま</rt></ruby>と<ruby>話<rt>はな</rt></ruby>すときは、「<ruby>敬語<rt>けいご</rt></ruby>」(<ruby>丁寧<rt>ていねい</rt></ruby>な<ruby>言葉<rt>ことば</rt></ruby>)を<ruby>使<rt>つか</rt></ruby>い、<ruby>気持<rt>きも</rt></ruby>ちよく<ruby>過<rt>す</rt></ruby>ごしてもらえるようにします。</p>
+    <p class="en">When speaking with customers, workers use "keigo" (polite, honorific language) so guests can have a pleasant experience.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「会計」では、金額を間違えないように丁寧に確認し、お釣りやレシートを両手で渡します。">🔊</button>「<ruby>会計<rt>かいけい</rt></ruby>」では、<ruby>金額<rt>きんがく</rt></ruby>を<ruby>間違<rt>まちが</rt></ruby>えないように<ruby>丁寧<rt>ていねい</rt></ruby>に<ruby>確認<rt>かくにん</rt></ruby>し、お<ruby>釣<rt>つ</rt></ruby>りやレシートを<ruby>両手<rt>りょうて</rt></ruby>で<ruby>渡<rt>わた</rt></ruby>します。</p>
+    <p class="en">For "payment," workers carefully confirm the amount to avoid mistakes, and hand over change and the receipt with both hands.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🙋</div>
+    <div class="icon-caption"><span class="jp">注文と会計の接客マナー</span><span class="en">Customer service manners for orders and payment</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp">お<ruby>客様<rt>きゃくさま</rt></ruby>と<ruby>話<rt>はな</rt></ruby>すときに<ruby>使<rt>つか</rt></ruby>う、<ruby>丁寧<rt>ていねい</rt></ruby>な<ruby>言葉<rt>ことば</rt></ruby>のことを<b>何といいますか</b>。</p>
+    <p class="q-en">What is the term for the polite, honorific language used when speaking with customers?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 敬語</span><span class="en">Keigo (honorific language)</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. 記録</span><span class="en">Records</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 火加減</span><span class="en">Heat control</span></div>
+    <div class="explain"><div class="jp">お客様と話すときに使う丁寧な言葉のことを敬語といいます。</div><div class="en">The polite, honorific language used when speaking with customers is called keigo.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch09" data-chapter="ch09">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第9章　食の多様性への対応</span><span class="en">Chapter 9: Responding to Food Diversity</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="近年、さまざまな国や文化のお客様が来店するため、「食の多様性」への理解が求められます。">🔊</button><ruby>近年<rt>きんねん</rt></ruby>、さまざまな<ruby>国<rt>くに</rt></ruby>や<ruby>文化<rt>ぶんか</rt></ruby>のお<ruby>客様<rt>きゃくさま</rt></ruby>が<ruby>来店<rt>らいてん</rt></ruby>するため、「<ruby>食<rt>しょく</rt></ruby>の<ruby>多様性<rt>たようせい</rt></ruby>」への<ruby>理解<rt>りかい</rt></ruby>が<ruby>求<rt>もと</rt></ruby>められます。</p>
+    <p class="en">In recent years, customers from many different countries and cultures visit restaurants, so understanding "food diversity" is required.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「食物アレルギー」があるお客様には、メニューに使われている原材料を正確に伝えることが大切です。">🔊</button>「<ruby>食物<rt>しょくもつ</rt></ruby>アレルギー」があるお<ruby>客様<rt>きゃくさま</rt></ruby>には、メニューに<ruby>使<rt>つか</rt></ruby>われている<ruby>原材料<rt>げんざいりょう</rt></ruby>を<ruby>正確<rt>せいかく</rt></ruby>に<ruby>伝<rt>つた</rt></ruby>えることが<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">For customers with "food allergies," it is important to accurately convey the ingredients used in each menu item.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「ハラール」に対応した料理や、「ベジタリアン」向けの料理を提供する店も増えています。">🔊</button>「ハラール」に<ruby>対応<rt>たいおう</rt></ruby>した<ruby>料理<rt>りょうり</rt></ruby>や、「ベジタリアン」<ruby>向<rt>む</rt></ruby>けの<ruby>料理<rt>りょうり</rt></ruby>を<ruby>提供<rt>ていきょう</rt></ruby>する<ruby>店<rt>みせ</rt></ruby>も<ruby>増<rt>ふ</rt></ruby>えています。</p>
+    <p class="en">More restaurants are also offering "halal" dishes and dishes for "vegetarian" customers.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="どのようなお客様にも気持ちよく食事をしてもらえるよう、正しい知識を持って対応することが大切です。">🔊</button>どのようなお<ruby>客様<rt>きゃくさま</rt></ruby>にも<ruby>気持<rt>きも</rt></ruby>ちよく<ruby>食事<rt>しょくじ</rt></ruby>をしてもらえるよう、<ruby>正<rt>ただ</rt></ruby>しい<ruby>知識<rt>ちしき</rt></ruby>を<ruby>持<rt>も</rt></ruby>って<ruby>対応<rt>たいおう</rt></ruby>することが<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">It is important to respond with correct knowledge so that every customer can enjoy their meal comfortably.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">🍽️</div>
+    <div class="icon-caption"><span class="jp">アレルギーや多様な食習慣への配慮</span><span class="en">Consideration for allergies and diverse dietary needs</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>食物<rt>しょくもつ</rt></ruby>アレルギーがあるお<ruby>客様<rt>きゃくさま</rt></ruby>への<ruby>対応<rt>たいおう</rt></ruby>として<b>もっとも適切なもの</b>はどれですか。</p>
+    <p class="q-en">What is the most appropriate way to respond to a customer with a food allergy?</p>
+      <div class="opt" data-val="A"><span class="jp">A. メニューの原材料を正確に伝える</span><span class="en">Accurately convey the ingredients used in the menu item</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. とりあえず提供して様子を見る</span><span class="en">Just serve the dish and see what happens</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 何も確認せずおすすめする</span><span class="en">Recommend a dish without checking anything</span></div>
+    <div class="explain"><div class="jp">食物アレルギーがあるお客様には、メニューに使われている原材料を正確に伝えることが大切です。</div><div class="en">For customers with food allergies, it is important to accurately convey the ingredients used in each menu item.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch10" data-chapter="ch10">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第10章　クレーム対応と店舗運営</span><span class="en">Chapter 10: Handling Complaints and Store Operations</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="お客様から「クレーム(苦情)」を受けたときは、まず謝罪し、話を最後まで聞きます。">🔊</button>お<ruby>客様<rt>きゃくさま</rt></ruby>から「クレーム(<ruby>苦情<rt>くじょう</rt></ruby>)」を<ruby>受<rt>う</rt></ruby>けたときは、まず<ruby>謝罪<rt>しゃざい</rt></ruby>し、<ruby>話<rt>はなし</rt></ruby>を<ruby>最後<rt>さいご</rt></ruby>まで<ruby>聞<rt>き</rt></ruby>きます。</p>
+    <p class="en">When receiving a "complaint" from a customer, workers first apologize and listen to the whole story.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="自分で判断できない内容は、すぐに店長や先輩に報告し、指示を受けます。">🔊</button><ruby>自分<rt>じぶん</rt></ruby>で<ruby>判断<rt>はんだん</rt></ruby>できない<ruby>内容<rt>ないよう</rt></ruby>は、すぐに<ruby>店長<rt>てんちょう</rt></ruby>や<ruby>先輩<rt>せんぱい</rt></ruby>に<ruby>報告<rt>ほうこく</rt></ruby>し、<ruby>指示<rt>しじ</rt></ruby>を<ruby>受<rt>う</rt></ruby>けます。</p>
+    <p class="en">For matters that cannot be judged on one's own, workers report to the manager or a senior worker right away and receive instructions.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「在庫管理」では、食材が足りなくならないよう、数量を確認して発注します。">🔊</button>「<ruby>在庫管理<rt>ざいこかんり</rt></ruby>」では、<ruby>食材<rt>しょくざい</rt></ruby>が<ruby>足<rt>た</rt></ruby>りなくならないよう、<ruby>数量<rt>すうりょう</rt></ruby>を<ruby>確認<rt>かくにん</rt></ruby>して<ruby>発注<rt>はっちゅう</rt></ruby>します。</p>
+    <p class="en">In "inventory management," workers check quantities and place orders so that ingredients do not run out.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="「メニュー」の内容や価格を正しく把握しておくことも、接客をする上で欠かせません。">🔊</button>「メニュー」の<ruby>内容<rt>ないよう</rt></ruby>や<ruby>価格<rt>かかく</rt></ruby>を<ruby>正<rt>ただ</rt></ruby>しく<ruby>把握<rt>はあく</rt></ruby>しておくことも、<ruby>接客<rt>せっきゃく</rt></ruby>をする<ruby>上<rt>うえ</rt></ruby>で<ruby>欠<rt>か</rt></ruby>かせません。</p>
+    <p class="en">Correctly understanding the contents and prices of the "menu" is also essential for providing customer service.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">💬</div>
+    <div class="icon-caption"><span class="jp">クレーム対応と在庫・メニュー管理</span><span class="en">Handling complaints and managing inventory and menus</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp">お<ruby>客様<rt>きゃくさま</rt></ruby>からクレームを<ruby>受<rt>う</rt></ruby>けたとき、<b>最初にすること</b>はどれですか。</p>
+    <p class="q-en">When receiving a complaint from a customer, what should you do first?</p>
+      <div class="opt" data-val="A"><span class="jp">A. まず謝罪し、話を最後まで聞く</span><span class="en">First apologize and listen to the whole story</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. すぐに反論する</span><span class="en">Argue back immediately</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 何も言わずにその場を離れる</span><span class="en">Leave the area without saying anything</span></div>
+    <div class="explain"><div class="jp">お客様からクレームを受けたときは、まず謝罪し、話を最後まで聞きます。</div><div class="en">When receiving a complaint from a customer, workers first apologize and listen to the whole story.</div></div>
+  </div>
+</div>
+</section>
+<section class="chapter-section" id="ch11" data-chapter="ch11">
+<div class="chapter-banner"><div class="chapter-banner-eyebrow">Chapter</div><h1 class="chapter-banner-title"><span class="jp">第11章　報連相と判断練習</span><span class="en">Chapter 11: Workplace Communication and Judgment Practice</span></h1></div>
+<div class="sec">
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="飲食店の現場でも、報告・連絡・相談、いわゆる「報連相」がとても大切です。">🔊</button><ruby>飲食店<rt>いんしょくてん</rt></ruby>の<ruby>現場<rt>げんば</rt></ruby>でも、<ruby>報告<rt>ほうこく</rt></ruby>・<ruby>連絡<rt>れんらく</rt></ruby>・<ruby>相談<rt>そうだん</rt></ruby>、いわゆる「<ruby>報連相<rt>ほうれんそう</rt></ruby>」がとても<ruby>大切<rt>たいせつ</rt></ruby>です。</p>
+    <p class="en">At restaurant workplaces too, "reporting, contacting, and consulting" — known as horenso — is extremely important.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="調理中に異常なにおいや見た目に気づいたときは、自分だけで判断せず、すぐに先輩に報告します。">🔊</button><ruby>調理中<rt>ちょうりちゅう</rt></ruby>に<ruby>異常<rt>いじょう</rt></ruby>なにおいや<ruby>見<rt>み</rt></ruby>た<ruby>目<rt>め</rt></ruby>に<ruby>気<rt>き</rt></ruby>づいたときは、<ruby>自分<rt>じぶん</rt></ruby>だけで<ruby>判断<rt>はんだん</rt></ruby>せず、すぐに<ruby>先輩<rt>せんぱい</rt></ruby>に<ruby>報告<rt>ほうこく</rt></ruby>します。</p>
+    <p class="en">If you notice an unusual smell or appearance while cooking, don't judge the situation on your own — report it to a senior worker right away.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="食材が足りなくなりそうなときは、早めに連絡して発注の指示を受けます。">🔊</button><ruby>食材<rt>しょくざい</rt></ruby>が<ruby>足<rt>た</rt></ruby>りなくなりそうなときは、<ruby>早<rt>はや</rt></ruby>めに<ruby>連絡<rt>れんらく</rt></ruby>して<ruby>発注<rt>はっちゅう</rt></ruby>の<ruby>指示<rt>しじ</rt></ruby>を<ruby>受<rt>う</rt></ruby>けます。</p>
+    <p class="en">When ingredients look like they might run out, contact someone early and receive instructions about ordering.</p>
+  </div>
+  <div class="para">
+    <p class="jp"><button class="spk" data-jp="判断に迷ったときは、一人で決めずに、まわりのスタッフに相談することが、安全で質の高い接客につながります。">🔊</button><ruby>判断<rt>はんだん</rt></ruby>に<ruby>迷<rt>まよ</rt></ruby>ったときは、<ruby>一人<rt>ひとり</rt></ruby>で<ruby>決<rt>き</rt></ruby>めずに、まわりのスタッフに<ruby>相談<rt>そうだん</rt></ruby>することが、<ruby>安全<rt>あんぜん</rt></ruby>で<ruby>質<rt>しつ</rt></ruby>の<ruby>高<rt>たか</rt></ruby>い<ruby>接客<rt>せっきゃく</rt></ruby>につながります。</p>
+    <p class="en">When you are unsure what to do, consulting with the staff around you instead of deciding alone leads to safe, high-quality service.</p>
+  </div>
+  <div class="icon-card">
+    <div class="icon-visual">💬</div>
+    <div class="icon-caption"><span class="jp">報連相と判断力</span><span class="en">Workplace communication and good judgment</span></div>
+  </div>
+</div>
+<div class="sec quiz-sec"><div class="sec-title"><span class="jp">この章の理解度チェック</span><span class="en">Check Your Understanding</span></div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp"><ruby>調理中<rt>ちょうりちゅう</rt></ruby>に、<ruby>食材<rt>しょくざい</rt></ruby>から<ruby>異常<rt>いじょう</rt></ruby>なにおいがすることに<ruby>気<rt>き</rt></ruby>づきました。<b>もっとも適切な行動</b>はどれですか。</p>
+    <p class="q-en">While cooking, you notice an unusual smell coming from an ingredient. What is the most appropriate action?</p>
+      <div class="opt" data-val="A"><span class="jp">A. すぐに先輩に報告し、指示を受ける</span><span class="en">Report it to a senior worker right away and receive instructions</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. においを気にせずそのまま調理を続ける</span><span class="en">Ignore the smell and keep cooking as usual</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 自分の判断だけでその食材を使うのをやめる</span><span class="en">Decide alone to stop using that ingredient without telling anyone</span></div>
+    <div class="explain"><div class="jp">調理中に異常なにおいや見た目に気づいたときは、自分だけで判断せず、すぐに先輩に報告します。</div><div class="en">If you notice an unusual smell or appearance while cooking, you should not judge the situation on your own — report it to a senior worker right away.</div></div>
+  </div>
+  <div class="q-block" data-answer="A">
+    <p class="q-jp">お<ruby>客様<rt>きゃくさま</rt></ruby>から<ruby>食物<rt>しょくもつ</rt></ruby>アレルギーについて<ruby>質問<rt>しつもん</rt></ruby>されましたが、<ruby>自分<rt>じぶん</rt></ruby>では<ruby>原材料<rt>げんざいりょう</rt></ruby>がわかりませんでした。<b>最初にすること</b>はどれですか。</p>
+    <p class="q-en">A customer asks about food allergens, but you don't know the ingredients yourself. What should you do first?</p>
+      <div class="opt" data-val="A"><span class="jp">A. 先輩や店長に確認してから正確に答える</span><span class="en">Check with a senior worker or manager, then answer accurately</span></div>
+      <div class="opt" data-val="B"><span class="jp">B. わかるふりをして適当に答える</span><span class="en">Pretend to know and give a vague answer</span></div>
+      <div class="opt" data-val="C"><span class="jp">C. 質問を無視する</span><span class="en">Ignore the question</span></div>
+    <div class="explain"><div class="jp">わからないことは自分で判断せず、先輩や店長に確認してから正確に答えることが大切です。</div><div class="en">When you don't know something, don't decide on your own — check with a senior worker or manager, then answer accurately.</div></div>
+  </div>
+</div>
+</section>
+      </div>
+    </div>
+  </main>
+</div>
+<script>
+function safeGet(key){ try{ return JSON.parse(localStorage.getItem(key) || '{}'); }catch(e){ return {}; } }
+function safeSet(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+var readChapters = safeGet('restaurantssw_read');
+
+document.querySelectorAll('.chapter-card').forEach(function(c){
+  c.addEventListener('click', function(){ goToTarget(this.dataset.target); });
+});
+
+var allTocLinks = document.querySelectorAll('.toc-link');
+
+function showHome(){
+  document.getElementById('view-home').style.display = 'block';
+  document.getElementById('view-content').style.display = 'none';
+  document.getElementById('mobile-title').textContent = 'Restaurant SSW';
+  clearActiveTOC();
+}
+function showContent(){
+  document.getElementById('view-home').style.display = 'none';
+  document.getElementById('view-content').style.display = 'block';
+}
+function clearActiveTOC(){ allTocLinks.forEach(function(l){ l.classList.remove('active'); }); }
+function goToTarget(id){
+  showContent();
+  var el = document.getElementById(id);
+  if (el){ el.scrollIntoView({behavior:'smooth', block:'start'}); }
+  setActiveTOC(id);
+  if (window.innerWidth <= 980) closeSidebar();
+  markRead(id);
+}
+function setActiveTOC(id){
+  clearActiveTOC();
+  var link = document.querySelector('.toc-link[data-target="'+id+'"]');
+  if (link) link.classList.add('active');
+}
+function markRead(id){
+  if (!readChapters[id]){ readChapters[id] = true; safeSet('restaurantssw_read', readChapters); updateProgress(); }
+}
+function updateProgress(){
+  var total = document.querySelectorAll('.toc-link').length;
+  var n = Object.keys(readChapters).length;
+  if (n > total) n = total;
+  var pct = total ? Math.round(n/total*100) : 0;
+  document.getElementById('progress-fill').style.width = pct+'%';
+  document.getElementById('progress-text').textContent = n+' / '+total+' read';
+  var hs = document.getElementById('home-progress-stat');
+  if (hs) hs.querySelector('b').textContent = pct+'%';
+}
+document.querySelectorAll('.toc-link').forEach(function(el){
+  el.addEventListener('click', function(){ goToTarget(this.dataset.target); });
+});
+document.querySelector('.brand').addEventListener('click', showHome);
+document.querySelector('.brand').style.cursor = 'pointer';
+
+function speakJP(text){
+  if (!text) return;
+  if (!('speechSynthesis' in window)){ alert('Text-to-speech is not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP'; u.rate = 0.88;
+  window.speechSynthesis.speak(u);
+}
+
+function injectScoreBadges(){
+  document.querySelectorAll('.sec').forEach(function(sec){
+    var qblocks = sec.querySelectorAll('.q-block');
+    if (!qblocks.length) return;
+    var title = sec.querySelector('.sec-title');
+    if (!title || title.querySelector('.section-score-inline')) return;
+    var span = document.createElement('span');
+    span.className = 'section-score-inline';
+    span.style.marginLeft = 'auto';
+    span.dataset.total = qblocks.length;
+    span.dataset.correct = '0';
+    span.textContent = '0 / ' + qblocks.length;
+    title.style.flexDirection = 'row';
+    title.style.alignItems = 'center';
+    title.appendChild(span);
+  });
+}
+injectScoreBadges();
+
+document.addEventListener('click', function(e){
+  var spk = e.target.closest('.spk');
+  if (spk){ e.stopPropagation(); speakJP(spk.getAttribute('data-jp')); return; }
+
+  var opt = e.target.closest('.opt');
+  if (opt){
+    var qblock = opt.closest('.q-block');
+    if (!qblock || qblock.classList.contains('answered')) return;
+    var chosen = opt.getAttribute('data-val');
+    var answer = qblock.getAttribute('data-answer');
+    qblock.classList.add('answered');
+    qblock.querySelectorAll('.opt').forEach(function(o){
+      var v = o.getAttribute('data-val');
+      if (v === answer) o.classList.add('correct');
+      else if (v === chosen) o.classList.add('wrong');
+    });
+    var sec = qblock.closest('.sec');
+    if (sec){
+      var badge = sec.querySelector('.section-score-inline');
+      if (badge && chosen === answer){ badge.dataset.correct = (parseInt(badge.dataset.correct,10) + 1); }
+      if (badge) badge.textContent = badge.dataset.correct + ' / ' + badge.dataset.total;
+    }
+    return;
+  }
+});
+
+function closeSidebar(){ document.getElementById('sidebar').classList.remove('open'); }
+document.getElementById('menu-toggle').addEventListener('click', function(){
+  document.getElementById('sidebar').classList.toggle('open');
+});
+
+updateProgress();
+showHome();
+</script>
+</body>
+</html>
