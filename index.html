@@ -300,6 +300,20 @@ footer p,footer a{color:#c4d1dd;font-size:13px}
   </div>
 </section>
 
+<section class="section" id="grammar-levels">
+  <div class="container">
+    <div class="heading">
+      <div class="eyebrow">Grammar</div>
+      <h2>Choose Your Level</h2>
+      <p>Build your Japanese grammar step by step with N5 and N4 practice.</p>
+    </div>
+    <div class="practice-grid">
+      <a class="practice-card" href="./n5-grammar.html"><div class="icon">📝</div><h3>N5 Grammar</h3><div class="jp">N5 文法</div><span class="card-link">Open N5 →</span></a>
+      <a class="practice-card" href="./n4-grammar.html"><div class="icon">📋</div><h3>N4 Grammar</h3><div class="jp">N4 文法</div><span class="card-link">Open N4 →</span></a>
+    </div>
+  </div>
+</section>
+
 <section class="practice-zone" id="practice">
   <div class="container">
     <div class="heading">
@@ -555,6 +569,12 @@ if(vocabularyCard){
 
 function toggleMenu(){document.getElementById("nav").classList.toggle("open")}
 document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeModal();closeKanaLessons()}});
+</script>
+<script>
+document.querySelectorAll('.foundation .learn-card')[3]?.addEventListener('click', function(e){
+  e.preventDefault();
+  document.getElementById('grammar-levels')?.scrollIntoView({behavior:'smooth'});
+});
 </script>
 </body>
 </html>
