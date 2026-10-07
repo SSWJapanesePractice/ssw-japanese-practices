@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N5 Grammar Study — Japanese with Raza Sensei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#12395d; --primary-dark:#0b2945; --primary-light:#315E7F;
+  --accent:#d62828; --accent-dark:#b91f1f;
+  --ink:#1F2937; --muted:#6B7280; --border:#E5E7EB; --paper:#f7f9fc; --card:#FFFFFF;
+  --good:#059669; --bad:#DC2626; --radius:18px; --shadow:0 4px 18px rgba(31,41,55,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); line-height:1.5;}
+.jp{font-family:'Noto Sans JP','Inter',sans-serif;}
+.display{font-family:'Baloo 2','Inter',sans-serif;}
+ruby rt{font-size:0.55em; color:var(--muted); font-weight:700;}
+button{font-family:inherit;}
+::-webkit-scrollbar{width:10px; height:10px;}
+::-webkit-scrollbar-thumb{background:var(--primary-light); border-radius:10px;}
+
+#topbar{position:sticky; top:0; z-index:30; background:linear-gradient(135deg,var(--primary) 0%, var(--primary-dark) 100%); color:#fff; padding:16px 22px; box-shadow:0 2px 14px rgba(0,0,0,0.15);}
+.topbar-inner{max-width:1240px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+.brand{display:flex; align-items:center; gap:12px;}
+.brand .logo{font-size:34px; filter:drop-shadow(0 2px 3px rgba(0,0,0,0.2));}
+.brand-text{font-family:'Baloo 2'; font-weight:800; font-size:22px; line-height:1.15;}
+.brand-text small{display:block; font-weight:600; font-size:12.5px; color:rgba(255,255,255,0.85); font-family:'Inter';}
+#tabs{display:flex; gap:8px;}
+.tab-btn{padding:10px 20px; border-radius:30px; border:2px solid rgba(255,255,255,0.35); background:rgba(255,255,255,0.12); color:#fff; font-weight:700; font-size:14px; cursor:pointer; transition:.15s;}
+.tab-btn.active{background:#fff; color:var(--primary-dark); border-color:#fff;}
+.tab-btn:hover:not(.active){background:rgba(255,255,255,0.22);}
+
+#progress-band{background:#fff; border-bottom:1px solid var(--border); padding:12px 22px;}
+.progress-inner{max-width:1240px; margin:0 auto; display:flex; align-items:center; gap:14px;}
+.progress-track{flex:1; height:12px; background:#EEF1F4; border-radius:8px; overflow:hidden;}
+.progress-fill{height:100%; background:linear-gradient(90deg,var(--accent),var(--primary)); width:0%; transition:width .4s;}
+.progress-label{font-size:13px; font-weight:700; color:var(--muted); white-space:nowrap;}
+
+#content{max-width:1240px; margin:0 auto; padding:22px 20px 90px 20px;}
+.view{display:none;}
+.view.active{display:block;}
+
+.hero{background:linear-gradient(135deg,var(--primary) 0%, var(--primary-dark) 100%); color:#fff; border-radius:26px; padding:30px 32px; margin-bottom:22px; position:relative; overflow:hidden;}
+.hero::after{content:"📝"; position:absolute; right:10px; bottom:-30px; font-size:150px; opacity:0.18; transform:rotate(-10deg);}
+.hero h1{font-family:'Baloo 2'; margin:0 0 6px 0; font-size:28px; font-weight:800;}
+.hero p{margin:0; color:rgba(255,255,255,0.92); font-size:14.5px; max-width:680px;}
+
+.controls{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px; align-items:center;}
+#search{flex:1; min-width:220px; padding:14px 18px; border-radius:16px; border:2px solid var(--border); font-size:15px; background:#fff;}
+#search:focus{outline:none; border-color:var(--primary);}
+.filter-chip{padding:9px 16px; border-radius:20px; border:2px solid var(--border); background:#fff; font-size:13px; font-weight:700; color:var(--muted); cursor:pointer;}
+.filter-chip.active{background:var(--primary); border-color:var(--primary); color:#fff;}
+#cat-filters{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+.cat-chip{padding:6px 13px; border-radius:16px; border:2px solid var(--border); background:#fff; font-size:11.5px; font-weight:800; color:var(--muted); cursor:pointer; text-transform:uppercase; letter-spacing:.02em;}
+.cat-chip.active{color:#fff; border-color:transparent;}
+
+.table-wrap{background:var(--card); border-radius:22px; box-shadow:var(--shadow); border:1px solid var(--border); overflow-x:auto;}
+table{border-collapse:collapse; width:100%; min-width:960px;}
+thead th{position:sticky; top:0; background:var(--primary); color:#fff; text-align:left; padding:13px 14px; font-size:12px; text-transform:uppercase; letter-spacing:.04em; font-weight:800; white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border);}
+tbody tr:hover{background:#FAFAFB;}
+tbody tr.learned{background:#F0FDF4;}
+td{padding:12px 14px; vertical-align:middle; font-size:14.5px;}
+.col-check{width:40px; text-align:center;}
+.learn-check{width:22px; height:22px; cursor:pointer; accent-color:var(--good);}
+.col-pattern{font-family:'Noto Sans JP'; font-size:18px; font-weight:700; white-space:nowrap; color:var(--primary-dark);}
+.pattern-cell{display:flex; align-items:center; gap:8px;}
+.pattern-cell .spk{border:none; background:var(--accent); color:#fff; width:26px; height:26px; border-radius:50%; font-size:11px; cursor:pointer; flex-shrink:0;}
+.cat-badge{display:inline-block; font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.03em; padding:2px 7px; border-radius:8px; color:#fff; white-space:nowrap;}
+.col-meaning{min-width:200px; max-width:260px;}
+.col-formation{min-width:190px; max-width:240px; color:var(--muted); font-size:13px;}
+.col-sentence{min-width:280px; max-width:380px;}
+.sent-jp{font-family:'Noto Sans JP'; font-size:14.5px; line-height:2;}
+.sent-en{font-size:12px; color:var(--muted); font-style:italic; margin-top:2px;}
+.sent-row{display:flex; align-items:flex-start; gap:8px;}
+.sent-row button{border:none; background:#EEF1F4; color:var(--primary-dark); width:24px; height:24px; border-radius:50%; font-size:10.5px; cursor:pointer; flex-shrink:0; margin-top:3px;}
+.empty-msg{text-align:center; color:var(--muted); padding:50px 0; font-size:14px;}
+.result-count{font-size:12.5px; color:var(--muted); font-weight:700; margin-bottom:10px;}
+
+/* Practice view */
+.practice-tabs{display:flex; gap:10px; margin-bottom:18px;}
+.ptab{padding:10px 18px; border-radius:14px; border:2px solid var(--border); background:#fff; font-weight:700; font-size:13.5px; cursor:pointer; color:var(--muted);}
+.ptab.active{background:var(--primary); border-color:var(--primary); color:#fff;}
+.ppanel{display:none;}
+.ppanel.active{display:block;}
+
+#flash-stage{display:flex; flex-direction:column; align-items:center; gap:16px;}
+.flashcard{width:100%; max-width:480px; min-height:250px; background:var(--card); border-radius:22px; box-shadow:var(--shadow); border:2px solid var(--border); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px 24px; cursor:pointer; text-align:center; position:relative;}
+.flashcard .badge{position:absolute; top:14px; left:16px; font-size:11px; color:var(--muted); background:#EEF1F4; padding:3px 10px; border-radius:20px; font-weight:700;}
+.flashcard .fc-cat{position:absolute; top:14px; right:16px;}
+.flashcard .fc-main{font-family:'Noto Sans JP'; font-size:34px; font-weight:700;}
+.flashcard .fc-formation{color:var(--muted); font-style:italic; margin-top:10px; font-size:14px;}
+.flashcard .fc-meaning{font-family:'Baloo 2'; font-size:19px; color:var(--primary-dark); font-weight:700; margin-top:10px;}
+.flashcard .fc-sentence{font-family:'Noto Sans JP'; font-size:15px; margin-top:14px; line-height:1.9;}
+.flashcard .fc-sentence-en{font-size:12px; color:var(--muted); font-style:italic; margin-top:4px;}
+.flashcard .hint{position:absolute; bottom:12px; font-size:11px; color:#9CA3AF;}
+.flash-controls{display:flex; gap:10px;}
+.btn{padding:12px 20px; border-radius:14px; border:none; font-size:13.5px; font-weight:700; cursor:pointer; background:var(--primary); color:#fff;}
+.btn.secondary{background:#fff; color:var(--primary-dark); border:2px solid var(--border);}
+.btn.accent{background:var(--accent); color:#fff;}
+#flash-progress{font-size:12.5px; color:var(--muted); font-weight:700;}
+
+.q-card{background:var(--card); border:2px solid var(--border); border-radius:20px; padding:22px 24px; margin-bottom:16px; box-shadow:var(--shadow); text-align:center;}
+.q-card .q-word{font-family:'Noto Sans JP'; font-size:30px; font-weight:700; margin-bottom:6px;}
+.q-card .q-sub{font-size:13px; color:var(--muted); margin-bottom:14px;}
+.q-opts{display:grid; grid-template-columns:1fr 1fr; gap:10px; max-width:560px; margin:0 auto;}
+@media(max-width:520px){.q-opts{grid-template-columns:1fr;}}
+.q-opt{padding:12px 14px; border-radius:12px; border:2px solid var(--border); cursor:pointer; background:#fff; font-size:13.5px; font-weight:600;}
+.q-opt:hover{border-color:var(--primary-light);}
+.q-card.answered .q-opt{cursor:default; pointer-events:none;}
+.q-card.answered .q-opt.correct{background:#D1FAE5; border-color:var(--good); color:#065F46;}
+.q-card.answered .q-opt.wrong{background:#FEE2E2; border-color:var(--bad); color:#991B1B;}
+#quiz-summary{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; background:var(--card); border-radius:16px; padding:14px 18px; box-shadow:var(--shadow); flex-wrap:wrap; gap:10px;}
+#quiz-summary b{font-size:20px; color:var(--primary-dark);}
+
+.footer-credit{text-align:center; color:var(--muted); font-size:11.5px; margin:40px 0 10px 0; line-height:1.6;}
+
+@media(max-width:700px){
+  .brand-text{font-size:18px;}
+  .hero{padding:24px 20px;}
+  .hero h1{font-size:22px;}
+  table{min-width:820px;}
+}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="logo">📝</span><div class="brand-text">N5 Grammar Study<small>Japanese with Raza Sensei</small></div></div>
+    <div id="tabs">
+      <button class="tab-btn active" data-view="learn">\U0001F4DA Grammar</button>
+      <button class="tab-btn" data-view="practice">\U0001F3AF Practice</button>
+    </div>
+  </div>
+</div>
+<div id="progress-band">
+  <div class="progress-inner">
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="progress-label" id="progress-label">0 / 71 learned</div>
+  </div>
+</div>
+
+<div id="content">
+  <div class="view active" id="view-learn">
+    <div class="hero">
+      <h1>N5 Grammar Study</h1>
+      <p>JLPT N5 — essential beginner grammar points — every pattern with its English meaning, how to form it, and one simple example sentence with furigana and audio.</p>
+    </div>
+    <div class="controls">
+      <input id="search" type="text" placeholder="\U0001F50D Search by pattern, meaning, or category...">
+      <button class="filter-chip active" data-filter="all">All 71</button>
+      <button class="filter-chip" data-filter="unlearned">Not yet learned</button>
+      <button class="filter-chip" data-filter="learned">✅ Learned</button>
+    </div>
+    <div id="cat-filters"></div>
+    <div class="result-count" id="result-count"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-check">✓</th>
+            <th>Pattern</th>
+            <th>Category</th>
+            <th>Meaning</th>
+            <th>Formation</th>
+            <th>Example Sentence</th>
+          </tr>
+        </thead>
+        <tbody id="grammar-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="view" id="view-practice">
+    <div class="hero" style="padding:22px 26px;">
+      <h1 style="font-size:22px;">\U0001F3AF Practice &amp; Quiz</h1>
+      <p>Flip through flashcards, or test yourself with a randomized multiple-choice quiz.</p>
+    </div>
+    <div class="practice-tabs">
+      <button class="ptab active" data-ptab="flash">\U0001F0CF Flashcards</button>
+      <button class="ptab" data-ptab="mcq">\U0001F4DD Quiz</button>
+    </div>
+    <div class="ppanel active" id="ppanel-flash">
+      <div id="flash-stage">
+        <div class="flashcard" id="flashcard">
+          <div class="badge" id="flash-badge">1 / 71</div>
+          <div class="fc-cat" id="flash-cat"></div>
+          <div id="flash-front">
+            <div class="fc-main jp" id="flash-main"></div>
+          </div>
+          <div id="flash-back" style="display:none;">
+            <div class="fc-formation" id="flash-formation"></div>
+            <div class="fc-meaning" id="flash-meaning"></div>
+            <div class="fc-sentence jp" id="flash-sentence"></div>
+            <div class="fc-sentence-en" id="flash-sentence-en"></div>
+          </div>
+          <div class="hint">Tap card to flip</div>
+        </div>
+        <div id="flash-progress"></div>
+        <div class="flash-controls">
+          <button class="btn secondary" id="flash-prev">← Prev</button>
+          <button class="btn accent" id="flash-shuffle">\U0001F500 Shuffle</button>
+          <button class="btn" id="flash-next">Next →</button>
+        </div>
+      </div>
+    </div>
+    <div class="ppanel" id="ppanel-mcq">
+      <div id="quiz-summary">
+        <div><b id="mcq-score">0</b> / <span id="mcq-total-inline">0</span> correct</div>
+        <button class="btn secondary" id="mcq-new">\U0001F504 New Quiz (20 questions)</button>
+      </div>
+      <div id="mcq-list"></div>
+    </div>
+  </div>
+
+  <p class="footer-credit">Japanese with Raza Sensei · N5 Grammar Study · Original study app<br>
+  Grammar points, English meanings, and formation notes written for this app, cross-checked against widely-documented, standardized JLPT curricula · Example sentences from the Tatoeba Project / Tanaka Corpus (CC BY 2.0 FR), furigana generated with MeCab/UniDic · Where no natural corpus sentence fit simply enough, an original example sentence was written for this app instead.</p>
+</div>
+
+<script>
+var DATA = [{"pattern": "～は～です", "category": "Particles", "formation": "Noun + は + Noun/Adjective + です", "meaning": "Marks the topic of the sentence and states what it is (\"As for A, it is B\").", "sentence": {"jp_html": "これはりんごです。", "jp_plain": "これはりんごです。", "en": "This is an apple.", "source": "original"}}, {"pattern": "～が", "category": "Particles", "formation": "Noun + が + Verb/Adjective", "meaning": "Marks the grammatical subject, often introducing new information or emphasizing \"it is X (not something else)\".", "sentence": {"jp_html": "<ruby>彼<rt>かれ</rt></ruby>が<ruby>好き<rt>すき</rt></ruby>です。", "jp_plain": "彼が好きです。", "en": "I like him.", "source": "corpus"}}, {"pattern": "～を", "category": "Particles", "formation": "Noun + を + Verb", "meaning": "Marks the direct object that a verb's action is done to.", "sentence": {"jp_html": "<ruby>彼<rt>かれ</rt></ruby>はたくさんの<ruby>本<rt>ほん</rt></ruby>を<ruby>読み<rt>よみ</rt></ruby>ます。", "jp_plain": "彼はたくさんの本を読みます。", "en": "He reads a lot of books.", "source": "corpus"}}, {"pattern": "～に (time/place)", "category": "Particles", "formation": "Time/Place noun + に", "meaning": "Marks a specific point in time when something happens, or the target/destination of an action.", "sentence": {"jp_html": "<ruby>私<rt>わたくし</rt></ruby>は<ruby>普通<rt>ふつう</rt></ruby><ruby>七<rt>なな</rt></ruby><ruby>時<rt>じ</rt></ruby>に<ruby>起きる<rt>おきる</rt></ruby>。", "jp_plain": "私は普通七時に起きる。", "en": "I usually get up at seven.", "source": "corpus"}}, {"pattern": "～で (place/means)", "category": "Particles", "formation": "Place/Tool noun + で", "meaning": "Marks the place where an action happens, or the means/tool used to do it.", "sentence": {"jp_html": "<ruby>図書<rt>としょ</rt></ruby><ruby>館<rt>かん</rt></ruby>で<ruby>勉強<rt>べんきょう</rt></ruby>することはありますか。", "jp_plain": "図書館で勉強することはありますか。", "en": "Do you ever study in the library?", "source": "corpus"}}, {"pattern": "～へ", "category": "Particles", "formation": "Place noun + へ", "meaning": "Marks the direction something is heading toward (similar to に, with more focus on direction).", "sentence": {"jp_html": "<ruby>明日<rt>あす</rt></ruby>、<ruby>学校<rt>がっこう</rt></ruby>へ<ruby>行き<rt>いき</rt></ruby>ます。", "jp_plain": "明日、学校へ行きます。", "en": "I'm going to school tomorrow.", "source": "original"}}, {"pattern": "～と (with/and)", "category": "Particles", "formation": "Noun + と + Noun / Noun + と + Verb", "meaning": "Connects two nouns as \"and\", or marks the person you do something together with (\"with\").", "sentence": {"jp_html": "<ruby>友達<rt>ともだち</rt></ruby>と<ruby>映画<rt>えいが</rt></ruby>を<ruby>見<rt>み</rt></ruby>ました。", "jp_plain": "友達と映画を見ました。", "en": "I watched a movie with my friend.", "source": "original"}}, {"pattern": "～も", "category": "Particles", "formation": "Noun + も", "meaning": "Means \"also/too\", replacing は or が to add something to a set already mentioned.", "sentence": {"jp_html": "<ruby>私<rt>わたくし</rt></ruby>はコーヒーが<ruby>好き<rt>すき</rt></ruby>です。<ruby>紅茶<rt>こうちゃ</rt></ruby>も<ruby>好き<rt>すき</rt></ruby>です。", "jp_plain": "私はコーヒーが好きです。紅茶も好きです。", "en": "I like coffee. I like tea too.", "source": "original"}}, {"pattern": "～の (possession)", "category": "Particles", "formation": "Noun + の + Noun", "meaning": "Links two nouns to show possession or a describing relationship (\"A's B\" or \"B of A\").", "sentence": {"jp_html": "<ruby>私<rt>わたくし</rt></ruby>の<ruby>本<rt>ほん</rt></ruby>はどこ？", "jp_plain": "私の本はどこ？", "en": "Where's my book?", "source": "corpus"}}, {"pattern": "～から～まで", "category": "Particles", "formation": "Noun + から～Noun + まで", "meaning": "Marks a starting point and an ending point in time or space (\"from A to B\").", "sentence": {"jp_html": "<ruby>会社<rt>かいしゃ</rt></ruby>は<ruby>九<rt>きゅう</rt></ruby><ruby>時<rt>じ</rt></ruby>から<ruby>五<rt>ご</rt></ruby><ruby>時<rt>じ</rt></ruby>までです。", "jp_plain": "会社は九時から五時までです。", "en": "The company (workday) is from nine to five.", "source": "original"}}, {"pattern": "～や～など", "category": "Particles", "formation": "Noun + や + Noun + など", "meaning": "Lists a few representative examples out of a larger, unstated group (\"things like A and B\").", "sentence": {"jp_html": "テーブルの<ruby>上<rt>うえ</rt></ruby>にりんごやみかんなどがあります。", "jp_plain": "テーブルの上にりんごやみかんなどがあります。", "en": "There are things like apples and mandarins on the table.", "source": "original"}}, {"pattern": "～ね", "category": "Particles", "formation": "Sentence + ね", "meaning": "A sentence-ending particle that seeks agreement or shares a feeling, like \"..., isn't it?\".", "sentence": {"jp_html": "いい<ruby>天気<rt>てんき</rt></ruby>ですね。", "jp_plain": "いい天気ですね。", "en": "It is a nice day, isn't it?", "source": "corpus"}}, {"pattern": "～よ", "category": "Particles", "formation": "Sentence + よ", "meaning": "A sentence-ending particle that tells the listener something new or asserts it confidently.", "sentence": {"jp_html": "これはとても<ruby>美味しい<rt>おいしい</rt></ruby>ですよ。", "jp_plain": "これはとても美味しいですよ。", "en": "This is very good.", "source": "corpus"}}, {"pattern": "～か (question)", "category": "Particles", "formation": "Sentence + か", "meaning": "Turns a statement into a yes/no or open question.", "sentence": {"jp_html": "<ruby>何<rt>なん</rt></ruby>ですか。", "jp_plain": "何ですか。", "en": "What is it?", "source": "corpus"}}, {"pattern": "疑問詞＋か", "category": "Particles", "formation": "何/どこ/だれ + か", "meaning": "Adds か to a question word to mean \"some-\": 何か (something), どこか (somewhere), だれか (someone).", "sentence": {"jp_html": "<ruby>何<rt>なん</rt></ruby>か<ruby>食べ<rt>たべ</rt></ruby>たい？", "jp_plain": "何か食べたい？", "en": "Do you feel like eating?", "source": "corpus"}}, {"pattern": "疑問詞＋も＋ない", "category": "Particles", "formation": "何/どこ/だれ + も + negative", "meaning": "Adds も to a question word before a negative verb to mean \"no-\": 何も～ない (nothing), どこも～ない (nowhere).", "sentence": {"jp_html": "<ruby>何<rt>なん</rt></ruby>も<ruby>食べ<rt>たべ</rt></ruby>たくない。", "jp_plain": "何も食べたくない。", "en": "I don't feel like eating anything.", "source": "corpus"}}, {"pattern": "～ます", "category": "Verb Forms", "formation": "Verb stem + ます", "meaning": "The polite, non-past form of a verb, used for present or future actions.", "sentence": {"jp_html": "<ruby>私<rt>わたくし</rt></ruby>は<ruby>毎朝<rt>まいあさ</rt></ruby><ruby>六<rt>ろく</rt></ruby><ruby>時<rt>じ</rt></ruby>に<ruby>起き<rt>おき</rt></ruby>ます。", "jp_plain": "私は毎朝六時に起きます。", "en": "I get up at six every morning.", "source": "corpus"}}, {"pattern": "～ました", "category": "Verb Forms", "formation": "Verb stem + ました", "meaning": "The polite past form of a verb, describing something that already happened.", "sentence": {"jp_html": "<ruby>昨日<rt>きのう</rt></ruby>、<ruby>映画<rt>えいが</rt></ruby>を<ruby>見<rt>み</rt></ruby>ました。", "jp_plain": "昨日、映画を見ました。", "en": "I watched a movie yesterday.", "source": "original"}}, {"pattern": "～ません", "category": "Verb Forms", "formation": "Verb stem + ません", "meaning": "The polite negative form of a verb, non-past (\"do/does not\").", "sentence": {"jp_html": "<ruby>私<rt>わたくし</rt></ruby>は<ruby>決して<rt>けっして</rt></ruby><ruby>肉<rt>にく</rt></ruby>を<ruby>食べ<rt>たべ</rt></ruby>ません。", "jp_plain": "私は決して肉を食べません。", "en": "I never eat meat.", "source": "corpus"}}, {"pattern": "～ませんでした", "category": "Verb Forms", "formation": "Verb stem + ませんでした", "meaning": "The polite negative past form (\"did not\").", "sentence": {"jp_html": "<ruby>頭<rt>あたま</rt></ruby>が<ruby>痛かっ<rt>いたかっ</rt></ruby>たので、<ruby>学校<rt>がっこう</rt></ruby>へ<ruby>行き<rt>いき</rt></ruby>ませんでした。", "jp_plain": "頭が痛かったので、学校へ行きませんでした。", "en": "I had a headache, so I didn't go to school.", "source": "original"}}, {"pattern": "～ましょう", "category": "Verb Forms", "formation": "Verb stem + ましょう", "meaning": "A friendly way to suggest doing something together, \"let's do ~\".", "sentence": {"jp_html": "<ruby>少し<rt>すこし</rt></ruby><ruby>休み<rt>やすみ</rt></ruby>ましょう。", "jp_plain": "少し休みましょう。", "en": "Let's rest for a bit.", "source": "original"}}, {"pattern": "～ませんか", "category": "Verb Forms", "formation": "Verb stem + ませんか", "meaning": "A polite way to invite someone to do something, \"won't you ~?\".", "sentence": {"jp_html": "<ruby>一緒<rt>いっしょ</rt></ruby>に<ruby>行き<rt>いき</rt></ruby>ませんか。", "jp_plain": "一緒に行きませんか。", "en": "Won't you come with me?", "source": "corpus"}}, {"pattern": "～たいです", "category": "Verb Forms", "formation": "Verb stem + たい(です)", "meaning": "Expresses the speaker's own desire to do something, \"want to ~\".", "sentence": {"jp_html": "いつか<ruby>日本<rt>にっぽん</rt></ruby>へ<ruby>行き<rt>いき</rt></ruby>たいです。", "jp_plain": "いつか日本へ行きたいです。", "en": "I want to go to Japan someday.", "source": "original"}}, {"pattern": "～ながら", "category": "Verb Forms", "formation": "Verb stem + ながら", "meaning": "Says that two actions happen at the same time, done by the same person, \"while ~ing\".", "sentence": {"jp_html": "<ruby>彼<rt>かれ</rt></ruby>は<ruby>歌い<rt>うたい</rt></ruby>ながら<ruby>仕事<rt>しごと</rt></ruby>をした。", "jp_plain": "彼は歌いながら仕事をした。", "en": "He sang while working.", "source": "corpus"}}, {"pattern": "～てください", "category": "Te-form", "formation": "Verb て-form + ください", "meaning": "A polite way to ask or instruct someone to do something.", "sentence": {"jp_html": "ここに<ruby>座っ<rt>すわっ</rt></ruby>てください。", "jp_plain": "ここに座ってください。", "en": "Please sit here.", "source": "original"}}, {"pattern": "～ています", "category": "Te-form", "formation": "Verb て-form + います", "meaning": "Describes an action in progress (\"is ~ing\") or a resulting state that continues (\"has been ~ed\").", "sentence": {"jp_html": "<ruby>今<rt>いま</rt></ruby>、<ruby>雨<rt>あめ</rt></ruby>が<ruby>降っ<rt>ふっ</rt></ruby>ています。", "jp_plain": "今、雨が降っています。", "en": "It is raining right now.", "source": "original"}}, {"pattern": "～てもいいです", "category": "Te-form", "formation": "Verb て-form + もいいです", "meaning": "Gives or asks for permission, \"may/is it okay to ~\".", "sentence": {"jp_html": "ここに<ruby>座っ<rt>すわっ</rt></ruby>てもいいですか。", "jp_plain": "ここに座ってもいいですか。", "en": "May I sit here?", "source": "corpus"}}, {"pattern": "～てはいけません", "category": "Te-form", "formation": "Verb て-form + はいけません", "meaning": "States that something is prohibited, \"must not ~\".", "sentence": {"jp_html": "ここに<ruby>入っ<rt>はいっ</rt></ruby>てはいけません。", "jp_plain": "ここに入ってはいけません。", "en": "You must not enter here.", "source": "original"}}, {"pattern": "～ないでください", "category": "Te-form", "formation": "Verb ない-form + でください", "meaning": "Politely asks someone not to do something.", "sentence": {"jp_html": "<ruby>心配<rt>しんぱい</rt></ruby>しないでください。", "jp_plain": "心配しないでください。", "en": "Please don't worry.", "source": "original"}}, {"pattern": "～てから", "category": "Te-form", "formation": "Verb て-form + から", "meaning": "Says one action happens, and only afterward does the next one, \"after doing ~, then\".", "sentence": {"jp_html": "<ruby>手<rt>て</rt></ruby>を<ruby>洗っ<rt>あらっ</rt></ruby>てから、<ruby>食べ<rt>たべ</rt></ruby>ます。", "jp_plain": "手を洗ってから、食べます。", "en": "I wash my hands and then eat.", "source": "original"}}, {"pattern": "～ておきます", "category": "Te-form", "formation": "Verb て-form + おきます", "meaning": "Says something is done in advance, in preparation for later.", "sentence": {"jp_html": "レストランを<ruby>予約<rt>よやく</rt></ruby>しておきます。", "jp_plain": "レストランを予約しておきます。", "en": "I'll make a restaurant reservation in advance.", "source": "original"}}, {"pattern": "～てしまいます", "category": "Te-form", "formation": "Verb て-form + しまいます", "meaning": "Shows an action is completed entirely, or expresses regret about something that happened.", "sentence": {"jp_html": "<ruby>名前<rt>なまえ</rt></ruby>をすっかり<ruby>忘れ<rt>わすれ</rt></ruby>てしまいました。", "jp_plain": "名前をすっかり忘れてしまいました。", "en": "I've completely forgotten its name.", "source": "corpus"}}, {"pattern": "～てみます", "category": "Te-form", "formation": "Verb て-form + みます", "meaning": "Says the speaker will try doing something to see what happens.", "sentence": {"jp_html": "この<ruby>料理<rt>りょうり</rt></ruby>を<ruby>食べ<rt>たべ</rt></ruby>てみます。", "jp_plain": "この料理を食べてみます。", "en": "I'll try eating this dish.", "source": "original"}}, {"pattern": "～てあげます／もらいます／くれます", "category": "Te-form", "formation": "Verb て-form + あげる/もらう/くれる", "meaning": "Shows the direction a favor moves between people: あげる (I do it for someone), もらう (someone does it for me), くれる (someone does it for me, said warmly).", "sentence": {"jp_html": "<ruby>彼女<rt>かのじょ</rt></ruby>は<ruby>親切<rt>しんせつ</rt></ruby>にも<ruby>手伝っ<rt>てつだっ</rt></ruby>てくれました。", "jp_plain": "彼女は親切にも手伝ってくれました。", "en": "She was kind enough to help me.", "source": "corpus"}}, {"pattern": "～なければなりません", "category": "Obligation", "formation": "Verb ない-form (drop い) + ければなりません", "meaning": "States that something must be done, \"have to ~\".", "sentence": {"jp_html": "<ruby>行か<rt>いか</rt></ruby>なければなりませんか。", "jp_plain": "行かなければなりませんか。", "en": "Ought I to go?", "source": "corpus"}}, {"pattern": "～なくてもいいです", "category": "Obligation", "formation": "Verb ない-form (drop い) + くてもいいです", "meaning": "States that something is not required, \"don't have to ~\".", "sentence": {"jp_html": "<ruby>今日<rt>きょう</rt></ruby>は<ruby>宿題<rt>しゅくだい</rt></ruby>をしなくてもいいです。", "jp_plain": "今日は宿題をしなくてもいいです。", "en": "I don't have to do homework today.", "source": "original"}}, {"pattern": "～ことができます", "category": "Ability", "formation": "Verb dictionary form + ことができます", "meaning": "Expresses that someone is able to do something.", "sentence": {"jp_html": "<ruby>私<rt>わたくし</rt></ruby>はここで<ruby>泳ぐ<rt>およぐ</rt></ruby>ことができます。", "jp_plain": "私はここで泳ぐことができます。", "en": "I am able to swim here.", "source": "corpus"}}, {"pattern": "～たことがあります", "category": "Ability", "formation": "Verb た-form + ことがあります", "meaning": "Says someone has had the experience of doing something at some point.", "sentence": {"jp_html": "<ruby>一<rt>いち</rt></ruby><ruby>度<rt>ど</rt></ruby>、<ruby>日本<rt>にっぽん</rt></ruby>へ<ruby>行っ<rt>いっ</rt></ruby>たことがあります。", "jp_plain": "一度、日本へ行ったことがあります。", "en": "I have been to Japan once.", "source": "original"}}, {"pattern": "～たり～たりします", "category": "Ability", "formation": "Verb た-form + り + Verb た-form + り + します", "meaning": "Lists a few example actions out of several that someone does, without full detail.", "sentence": {"jp_html": "<ruby>週末<rt>しゅうまつ</rt></ruby>は<ruby>音楽<rt>おんがく</rt></ruby>を<ruby>聞い<rt>きい</rt></ruby>たり<ruby>本<rt>ほん</rt></ruby>を<ruby>読ん<rt>よん</rt></ruby>だりします。", "jp_plain": "週末は音楽を聞いたり本を読んだりします。", "en": "On weekends I do things like listen to music and read books.", "source": "original"}}, {"pattern": "～たあとで", "category": "Time", "formation": "Verb た-form + あとで", "meaning": "Says something happens after another action is completed.", "sentence": {"jp_html": "<ruby>食事<rt>しょくじ</rt></ruby>をしたあとで、<ruby>散歩<rt>さんぽ</rt></ruby>します。", "jp_plain": "食事をしたあとで、散歩します。", "en": "After eating, I go for a walk.", "source": "original"}}, {"pattern": "～まえに", "category": "Time", "formation": "Verb dictionary form + まえに / Noun + の + まえに", "meaning": "Says something happens before another action or point in time.", "sentence": {"jp_html": "<ruby>寝る<rt>ねる</rt></ruby>まえに、<ruby>歯<rt>は</rt></ruby>を<ruby>磨き<rt>みがき</rt></ruby>ます。", "jp_plain": "寝るまえに、歯を磨きます。", "en": "I brush my teeth before going to bed.", "source": "original"}}, {"pattern": "～とき", "category": "Time", "formation": "Verb/Adjective plain form + とき / Noun + の + とき", "meaning": "Marks the time or situation \"when ~\" something happens.", "sentence": {"jp_html": "<ruby>暇<rt>ひま</rt></ruby>なとき、<ruby>映画<rt>えいが</rt></ruby>を<ruby>見<rt>み</rt></ruby>ます。", "jp_plain": "暇なとき、映画を見ます。", "en": "When I'm free, I watch movies.", "source": "original"}}, {"pattern": "～は～より", "category": "Comparison", "formation": "A + は + B + より + Adjective", "meaning": "Compares two things, \"A is more ~ than B\".", "sentence": {"jp_html": "この<ruby>犬<rt>いぬ</rt></ruby>はあの<ruby>犬<rt>いぬ</rt></ruby>より<ruby>大きい<rt>おおきい</rt></ruby>です。", "jp_plain": "この犬はあの犬より大きいです。", "en": "This dog is bigger than that dog.", "source": "original"}}, {"pattern": "～のほうが～より", "category": "Comparison", "formation": "A + のほうが + B + より + Adjective", "meaning": "Says A is preferred or more so, comparing it directly against B.", "sentence": {"jp_html": "コーヒーより<ruby>紅茶<rt>こうちゃ</rt></ruby>のほうが<ruby>好き<rt>すき</rt></ruby>です。", "jp_plain": "コーヒーより紅茶のほうが好きです。", "en": "I like tea more than coffee.", "source": "original"}}, {"pattern": "～と～と、どちらが～", "category": "Comparison", "formation": "A + と + B + と、どちらが + Adjective + ですか", "meaning": "Asks which of two things has more of a quality, \"between A and B, which is ~?\".", "sentence": {"jp_html": "<ruby>肉<rt>にく</rt></ruby>と<ruby>魚<rt>さかな</rt></ruby>どちらが<ruby>好き<rt>すき</rt></ruby>ですか。", "jp_plain": "肉と魚どちらが好きですか。", "en": "Which do you like better, meat or fish?", "source": "corpus"}}, {"pattern": "～すぎます", "category": "Comparison", "formation": "Verb stem / Adjective stem + すぎます", "meaning": "Says something is done or is \"too much\" of a quality, going beyond a good amount.", "sentence": {"jp_html": "<ruby>昨日<rt>きのう</rt></ruby>、<ruby>食べ<rt>たべ</rt></ruby>すぎました。", "jp_plain": "昨日、食べすぎました。", "en": "I ate too much yesterday.", "source": "original"}}, {"pattern": "～やすい／にくい", "category": "Comparison", "formation": "Verb stem + やすい/にくい", "meaning": "Describes something as easy (やすい) or hard (にくい) to do.", "sentence": {"jp_html": "この<ruby>本<rt>ほん</rt></ruby>は<ruby>分かり<rt>わかり</rt></ruby>やすいです。", "jp_plain": "この本は分かりやすいです。", "en": "This book is easy to understand.", "source": "original"}}, {"pattern": "～ほうがいいです", "category": "Comparison", "formation": "Verb た-form + ほうがいいです", "meaning": "Gives friendly advice, \"it would be better to ~\".", "sentence": {"jp_html": "<ruby>早く<rt>はやく</rt></ruby><ruby>寝<rt>ね</rt></ruby>たほうがいいです。", "jp_plain": "早く寝たほうがいいです。", "en": "You'd better go to bed early.", "source": "original"}}, {"pattern": "～でしょう", "category": "Conjecture", "formation": "Plain form + でしょう", "meaning": "Expresses a guess about the future or something uncertain, \"probably ~\".", "sentence": {"jp_html": "<ruby>明日<rt>あす</rt></ruby>は<ruby>晴れる<rt>はれる</rt></ruby>でしょうか。", "jp_plain": "明日は晴れるでしょうか。", "en": "Will it be fine tomorrow?", "source": "corpus"}}, {"pattern": "～かもしれません", "category": "Conjecture", "formation": "Plain form + かもしれません", "meaning": "Expresses a weaker possibility than でしょう, \"might ~\".", "sentence": {"jp_html": "<ruby>午後<rt>ごご</rt></ruby>は<ruby>雨<rt>あめ</rt></ruby>が<ruby>降る<rt>ふる</rt></ruby>かもしれません。", "jp_plain": "午後は雨が降るかもしれません。", "en": "It might rain in the afternoon.", "source": "original"}}, {"pattern": "～つもりです", "category": "Conjecture", "formation": "Verb dictionary/ない form + つもりです", "meaning": "States an intention or plan, \"I intend to ~\".", "sentence": {"jp_html": "<ruby>私<rt>わたくし</rt></ruby>は<ruby>来年<rt>らいねん</rt></ruby><ruby>留学<rt>りゅうがく</rt></ruby>するつもりです。", "jp_plain": "私は来年留学するつもりです。", "en": "I intend to study abroad next year.", "source": "corpus"}}, {"pattern": "～と思います", "category": "Conjecture", "formation": "Plain form + と思います", "meaning": "Introduces the speaker's own opinion or thought, \"I think that ~\".", "sentence": {"jp_html": "それでいいと<ruby>思い<rt>おもい</rt></ruby>ます。", "jp_plain": "それでいいと思います。", "en": "It may be all right.", "source": "corpus"}}, {"pattern": "～という", "category": "Conjecture", "formation": "Noun/Plain form + という + Noun", "meaning": "Introduces or names something, \"the thing/person called ~\".", "sentence": {"jp_html": "「<ruby>七<rt>なな</rt></ruby><ruby>人<rt>にん</rt></ruby>の<ruby>侍<rt>さむらい</rt></ruby>」という<ruby>映画<rt>えいが</rt></ruby>を<ruby>見<rt>み</rt></ruby>ました。", "jp_plain": "「七人の侍」という映画を見ました。", "en": "I watched a movie called \"Seven Samurai\".", "source": "original"}}, {"pattern": "～たら", "category": "Conditionals", "formation": "Verb/Adjective た-form + ら", "meaning": "A flexible \"if/when ~\" conditional, often used for a specific one-time situation.", "sentence": {"jp_html": "<ruby>明日<rt>あす</rt></ruby><ruby>雨<rt>あめ</rt></ruby>が<ruby>降っ<rt>ふっ</rt></ruby>たらどうしようか。", "jp_plain": "明日雨が降ったらどうしようか。", "en": "Assuming it rains tomorrow, what should I do?", "source": "corpus"}}, {"pattern": "～ば", "category": "Conditionals", "formation": "Verb/Adjective ば-form", "meaning": "A conditional focused on the logical relationship between cause and result, \"if ~\".", "sentence": {"jp_html": "お<ruby>金<rt>かね</rt></ruby>があれば、<ruby>旅行<rt>りょこう</rt></ruby>します。", "jp_plain": "お金があれば、旅行します。", "en": "If I had money, I would travel.", "source": "original"}}, {"pattern": "～なら", "category": "Conditionals", "formation": "Plain form + なら", "meaning": "A conditional that reacts to something already said or known, \"if that's the case, then ~\".", "sentence": {"jp_html": "<ruby>日本<rt>にっぽん</rt></ruby>へ<ruby>行く<rt>いく</rt></ruby>なら、<ruby>京都<rt>きょうと</rt></ruby>がおすすめです。", "jp_plain": "日本へ行くなら、京都がおすすめです。", "en": "If you're going to Japan, I recommend Kyoto.", "source": "original"}}, {"pattern": "～と (natural result)", "category": "Conditionals", "formation": "Plain non-past form + と", "meaning": "Says that B always/naturally follows A, like a rule, \"whenever A, then B\".", "sentence": {"jp_html": "<ruby>春<rt>はる</rt></ruby>になると<ruby>川<rt>かわ</rt></ruby>がここであふれる。", "jp_plain": "春になると川がここであふれる。", "en": "Every spring the river floods here.", "source": "corpus"}}, {"pattern": "～から (reason)", "category": "Conditionals", "formation": "Plain form + から", "meaning": "States a direct, personal reason for something, \"because ~\".", "sentence": {"jp_html": "<ruby>疲れ<rt>つかれ</rt></ruby>たから、コーヒーカップに<ruby>乗っ<rt>のっ</rt></ruby>てゆっくりしたいです。", "jp_plain": "疲れたから、コーヒーカップに乗ってゆっくりしたいです。", "en": "I'm tired. I just want to go on the teacup ride and take it easy.", "source": "corpus"}}, {"pattern": "～ので", "category": "Conditionals", "formation": "Plain form + ので", "meaning": "States a reason more softly and objectively than から, common in polite speech.", "sentence": {"jp_html": "<ruby>雨<rt>あめ</rt></ruby>なので、<ruby>傘<rt>かさ</rt></ruby>を<ruby>持っ<rt>もっ</rt></ruby>て<ruby>行き<rt>いき</rt></ruby>ます。", "jp_plain": "雨なので、傘を持って行きます。", "en": "Since it's raining, I'll take an umbrella.", "source": "original"}}, {"pattern": "～けど／けれども", "category": "Conditionals", "formation": "Plain/polite form + けど/けれども", "meaning": "Connects two ideas in contrast, \"but/although ~\".", "sentence": {"jp_html": "このかばんは<ruby>安い<rt>やすい</rt></ruby>けど、<ruby>丈夫<rt>じょうぶ</rt></ruby>です。", "jp_plain": "このかばんは安いけど、丈夫です。", "en": "This bag is cheap, but it's sturdy.", "source": "original"}}, {"pattern": "～し", "category": "Conditionals", "formation": "Plain form + し", "meaning": "Lists two or more reasons or facts, adding them up, \"and also ~\".", "sentence": {"jp_html": "このアパートは<ruby>安い<rt>やすい</rt></ruby>し、<ruby>駅<rt>えき</rt></ruby>にも<ruby>近い<rt>ちかい</rt></ruby>です。", "jp_plain": "このアパートは安いし、駅にも近いです。", "en": "This apartment is cheap, and it's also close to the station.", "source": "original"}}, {"pattern": "～でも", "category": "Conditionals", "formation": "Sentence. + でも、Sentence", "meaning": "Connects two sentences in contrast, \"but/however\".", "sentence": {"jp_html": "<ruby>雨<rt>あめ</rt></ruby>です。でも、<ruby>出かけ<rt>でかけ</rt></ruby>ます。", "jp_plain": "雨です。でも、出かけます。", "en": "It's raining. But I'm going out anyway.", "source": "original"}}, {"pattern": "～があります／います", "category": "Existence", "formation": "Noun + が + あります(things)/います(living things)", "meaning": "States that something or someone exists, or that the speaker has something.", "sentence": {"jp_html": "テーブルの<ruby>上<rt>うえ</rt></ruby>に<ruby>猫<rt>ねこ</rt></ruby>がいますか。", "jp_plain": "テーブルの上に猫がいますか。", "en": "Is there a cat on the table?", "source": "corpus"}}, {"pattern": "～は～にあります／います", "category": "Existence", "formation": "Noun + は + Place + に + あります/います", "meaning": "States where a specific thing or person is located.", "sentence": {"jp_html": "<ruby>本<rt>ほん</rt></ruby>は<ruby>机<rt>つくえ</rt></ruby>の<ruby>上<rt>うえ</rt></ruby>にあります。", "jp_plain": "本は机の上にあります。", "en": "The book is on the desk.", "source": "original"}}, {"pattern": "～は～が (double subject)", "category": "Existence", "formation": "Noun(topic) + は + Noun + が + Adjective/Verb", "meaning": "Uses は for the overall topic and が for what specifically has the quality, common with 好き/上手/分かる, \"as for A, B is ~\".", "sentence": {"jp_html": "<ruby>彼<rt>かれ</rt></ruby>は<ruby>日本<rt>にっぽん</rt></ruby><ruby>語<rt>ご</rt></ruby>が<ruby>上手<rt>じょうず</rt></ruby>です。", "jp_plain": "彼は日本語が上手です。", "en": "He is good at Japanese.", "source": "original"}}, {"pattern": "い形容詞の活用", "category": "Adjectives", "formation": "い-adjective: stem+い / stem+くない / stem+かった / stem+くなかった", "meaning": "Shows how い-adjectives change for present, negative, and past without needing です to carry the tense.", "sentence": {"jp_html": "<ruby>楽しかっ<rt>たのしかっ</rt></ruby>たですか。", "jp_plain": "楽しかったですか。", "en": "Did you have a good time?", "source": "corpus"}}, {"pattern": "な形容詞の活用", "category": "Adjectives", "formation": "な-adjective + だ/です, +じゃない, +だった, +じゃなかった", "meaning": "Shows how な-adjectives change for present, negative, and past, using です/だ instead of changing the ending.", "sentence": {"jp_html": "この<ruby>部屋<rt>へや</rt></ruby>は<ruby>静か<rt>しずか</rt></ruby>じゃなかったです。", "jp_plain": "この部屋は静かじゃなかったです。", "en": "This room wasn't quiet.", "source": "original"}}, {"pattern": "～くなります／になります", "category": "Adjectives", "formation": "い-adj stem+くなります / な-adj/Noun+になります", "meaning": "Describes a change of state, \"becomes ~\".", "sentence": {"jp_html": "たいへん<ruby>暖かく<rt>あたたかく</rt></ruby>なりました。", "jp_plain": "たいへん暖かくなりました。", "en": "It has become very warm.", "source": "corpus"}}, {"pattern": "～をください", "category": "Requests", "formation": "Noun + をください", "meaning": "A simple, polite way to ask for something, \"please give me ~\".", "sentence": {"jp_html": "<ruby>水<rt>みず</rt></ruby>をください。", "jp_plain": "水をください。", "en": "Some water, please.", "source": "corpus"}}, {"pattern": "～んです", "category": "Expressions", "formation": "Plain form + んです", "meaning": "Adds an explanatory tone, hinting at a reason or background the listener doesn't know yet.", "sentence": {"jp_html": "<ruby>電車<rt>でんしゃ</rt></ruby>が１<ruby>時間<rt>じかん</rt></ruby><ruby>遅れ<rt>おくれ</rt></ruby>たんです。", "jp_plain": "電車が１時間遅れたんです。", "en": "The train was delayed for an hour.", "source": "corpus"}}, {"pattern": "～のが／のは (nominalizer)", "category": "Expressions", "formation": "Verb dictionary form + の + が/は", "meaning": "Turns a verb phrase into a noun so it can be the subject or topic, \"~ing (is)\".", "sentence": {"jp_html": "<ruby>彼<rt>かれ</rt></ruby>は<ruby>泳ぐ<rt>およぐ</rt></ruby>のが<ruby>好き<rt>すき</rt></ruby>です。", "jp_plain": "彼は泳ぐのが好きです。", "en": "He is fond of swimming.", "source": "corpus"}}];
+var CAT_COLORS = {"Particles": "#BE185D", "Verb Forms": "#2563EB", "Te-form": "#0891B2", "Obligation": "#B91C1C", "Ability": "#059669", "Time": "#7C3AED", "Comparison": "#D97706", "Conjecture": "#4338CA", "Conditionals": "#d62828", "Existence": "#65A30D", "Adjectives": "#DB2777", "Requests": "#EA580C", "Expressions": "#78716C", "Passive/Causative": "#DC2626", "Change & Decision": "#2563EB", "Purpose & Reason": "#059669", "Conditionals+": "#d62828", "Honorifics": "#7C3AED", "Wishes & Requests": "#DB2777", "Negative Forms": "#B91C1C", "Volitional & Command": "#EA580C", "Casual Speech": "#CA8A04", "Aspect": "#0891B2", "Embedded Questions": "#4338CA"};
+var STORAGE_KEY = 'n5grammarstudy_learned';
+
+function safeGet(key){ try{ return JSON.parse(localStorage.getItem(key) || '{}'); }catch(e){ return {}; } }
+function safeSet(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+function wid(w){ return w.pattern; }
+var learned = safeGet(STORAGE_KEY);
+
+function speakJP(text){
+  if (!text) return;
+  if (!('speechSynthesis' in window)){ alert('Text-to-speech is not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text.replace(/[~～]/g,''));
+  u.lang = 'ja-JP'; u.rate = 0.85;
+  window.speechSynthesis.speak(u);
+}
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('view-' + btn.dataset.view).classList.add('active');
+  });
+});
+document.querySelectorAll('.ptab').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.ptab').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.ppanel').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('ppanel-' + btn.dataset.ptab).classList.add('active');
+  });
+});
+
+/* ---------- Progress ---------- */
+function updateProgress(){
+  var total = DATA.length;
+  var n = Object.keys(learned).filter(function(k){ return learned[k]; }).length;
+  var pct = total ? Math.round(n/total*100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = n + ' / ' + total + ' learned';
+}
+
+/* ---------- Category filter chips ---------- */
+var catSet = {};
+DATA.forEach(function(w){ if (w.category) catSet[w.category] = true; });
+var catList = Object.keys(catSet).sort();
+var currentCat = 'all';
+var catFilterWrap = document.getElementById('cat-filters');
+var allChip = document.createElement('button');
+allChip.className = 'cat-chip active'; allChip.textContent = 'All categories'; allChip.dataset.cat = 'all';
+allChip.style.background = 'var(--ink)'; allChip.style.color = '#fff';
+catFilterWrap.appendChild(allChip);
+catList.forEach(function(p){
+  var chip = document.createElement('button');
+  chip.className = 'cat-chip';
+  chip.textContent = p;
+  chip.dataset.cat = p;
+  chip.style.borderColor = CAT_COLORS[p] || '#999';
+  catFilterWrap.appendChild(chip);
+});
+catFilterWrap.addEventListener('click', function(e){
+  var chip = e.target.closest('.cat-chip');
+  if (!chip) return;
+  currentCat = chip.dataset.cat;
+  document.querySelectorAll('.cat-chip').forEach(function(c){
+    c.classList.remove('active');
+    c.style.background = '#fff'; c.style.color = 'var(--muted)';
+  });
+  chip.classList.add('active');
+  var color = currentCat === 'all' ? 'var(--ink)' : (CAT_COLORS[currentCat] || '#999');
+  chip.style.background = color; chip.style.color = '#fff';
+  renderTable();
+});
+
+/* ---------- Table ---------- */
+var currentFilter = 'all';
+var currentSearch = '';
+
+function matchesSearch(w, q){
+  if (!q) return true;
+  q = q.toLowerCase();
+  if (w.pattern.toLowerCase().indexOf(q) !== -1) return true;
+  if (w.meaning.toLowerCase().indexOf(q) !== -1) return true;
+  if (w.category.toLowerCase().indexOf(q) !== -1) return true;
+  if (w.formation.toLowerCase().indexOf(q) !== -1) return true;
+  return false;
+}
+
+function renderTable(){
+  var tbody = document.getElementById('grammar-tbody');
+  tbody.innerHTML = '';
+  var items = DATA.filter(function(w){
+    var id = wid(w);
+    if (currentFilter === 'learned' && !learned[id]) return false;
+    if (currentFilter === 'unlearned' && learned[id]) return false;
+    if (currentCat !== 'all' && w.category !== currentCat) return false;
+    return matchesSearch(w, currentSearch);
+  });
+  document.getElementById('result-count').textContent = items.length + ' pattern' + (items.length===1?'':'s');
+  if (!items.length){
+    tbody.innerHTML = '<tr><td colspan="6"><div class="empty-msg">No grammar points match your search/filter.</div></td></tr>';
+    return;
+  }
+  var frag = document.createDocumentFragment();
+  items.forEach(function(w){
+    var id = wid(w);
+    var tr = document.createElement('tr');
+    tr.className = learned[id] ? 'learned' : '';
+    tr.dataset.id = id;
+
+    var catColor = CAT_COLORS[w.category] || '#6B7280';
+    var catBadge = '<span class="cat-badge" style="background:' + catColor + '">' + w.category + '</span>';
+
+    tr.innerHTML =
+      '<td class="col-check"><input type="checkbox" class="learn-check"' + (learned[id] ? ' checked' : '') + '></td>' +
+      '<td class="col-pattern"><div class="pattern-cell"><button class="spk" data-speak="' + w.pattern.replace(/"/g,'&quot;') + '">🔊</button>' + w.pattern + '</div></td>' +
+      '<td>' + catBadge + '</td>' +
+      '<td class="col-meaning">' + w.meaning + '</td>' +
+      '<td class="col-formation">' + w.formation + '</td>' +
+      '<td class="col-sentence">' + (w.sentence ? (
+        '<div class="sent-row"><button data-speak="' + w.sentence.jp_plain.replace(/"/g,'&quot;') + '">🔊</button>' +
+        '<div><div class="sent-jp jp">' + w.sentence.jp_html + '</div><div class="sent-en">' + w.sentence.en + '</div></div></div>'
+      ) : '') + '</td>';
+    frag.appendChild(tr);
+  });
+  tbody.appendChild(frag);
+}
+
+document.getElementById('search').addEventListener('input', function(e){
+  currentSearch = e.target.value.trim();
+  renderTable();
+});
+document.querySelectorAll('.filter-chip').forEach(function(chip){
+  chip.addEventListener('click', function(){
+    document.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+    chip.classList.add('active');
+    currentFilter = chip.dataset.filter;
+    renderTable();
+  });
+});
+
+document.getElementById('grammar-tbody').addEventListener('click', function(e){
+  var spk = e.target.closest('[data-speak]');
+  if (spk){ speakJP(spk.getAttribute('data-speak')); return; }
+  var check = e.target.closest('.learn-check');
+  if (check){
+    var tr = check.closest('tr');
+    var id = tr.dataset.id;
+    learned[id] = check.checked;
+    safeSet(STORAGE_KEY, learned);
+    tr.classList.toggle('learned', check.checked);
+    updateProgress();
+  }
+});
+
+/* ---------- Flashcards ---------- */
+var flashOrder = DATA.map(function(_, i){ return i; });
+var flashIdx = 0, flashFlipped = false;
+
+function renderFlash(){
+  var w = DATA[flashOrder[flashIdx]];
+  flashFlipped = false;
+  document.getElementById('flash-front').style.display = 'block';
+  document.getElementById('flash-back').style.display = 'none';
+  document.getElementById('flash-badge').textContent = (flashIdx + 1) + ' / ' + DATA.length;
+  var catColor = CAT_COLORS[w.category] || '#6B7280';
+  document.getElementById('flash-cat').innerHTML = '<span class="cat-badge" style="background:' + catColor + '">' + w.category + '</span>';
+  document.getElementById('flash-main').textContent = w.pattern;
+  document.getElementById('flash-formation').textContent = w.formation;
+  document.getElementById('flash-meaning').textContent = w.meaning;
+  document.getElementById('flash-sentence').innerHTML = w.sentence ? w.sentence.jp_html : '';
+  document.getElementById('flash-sentence-en').textContent = w.sentence ? w.sentence.en : '';
+  document.getElementById('flash-progress').textContent = (flashIdx + 1) + ' / ' + DATA.length;
+}
+document.getElementById('flashcard').addEventListener('click', function(){
+  flashFlipped = !flashFlipped;
+  document.getElementById('flash-front').style.display = flashFlipped ? 'none' : 'block';
+  document.getElementById('flash-back').style.display = flashFlipped ? 'block' : 'none';
+});
+document.getElementById('flash-next').addEventListener('click', function(){
+  flashIdx = (flashIdx + 1) % DATA.length; renderFlash();
+});
+document.getElementById('flash-prev').addEventListener('click', function(){
+  flashIdx = (flashIdx - 1 + DATA.length) % DATA.length; renderFlash();
+});
+document.getElementById('flash-shuffle').addEventListener('click', function(){
+  for (var i = flashOrder.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = flashOrder[i]; flashOrder[i] = flashOrder[j]; flashOrder[j] = tmp;
+  }
+  flashIdx = 0; renderFlash();
+});
+renderFlash();
+
+/* ---------- MCQ Quiz ---------- */
+var mcqScore = 0;
+function buildQuiz(){
+  var pool = DATA.slice();
+  for (var i = pool.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+  }
+  var qCount = Math.min(20, DATA.length);
+  var questions = pool.slice(0, qCount);
+  mcqScore = 0;
+  document.getElementById('mcq-score').textContent = 0;
+  document.getElementById('mcq-total-inline').textContent = qCount;
+  var list = document.getElementById('mcq-list');
+  list.innerHTML = '';
+  questions.forEach(function(w){
+    var correct = w.meaning;
+    var distractors = [];
+    var others = DATA.filter(function(d){ return d.meaning !== w.meaning; });
+    for (var i = others.length - 1; i > 0 && distractors.length < 40; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = others[i]; others[i] = others[j]; others[j] = tmp;
+    }
+    var seen = {}; seen[correct.toLowerCase()] = true;
+    for (var k = 0; k < others.length && distractors.length < 3; k++){
+      var m = others[k].meaning;
+      if (m && !seen[m.toLowerCase()]){ distractors.push(m); seen[m.toLowerCase()] = true; }
+    }
+    var opts = distractors.concat([correct]);
+    for (var i = opts.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = opts[i]; opts[i] = opts[j]; opts[j] = tmp;
+    }
+    var card = document.createElement('div');
+    card.className = 'q-card';
+    card.dataset.correct = correct;
+    var optsHtml = opts.map(function(o){
+      return '<div class="q-opt" data-val="' + o.replace(/"/g,'&quot;') + '">' + o + '</div>';
+    }).join('');
+    card.innerHTML =
+      '<div class="q-word jp">' + w.pattern + '</div>' +
+      '<div class="q-sub">' + w.category + ' · ' + w.formation + '</div>' +
+      '<div class="q-opts">' + optsHtml + '</div>';
+    list.appendChild(card);
+  });
+}
+document.getElementById('mcq-new').addEventListener('click', buildQuiz);
+document.getElementById('mcq-list').addEventListener('click', function(e){
+  var opt = e.target.closest('.q-opt');
+  if (!opt) return;
+  var card = opt.closest('.q-card');
+  if (card.classList.contains('answered')) return;
+  var chosen = opt.dataset.val;
+  var correct = card.dataset.correct;
+  card.classList.add('answered');
+  card.querySelectorAll('.q-opt').forEach(function(o){
+    if (o.dataset.val === correct) o.classList.add('correct');
+    else if (o.dataset.val === chosen) o.classList.add('wrong');
+  });
+  if (chosen === correct){ mcqScore++; document.getElementById('mcq-score').textContent = mcqScore; }
+});
+buildQuiz();
+
+renderTable();
+updateProgress();
+</script>
+</body>
+</html>

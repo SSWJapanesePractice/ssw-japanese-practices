@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>N4 Grammar Study — Japanese with Raza Sensei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --primary:#12395d; --primary-dark:#0b2945; --primary-light:#315E7F;
+  --accent:#d62828; --accent-dark:#b91f1f;
+  --ink:#1F2937; --muted:#6B7280; --border:#E5E7EB; --paper:#f7f9fc; --card:#FFFFFF;
+  --good:#059669; --bad:#DC2626; --radius:18px; --shadow:0 4px 18px rgba(31,41,55,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{font-family:'Inter',-apple-system,sans-serif; background:var(--paper); color:var(--ink); line-height:1.5;}
+.jp{font-family:'Noto Sans JP','Inter',sans-serif;}
+.display{font-family:'Baloo 2','Inter',sans-serif;}
+ruby rt{font-size:0.55em; color:var(--muted); font-weight:700;}
+button{font-family:inherit;}
+::-webkit-scrollbar{width:10px; height:10px;}
+::-webkit-scrollbar-thumb{background:var(--primary-light); border-radius:10px;}
+
+#topbar{position:sticky; top:0; z-index:30; background:linear-gradient(135deg,var(--primary) 0%, var(--primary-dark) 100%); color:#fff; padding:16px 22px; box-shadow:0 2px 14px rgba(0,0,0,0.15);}
+.topbar-inner{max-width:1240px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;}
+.brand{display:flex; align-items:center; gap:12px;}
+.brand .logo{font-size:34px; filter:drop-shadow(0 2px 3px rgba(0,0,0,0.2));}
+.brand-text{font-family:'Baloo 2'; font-weight:800; font-size:22px; line-height:1.15;}
+.brand-text small{display:block; font-weight:600; font-size:12.5px; color:rgba(255,255,255,0.85); font-family:'Inter';}
+#tabs{display:flex; gap:8px;}
+.tab-btn{padding:10px 20px; border-radius:30px; border:2px solid rgba(255,255,255,0.35); background:rgba(255,255,255,0.12); color:#fff; font-weight:700; font-size:14px; cursor:pointer; transition:.15s;}
+.tab-btn.active{background:#fff; color:var(--primary-dark); border-color:#fff;}
+.tab-btn:hover:not(.active){background:rgba(255,255,255,0.22);}
+
+#progress-band{background:#fff; border-bottom:1px solid var(--border); padding:12px 22px;}
+.progress-inner{max-width:1240px; margin:0 auto; display:flex; align-items:center; gap:14px;}
+.progress-track{flex:1; height:12px; background:#EEF1F4; border-radius:8px; overflow:hidden;}
+.progress-fill{height:100%; background:linear-gradient(90deg,var(--accent),var(--primary)); width:0%; transition:width .4s;}
+.progress-label{font-size:13px; font-weight:700; color:var(--muted); white-space:nowrap;}
+
+#content{max-width:1240px; margin:0 auto; padding:22px 20px 90px 20px;}
+.view{display:none;}
+.view.active{display:block;}
+
+.hero{background:linear-gradient(135deg,var(--primary) 0%, var(--primary-dark) 100%); color:#fff; border-radius:26px; padding:30px 32px; margin-bottom:22px; position:relative; overflow:hidden;}
+.hero::after{content:"📋"; position:absolute; right:10px; bottom:-30px; font-size:150px; opacity:0.18; transform:rotate(-10deg);}
+.hero h1{font-family:'Baloo 2'; margin:0 0 6px 0; font-size:28px; font-weight:800;}
+.hero p{margin:0; color:rgba(255,255,255,0.92); font-size:14.5px; max-width:680px;}
+
+.controls{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px; align-items:center;}
+#search{flex:1; min-width:220px; padding:14px 18px; border-radius:16px; border:2px solid var(--border); font-size:15px; background:#fff;}
+#search:focus{outline:none; border-color:var(--primary);}
+.filter-chip{padding:9px 16px; border-radius:20px; border:2px solid var(--border); background:#fff; font-size:13px; font-weight:700; color:var(--muted); cursor:pointer;}
+.filter-chip.active{background:var(--primary); border-color:var(--primary); color:#fff;}
+#cat-filters{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+.cat-chip{padding:6px 13px; border-radius:16px; border:2px solid var(--border); background:#fff; font-size:11.5px; font-weight:800; color:var(--muted); cursor:pointer; text-transform:uppercase; letter-spacing:.02em;}
+.cat-chip.active{color:#fff; border-color:transparent;}
+
+.table-wrap{background:var(--card); border-radius:22px; box-shadow:var(--shadow); border:1px solid var(--border); overflow-x:auto;}
+table{border-collapse:collapse; width:100%; min-width:960px;}
+thead th{position:sticky; top:0; background:var(--primary); color:#fff; text-align:left; padding:13px 14px; font-size:12px; text-transform:uppercase; letter-spacing:.04em; font-weight:800; white-space:nowrap;}
+tbody tr{border-bottom:1px solid var(--border);}
+tbody tr:hover{background:#FAFAFB;}
+tbody tr.learned{background:#F0FDF4;}
+td{padding:12px 14px; vertical-align:middle; font-size:14.5px;}
+.col-check{width:40px; text-align:center;}
+.learn-check{width:22px; height:22px; cursor:pointer; accent-color:var(--good);}
+.col-pattern{font-family:'Noto Sans JP'; font-size:18px; font-weight:700; white-space:nowrap; color:var(--primary-dark);}
+.pattern-cell{display:flex; align-items:center; gap:8px;}
+.pattern-cell .spk{border:none; background:var(--accent); color:#fff; width:26px; height:26px; border-radius:50%; font-size:11px; cursor:pointer; flex-shrink:0;}
+.cat-badge{display:inline-block; font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:.03em; padding:2px 7px; border-radius:8px; color:#fff; white-space:nowrap;}
+.col-meaning{min-width:200px; max-width:260px;}
+.col-formation{min-width:190px; max-width:240px; color:var(--muted); font-size:13px;}
+.col-sentence{min-width:280px; max-width:380px;}
+.sent-jp{font-family:'Noto Sans JP'; font-size:14.5px; line-height:2;}
+.sent-en{font-size:12px; color:var(--muted); font-style:italic; margin-top:2px;}
+.sent-row{display:flex; align-items:flex-start; gap:8px;}
+.sent-row button{border:none; background:#EEF1F4; color:var(--primary-dark); width:24px; height:24px; border-radius:50%; font-size:10.5px; cursor:pointer; flex-shrink:0; margin-top:3px;}
+.empty-msg{text-align:center; color:var(--muted); padding:50px 0; font-size:14px;}
+.result-count{font-size:12.5px; color:var(--muted); font-weight:700; margin-bottom:10px;}
+
+/* Practice view */
+.practice-tabs{display:flex; gap:10px; margin-bottom:18px;}
+.ptab{padding:10px 18px; border-radius:14px; border:2px solid var(--border); background:#fff; font-weight:700; font-size:13.5px; cursor:pointer; color:var(--muted);}
+.ptab.active{background:var(--primary); border-color:var(--primary); color:#fff;}
+.ppanel{display:none;}
+.ppanel.active{display:block;}
+
+#flash-stage{display:flex; flex-direction:column; align-items:center; gap:16px;}
+.flashcard{width:100%; max-width:480px; min-height:250px; background:var(--card); border-radius:22px; box-shadow:var(--shadow); border:2px solid var(--border); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px 24px; cursor:pointer; text-align:center; position:relative;}
+.flashcard .badge{position:absolute; top:14px; left:16px; font-size:11px; color:var(--muted); background:#EEF1F4; padding:3px 10px; border-radius:20px; font-weight:700;}
+.flashcard .fc-cat{position:absolute; top:14px; right:16px;}
+.flashcard .fc-main{font-family:'Noto Sans JP'; font-size:34px; font-weight:700;}
+.flashcard .fc-formation{color:var(--muted); font-style:italic; margin-top:10px; font-size:14px;}
+.flashcard .fc-meaning{font-family:'Baloo 2'; font-size:19px; color:var(--primary-dark); font-weight:700; margin-top:10px;}
+.flashcard .fc-sentence{font-family:'Noto Sans JP'; font-size:15px; margin-top:14px; line-height:1.9;}
+.flashcard .fc-sentence-en{font-size:12px; color:var(--muted); font-style:italic; margin-top:4px;}
+.flashcard .hint{position:absolute; bottom:12px; font-size:11px; color:#9CA3AF;}
+.flash-controls{display:flex; gap:10px;}
+.btn{padding:12px 20px; border-radius:14px; border:none; font-size:13.5px; font-weight:700; cursor:pointer; background:var(--primary); color:#fff;}
+.btn.secondary{background:#fff; color:var(--primary-dark); border:2px solid var(--border);}
+.btn.accent{background:var(--accent); color:#fff;}
+#flash-progress{font-size:12.5px; color:var(--muted); font-weight:700;}
+
+.q-card{background:var(--card); border:2px solid var(--border); border-radius:20px; padding:22px 24px; margin-bottom:16px; box-shadow:var(--shadow); text-align:center;}
+.q-card .q-word{font-family:'Noto Sans JP'; font-size:30px; font-weight:700; margin-bottom:6px;}
+.q-card .q-sub{font-size:13px; color:var(--muted); margin-bottom:14px;}
+.q-opts{display:grid; grid-template-columns:1fr 1fr; gap:10px; max-width:560px; margin:0 auto;}
+@media(max-width:520px){.q-opts{grid-template-columns:1fr;}}
+.q-opt{padding:12px 14px; border-radius:12px; border:2px solid var(--border); cursor:pointer; background:#fff; font-size:13.5px; font-weight:600;}
+.q-opt:hover{border-color:var(--primary-light);}
+.q-card.answered .q-opt{cursor:default; pointer-events:none;}
+.q-card.answered .q-opt.correct{background:#D1FAE5; border-color:var(--good); color:#065F46;}
+.q-card.answered .q-opt.wrong{background:#FEE2E2; border-color:var(--bad); color:#991B1B;}
+#quiz-summary{display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; background:var(--card); border-radius:16px; padding:14px 18px; box-shadow:var(--shadow); flex-wrap:wrap; gap:10px;}
+#quiz-summary b{font-size:20px; color:var(--primary-dark);}
+
+.footer-credit{text-align:center; color:var(--muted); font-size:11.5px; margin:40px 0 10px 0; line-height:1.6;}
+
+@media(max-width:700px){
+  .brand-text{font-size:18px;}
+  .hero{padding:24px 20px;}
+  .hero h1{font-size:22px;}
+  table{min-width:820px;}
+}
+</style>
+</head>
+<body>
+
+<div id="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="logo">📋</span><div class="brand-text">N4 Grammar Study<small>Japanese with Raza Sensei</small></div></div>
+    <div id="tabs">
+      <button class="tab-btn active" data-view="learn">\U0001F4DA Grammar</button>
+      <button class="tab-btn" data-view="practice">\U0001F3AF Practice</button>
+    </div>
+  </div>
+</div>
+<div id="progress-band">
+  <div class="progress-inner">
+    <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+    <div class="progress-label" id="progress-label">0 / 60 learned</div>
+  </div>
+</div>
+
+<div id="content">
+  <div class="view active" id="view-learn">
+    <div class="hero">
+      <h1>N4 Grammar Study</h1>
+      <p>JLPT N4 — new grammar points beyond N5 — every pattern with its English meaning, how to form it, and one simple example sentence with furigana and audio.</p>
+    </div>
+    <div class="controls">
+      <input id="search" type="text" placeholder="\U0001F50D Search by pattern, meaning, or category...">
+      <button class="filter-chip active" data-filter="all">All 60</button>
+      <button class="filter-chip" data-filter="unlearned">Not yet learned</button>
+      <button class="filter-chip" data-filter="learned">✅ Learned</button>
+    </div>
+    <div id="cat-filters"></div>
+    <div class="result-count" id="result-count"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th class="col-check">✓</th>
+            <th>Pattern</th>
+            <th>Category</th>
+            <th>Meaning</th>
+            <th>Formation</th>
+            <th>Example Sentence</th>
+          </tr>
+        </thead>
+        <tbody id="grammar-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="view" id="view-practice">
+    <div class="hero" style="padding:22px 26px;">
+      <h1 style="font-size:22px;">\U0001F3AF Practice &amp; Quiz</h1>
+      <p>Flip through flashcards, or test yourself with a randomized multiple-choice quiz.</p>
+    </div>
+    <div class="practice-tabs">
+      <button class="ptab active" data-ptab="flash">\U0001F0CF Flashcards</button>
+      <button class="ptab" data-ptab="mcq">\U0001F4DD Quiz</button>
+    </div>
+    <div class="ppanel active" id="ppanel-flash">
+      <div id="flash-stage">
+        <div class="flashcard" id="flashcard">
+          <div class="badge" id="flash-badge">1 / 60</div>
+          <div class="fc-cat" id="flash-cat"></div>
+          <div id="flash-front">
+            <div class="fc-main jp" id="flash-main"></div>
+          </div>
+          <div id="flash-back" style="display:none;">
+            <div class="fc-formation" id="flash-formation"></div>
+            <div class="fc-meaning" id="flash-meaning"></div>
+            <div class="fc-sentence jp" id="flash-sentence"></div>
+            <div class="fc-sentence-en" id="flash-sentence-en"></div>
+          </div>
+          <div class="hint">Tap card to flip</div>
+        </div>
+        <div id="flash-progress"></div>
+        <div class="flash-controls">
+          <button class="btn secondary" id="flash-prev">← Prev</button>
+          <button class="btn accent" id="flash-shuffle">\U0001F500 Shuffle</button>
+          <button class="btn" id="flash-next">Next →</button>
+        </div>
+      </div>
+    </div>
+    <div class="ppanel" id="ppanel-mcq">
+      <div id="quiz-summary">
+        <div><b id="mcq-score">0</b> / <span id="mcq-total-inline">0</span> correct</div>
+        <button class="btn secondary" id="mcq-new">\U0001F504 New Quiz (20 questions)</button>
+      </div>
+      <div id="mcq-list"></div>
+    </div>
+  </div>
+
+  <p class="footer-credit">Japanese with Raza Sensei · N4 Grammar Study · Original study app<br>
+  Grammar points, English meanings, and formation notes written for this app, cross-checked against widely-documented, standardized JLPT curricula · Example sentences from the Tatoeba Project / Tanaka Corpus (CC BY 2.0 FR), furigana generated with MeCab/UniDic · Where no natural corpus sentence fit simply enough, an original example sentence was written for this app instead.</p>
+</div>
+
+<script>
+var DATA = [{"pattern": "～そうです (様態：見た目)", "category": "Conjecture", "formation": "Verb stem / Adjective stem + そうです", "meaning": "Says something looks like it will happen, or looks a certain way, based on appearance.", "sentence": {"jp_html": "<ruby>雨<rt>あめ</rt></ruby>が<ruby>降り<rt>ふり</rt></ruby>そうです。", "jp_plain": "雨が降りそうです。", "en": "It is likely to rain.", "source": "corpus"}}, {"pattern": "～そうです (伝聞：聞いた話)", "category": "Conjecture", "formation": "Plain form + そうです", "meaning": "Reports something the speaker heard from someone else, \"I heard that ~\".", "sentence": {"jp_html": "<ruby>天気<rt>てんき</rt></ruby><ruby>予報<rt>よほう</rt></ruby>によると、<ruby>明日<rt>あす</rt></ruby>は<ruby>雨<rt>あめ</rt></ruby>だそうです。", "jp_plain": "天気予報によると、明日は雨だそうです。", "en": "According to the weather forecast, I heard it will rain tomorrow.", "source": "original"}}, {"pattern": "～ようです", "category": "Conjecture", "formation": "Plain form + ようです", "meaning": "States a conclusion based on what the speaker has observed or felt, \"it seems that ~\".", "sentence": {"jp_html": "<ruby>道<rt>みち</rt></ruby>が<ruby>濡れ<rt>ぬれ</rt></ruby>ています。<ruby>雨<rt>あめ</rt></ruby>が<ruby>降っ<rt>ふっ</rt></ruby>たようです。", "jp_plain": "道が濡れています。雨が降ったようです。", "en": "The road is wet. It seems it rained.", "source": "original"}}, {"pattern": "～みたいです", "category": "Conjecture", "formation": "Plain form (casual) + みたいです", "meaning": "A casual version of ようです, making a guess based on appearances, \"seems/looks like ~\".", "sentence": {"jp_html": "<ruby>外<rt>そと</rt></ruby>は<ruby>雨<rt>あめ</rt></ruby>みたいです。", "jp_plain": "外は雨みたいです。", "en": "It looks like it's raining outside.", "source": "original"}}, {"pattern": "～らしいです", "category": "Conjecture", "formation": "Plain form + らしいです", "meaning": "Reports something the speaker heard, with a nuance that it's based on outside information, \"apparently ~\".", "sentence": {"jp_html": "<ruby>彼<rt>かれ</rt></ruby>は<ruby>来月<rt>らいげつ</rt></ruby><ruby>結婚<rt>けっこん</rt></ruby>するらしいです。", "jp_plain": "彼は来月結婚するらしいです。", "en": "Apparently, he's getting married next month.", "source": "original"}}, {"pattern": "～はずです", "category": "Conjecture", "formation": "Plain form + はずです", "meaning": "Expresses a confident expectation based on logic or known facts, \"should be ~\".", "sentence": {"jp_html": "<ruby>徒歩<rt>とほ</rt></ruby>５<ruby>分<rt>ふん</rt></ruby><ruby>以内<rt>いない</rt></ruby>に<ruby>着く<rt>つく</rt></ruby>はずです。", "jp_plain": "徒歩５分以内に着くはずです。", "en": "You should get there in five minutes walking.", "source": "corpus"}}, {"pattern": "～に違いありません", "category": "Conjecture", "formation": "Plain form + に違いありません", "meaning": "States a strong, near-certain conclusion, \"must be ~\".", "sentence": {"jp_html": "<ruby>彼<rt>かれ</rt></ruby>はゆうべ<ruby>飲み<rt>のみ</rt></ruby>すぎたに<ruby>違い<rt>ちがい</rt></ruby>ありません。", "jp_plain": "彼はゆうべ飲みすぎたに違いありません。", "en": "He must have drunk too much last night.", "source": "corpus"}}, {"pattern": "～わけです", "category": "Conjecture", "formation": "Plain form + わけです", "meaning": "Explains that a natural conclusion follows from the situation, \"that means/no wonder ~\".", "sentence": {"jp_html": "<ruby>彼<rt>かれ</rt></ruby>は<ruby>十<rt>じゅう</rt></ruby><ruby>年<rt>ねん</rt></ruby>アメリカに<ruby>住ん<rt>すん</rt></ruby>でいた。だから<ruby>英語<rt>えいご</rt></ruby>が<ruby>上手<rt>じょうず</rt></ruby>なわけです。", "jp_plain": "彼は十年アメリカに住んでいた。だから英語が上手なわけです。", "en": "He lived in America for ten years. That's why (it makes sense that) he's good at English.", "source": "original"}}, {"pattern": "～わけではありません", "category": "Conjecture", "formation": "Plain form + わけではありません", "meaning": "Softens a negative, saying it's not necessarily/entirely the case, \"it's not that ~\".", "sentence": {"jp_html": "わたしはいつも<ruby>幸福<rt>こうふく</rt></ruby>だったわけではありません。", "jp_plain": "わたしはいつも幸福だったわけではありません。", "en": "I wasn't always happy.", "source": "corpus"}}, {"pattern": "～わけがありません", "category": "Conjecture", "formation": "Plain form + わけがありません", "meaning": "Strongly denies a possibility, \"there's no way that ~\".", "sentence": {"jp_html": "こんな<ruby>高い<rt>たかい</rt></ruby>ものが<ruby>売れる<rt>うれる</rt></ruby>わけがありません。", "jp_plain": "こんな高いものが売れるわけがありません。", "en": "There's no way something this expensive will sell.", "source": "original"}}, {"pattern": "受身形 (～られる／～れる)", "category": "Passive/Causative", "formation": "Verb passive stem + られる/れる", "meaning": "The passive voice: the subject receives the action, \"is done to / gets ~ed\".", "sentence": {"jp_html": "<ruby>先生<rt>せんせい</rt></ruby>に<ruby>褒め<rt>ほめ</rt></ruby>られました。", "jp_plain": "先生に褒められました。", "en": "I was praised by the teacher.", "source": "original"}}, {"pattern": "使役形 (～させる／～せる)", "category": "Passive/Causative", "formation": "Verb causative stem + させる/せる", "meaning": "The causative form: someone makes or lets another person do something.", "sentence": {"jp_html": "<ruby>母<rt>はは</rt></ruby>は<ruby>子供<rt>こども</rt></ruby>に<ruby>野菜<rt>やさい</rt></ruby>を<ruby>食べ<rt>たべ</rt></ruby>させます。", "jp_plain": "母は子供に野菜を食べさせます。", "en": "The mother makes her child eat vegetables.", "source": "original"}}, {"pattern": "使役受身形 (～させられる)", "category": "Passive/Causative", "formation": "Verb causative-passive stem + させられる", "meaning": "The causative-passive: the subject is made to do something against their will.", "sentence": {"jp_html": "<ruby>先生<rt>せんせい</rt></ruby>に<ruby>教室<rt>きょうしつ</rt></ruby>の<ruby>掃除<rt>そうじ</rt></ruby>をさせられました。", "jp_plain": "先生に教室の掃除をさせられました。", "en": "I was made to clean the classroom by the teacher.", "source": "original"}}, {"pattern": "可能形 (～られる／～える)", "category": "Passive/Causative", "formation": "Verb potential stem + られる/える", "meaning": "The potential form: expresses that someone is capable of doing something (an alternative to ことができる).", "sentence": {"jp_html": "<ruby>君<rt>きみ</rt></ruby>はこの<ruby>漢字<rt>かんじ</rt></ruby>が<ruby>読め<rt>よめ</rt></ruby>ますか。", "jp_plain": "君はこの漢字が読めますか。", "en": "Can you read this kanji?", "source": "corpus"}}, {"pattern": "～ことになります", "category": "Change & Decision", "formation": "Verb dictionary/ない form + ことになります", "meaning": "Says that it has been decided (often by others or circumstances) that something will happen.", "sentence": {"jp_html": "<ruby>友人<rt>ゆうじん</rt></ruby>の<ruby>結婚<rt>けっこん</rt></ruby><ruby>式<rt>しき</rt></ruby>にアカペラで<ruby>歌う<rt>うたう</rt></ruby>ことになりました。", "jp_plain": "友人の結婚式にアカペラで歌うことになりました。", "en": "I'm going to be singing a cappella at a friend's wedding ceremony.", "source": "corpus"}}, {"pattern": "～ことにします", "category": "Change & Decision", "formation": "Verb dictionary/ない form + ことにします", "meaning": "States a personal decision the speaker has made, \"I've decided to ~\".", "sentence": {"jp_html": "トムに<ruby>頼む<rt>たのむ</rt></ruby>ことにします。", "jp_plain": "トムに頼むことにします。", "en": "I'll ask Tom.", "source": "corpus"}}, {"pattern": "～ようにします", "category": "Change & Decision", "formation": "Verb dictionary/ない form + ようにします", "meaning": "Says the speaker will make an effort or form a habit to do something.", "sentence": {"jp_html": "<ruby>毎日<rt>まいにち</rt></ruby>、<ruby>早く<rt>はやく</rt></ruby><ruby>寝る<rt>ねる</rt></ruby>ようにします。", "jp_plain": "毎日、早く寝るようにします。", "en": "I try to make it a habit to go to bed early every day.", "source": "original"}}, {"pattern": "～ようになります", "category": "Change & Decision", "formation": "Verb dictionary/potential form + ようになります", "meaning": "Describes a gradual change in ability or habit over time, \"came to be able to ~\".", "sentence": {"jp_html": "<ruby>彼<rt>かれ</rt></ruby>は<ruby>英語<rt>えいご</rt></ruby>を<ruby>話せる<rt>はなせる</rt></ruby>ようになりましたか？", "jp_plain": "彼は英語を話せるようになりましたか？", "en": "Has he become able to speak English?", "source": "corpus"}}, {"pattern": "～ため（に）", "category": "Purpose & Reason", "formation": "Verb dictionary form / Noun + の + ために", "meaning": "States a purpose or goal behind an action, \"in order to ~\", or a cause, \"because of ~\".", "sentence": {"jp_html": "<ruby>健康<rt>けんこう</rt></ruby>のために<ruby>毎日<rt>まいにち</rt></ruby><ruby>何<rt>なん</rt></ruby>か<ruby>運動<rt>うんどう</rt></ruby>をしなさい。", "jp_plain": "健康のために毎日何か運動をしなさい。", "en": "Take some exercise every day for your health.", "source": "corpus"}}, {"pattern": "～ように (目的)", "category": "Purpose & Reason", "formation": "Verb potential/ない form + ように", "meaning": "States a purpose with a verb that can't take an intentional subject, like potential or negative verbs.", "sentence": {"jp_html": "<ruby>持ち物<rt>もちもの</rt></ruby>を<ruby>置き<rt>おき</rt></ruby><ruby>忘れ<rt>わすれ</rt></ruby>ないように。", "jp_plain": "持ち物を置き忘れないように。", "en": "Don't leave your things behind.", "source": "corpus"}}, {"pattern": "～について", "category": "Purpose & Reason", "formation": "Noun + について", "meaning": "Marks the topic that something is about, \"regarding/about ~\".", "sentence": {"jp_html": "<ruby>日本<rt>にっぽん</rt></ruby>の<ruby>歴史<rt>れきし</rt></ruby>について<ruby>話し<rt>はなし</rt></ruby>ます。", "jp_plain": "日本の歴史について話します。", "en": "I'll talk about Japanese history.", "source": "original"}}, {"pattern": "～に対して", "category": "Purpose & Reason", "formation": "Noun + に対して", "meaning": "Marks the target that an action, attitude, or feeling is directed toward, \"toward/against ~\".", "sentence": {"jp_html": "<ruby>敵<rt>てき</rt></ruby>に<ruby>対し<rt>たいし</rt></ruby>て<ruby>寛大<rt>かんだい</rt></ruby>だ。", "jp_plain": "敵に対して寛大だ。", "en": "He is generous to his opponents.", "source": "corpus"}}, {"pattern": "～によって", "category": "Purpose & Reason", "formation": "Noun + によって", "meaning": "Marks the cause, the means, or the varying factor behind something, \"depending on / by means of ~\".", "sentence": {"jp_html": "<ruby>習慣<rt>しゅうかん</rt></ruby>は<ruby>国<rt>くに</rt></ruby>によって<ruby>違い<rt>ちがい</rt></ruby>ます。", "jp_plain": "習慣は国によって違います。", "en": "Customs differ depending on the country.", "source": "original"}}, {"pattern": "～ば～ほど", "category": "Conditionals+", "formation": "Verb ば-form + Verb dictionary form + ほど", "meaning": "Says that as one thing increases, another increases along with it, \"the more ~, the more ~\".", "sentence": {"jp_html": "<ruby>考えれ<rt>かんがえれ</rt></ruby>ば<ruby>考える<rt>かんがえる</rt></ruby>ほど<ruby>彼女<rt>かのじょ</rt></ruby>はそれが<ruby>嫌<rt>いや</rt></ruby>になった。", "jp_plain": "考えれば考えるほど彼女はそれが嫌になった。", "en": "The more she thought about it, the less she liked it.", "source": "corpus"}}, {"pattern": "～ても", "category": "Conditionals+", "formation": "Verb て-form + も", "meaning": "Says the result stays the same regardless of the condition, \"even if ~\".", "sentence": {"jp_html": "どんなに<ruby>頑張っ<rt>がんばっ</rt></ruby>ても、うまくいきませんでした。", "jp_plain": "どんなに頑張っても、うまくいきませんでした。", "en": "No matter how hard I tried, it didn't work out.", "source": "original"}}, {"pattern": "～のに", "category": "Conditionals+", "formation": "Plain form + のに", "meaning": "Connects two clauses that contradict expectation, often with surprise or complaint, \"even though ~\".", "sentence": {"jp_html": "ひなたに<ruby>座っ<rt>すわっ</rt></ruby>ているのに、まだ<ruby>寒気<rt>さむけ</rt></ruby>がした。", "jp_plain": "ひなたに座っているのに、まだ寒気がした。", "en": "Even though I was sitting in the sun, I still felt chilly.", "source": "corpus"}}, {"pattern": "～まま", "category": "Conditionals+", "formation": "Verb た-form / Noun + の + まま", "meaning": "Says something stays unchanged while another action happens, \"as is / while still ~\".", "sentence": {"jp_html": "ヒーターをつけたまま<ruby>外出<rt>がいしゅつ</rt></ruby>した。", "jp_plain": "ヒーターをつけたまま外出した。", "en": "I went out with the heater on.", "source": "corpus"}}, {"pattern": "～ばよかったです", "category": "Conditionals+", "formation": "Verb ば-form + よかったです", "meaning": "Expresses regret about something the speaker didn't do, \"I should have ~\".", "sentence": {"jp_html": "もっと<ruby>注意<rt>ちゅうい</rt></ruby>すればよかったのに。", "jp_plain": "もっと注意すればよかったのに。", "en": "You should have been more careful.", "source": "corpus"}}, {"pattern": "尊敬語 (いらっしゃる等)", "category": "Honorifics", "formation": "Special respectful verb forms (いらっしゃる, おっしゃる, 召し上がる, etc.)", "meaning": "Special polite verbs used to describe the actions of someone respected, like a customer or superior.", "sentence": {"jp_html": "<ruby>自由<rt>じゆう</rt></ruby>に<ruby>召し上がっ<rt>めしあがっ</rt></ruby>て<ruby>下さい<rt>ください</rt></ruby>。", "jp_plain": "自由に召し上がって下さい。", "en": "Please help yourself to anything you like.", "source": "corpus"}}, {"pattern": "謙譲語 (申す・参る等)", "category": "Honorifics", "formation": "Special humble verb forms (申す, 参る, いたす, etc.)", "meaning": "Special humble verbs used to lower the speaker's own actions to show respect to the listener.", "sentence": {"jp_html": "<ruby>田中<rt>たなか</rt></ruby>と<ruby>申し<rt>もうし</rt></ruby>ます。よろしくお<ruby>願い<rt>ねがい</rt></ruby>します。", "jp_plain": "田中と申します。よろしくお願いします。", "en": "My name is Tanaka (humbly). Nice to meet you.", "source": "original"}}, {"pattern": "お～ください", "category": "Honorifics", "formation": "お + Verb stem + ください", "meaning": "A more formal, respectful version of ～てください, common in service settings.", "sentence": {"jp_html": "５<ruby>分<rt>ふん</rt></ruby>お<ruby>待ち<rt>まち</rt></ruby>ください。", "jp_plain": "５分お待ちください。", "en": "Please wait for five minutes.", "source": "corpus"}}, {"pattern": "～ていただけますか", "category": "Honorifics", "formation": "Verb て-form + いただけますか", "meaning": "A very polite way to ask someone to do a favor for you.", "sentence": {"jp_html": "<ruby>部屋<rt>へや</rt></ruby>を<ruby>見せ<rt>みせ</rt></ruby>ていただけますか。", "jp_plain": "部屋を見せていただけますか。", "en": "Could I see the room please?", "source": "corpus"}}, {"pattern": "～てほしいです", "category": "Wishes & Requests", "formation": "Verb て-form + ほしいです", "meaning": "Expresses that the speaker wants someone else to do something.", "sentence": {"jp_html": "<ruby>誕生<rt>たんじょう</rt></ruby><ruby>日<rt>にち</rt></ruby>パーティーに<ruby>来<rt>き</rt></ruby>てほしいです。", "jp_plain": "誕生日パーティーに来てほしいです。", "en": "I want you to come to my birthday party.", "source": "original"}}, {"pattern": "～たがります", "category": "Wishes & Requests", "formation": "Verb stem + たがります", "meaning": "Describes a third person's outwardly visible desire to do something (たい is normally only for the speaker).", "sentence": {"jp_html": "<ruby>彼<rt>かれ</rt></ruby>はアメリカへ<ruby>行き<rt>いき</rt></ruby>たがっています。", "jp_plain": "彼はアメリカへ行きたがっています。", "en": "He wants to go to the United States.", "source": "corpus"}}, {"pattern": "～ずに", "category": "Negative Forms", "formation": "Verb ない-form (drop ない) + ずに", "meaning": "A more formal way of saying \"without doing ~\", equivalent to ～ないで.", "sentence": {"jp_html": "<ruby>我々<rt>われわれ</rt></ruby>は<ruby>何<rt>なん</rt></ruby>も<ruby>食べ<rt>たべ</rt></ruby>ずに<ruby>何<rt>なん</rt></ruby><ruby>時間<rt>じかん</rt></ruby>も<ruby>働き<rt>はたらき</rt></ruby><ruby>続け<rt>つづけ</rt></ruby>た。", "jp_plain": "我々は何も食べずに何時間も働き続けた。", "en": "We kept on working for hours without eating anything.", "source": "corpus"}}, {"pattern": "～なくてはいけません", "category": "Negative Forms", "formation": "Verb ない-form (drop い) + くてはいけません", "meaning": "Another common way to say something must be done, similar to ～なければなりません.", "sentence": {"jp_html": "もう<ruby>帰ら<rt>かえら</rt></ruby>なくてはいけません。", "jp_plain": "もう帰らなくてはいけません。", "en": "I have to go home now.", "source": "original"}}, {"pattern": "～てはならない", "category": "Negative Forms", "formation": "Verb て-form + はならない", "meaning": "A firmer, more formal way of stating a prohibition than ～てはいけません.", "sentence": {"jp_html": "この<ruby>事実<rt>じじつ</rt></ruby>を<ruby>忘れ<rt>わすれ</rt></ruby>てはならない。", "jp_plain": "この事実を忘れてはならない。", "en": "This fact must not be forgotten.", "source": "corpus"}}, {"pattern": "意向形 (～（よ）う)", "category": "Volitional & Command", "formation": "Verb volitional stem + う/よう", "meaning": "The plain, casual form of ～ましょう, \"let's ~ / I'll ~\", used with friends.", "sentence": {"jp_html": "そろそろ<ruby>帰ろう<rt>かえろう</rt></ruby>。", "jp_plain": "そろそろ帰ろう。", "en": "Let's head home soon.", "source": "original"}}, {"pattern": "～（よ）うと思います", "category": "Volitional & Command", "formation": "Verb volitional stem + うと思います", "meaning": "States the speaker's own plan or intention, formed with the casual volitional form + と思う.", "sentence": {"jp_html": "<ruby>明日<rt>あす</rt></ruby>は<ruby>休み<rt>やすみ</rt></ruby>を<ruby>取ろう<rt>とろう</rt></ruby>と<ruby>思っ<rt>おもっ</rt></ruby>ています。", "jp_plain": "明日は休みを取ろうと思っています。", "en": "I feel like taking a day off tomorrow.", "source": "corpus"}}, {"pattern": "～（よ）うとします", "category": "Volitional & Command", "formation": "Verb volitional stem + うとします", "meaning": "Describes the moment someone attempts or is about to do something.", "sentence": {"jp_html": "<ruby>彼<rt>かれ</rt></ruby>は、<ruby>私<rt>わたくし</rt></ruby>がちょうど<ruby>家<rt>いえ</rt></ruby>を<ruby>出よう<rt>でよう</rt></ruby>としたときに<ruby>到着<rt>とうちゃく</rt></ruby>した。", "jp_plain": "彼は、私がちょうど家を出ようとしたときに到着した。", "en": "He arrived just as I was leaving home.", "source": "corpus"}}, {"pattern": "命令形", "category": "Volitional & Command", "formation": "Verb imperative stem (e.g. 行け, 待て, 食べろ)", "meaning": "The blunt, plain command form, mostly heard in signs, sports, or emergencies rather than daily conversation.", "sentence": {"jp_html": "<ruby>危ない<rt>あぶない</rt></ruby>、<ruby>早く<rt>はやく</rt></ruby><ruby>逃げろ<rt>にげろ</rt></ruby>！", "jp_plain": "危ない、早く逃げろ！", "en": "Danger, run away now!", "source": "original"}}, {"pattern": "禁止形 (～な)", "category": "Volitional & Command", "formation": "Verb dictionary form + な", "meaning": "A blunt, plain way to tell someone not to do something, stronger than ～ないでください.", "sentence": {"jp_html": "<ruby>触る<rt>さわる</rt></ruby>な！", "jp_plain": "触るな！", "en": "Hands off.", "source": "corpus"}}, {"pattern": "普通形＋んです", "category": "Casual Speech", "formation": "Plain form + んです (casual: ～んだ)", "meaning": "The casual/explanatory extension of んです, adding background reasoning in everyday conversation.", "sentence": {"jp_html": "<ruby>最近<rt>さいきん</rt></ruby>、ちょっと<ruby>疲れ<rt>つかれ</rt></ruby>てるんです。", "jp_plain": "最近、ちょっと疲れてるんです。", "en": "I've been a little tired lately, you see.", "source": "original"}}, {"pattern": "～って", "category": "Casual Speech", "formation": "Casual quote/topic + って", "meaning": "A casual version of と/という, used to quote someone or mark a casual topic.", "sentence": {"jp_html": "<ruby>田中<rt>たなか</rt></ruby>さんは<ruby>来<rt>こ</rt></ruby>ないって<ruby>言っ<rt>いっ</rt></ruby>ていました。", "jp_plain": "田中さんは来ないって言っていました。", "en": "Tanaka said (that) he's not coming.", "source": "original"}}, {"pattern": "～とか～とか", "category": "Casual Speech", "formation": "Noun/Verb + とか + Noun/Verb + とか", "meaning": "A casual way to list a few examples, similar to や, often used in spoken Japanese.", "sentence": {"jp_html": "<ruby>週末<rt>しゅうまつ</rt></ruby>は<ruby>洗濯<rt>せんたく</rt></ruby>とか<ruby>掃除<rt>そうじ</rt></ruby>とかをします。", "jp_plain": "週末は洗濯とか掃除とかをします。", "en": "On weekends I do things like laundry and cleaning.", "source": "original"}}, {"pattern": "～かな／かしら", "category": "Casual Speech", "formation": "Plain form + かな (casual, any speaker) / かしら (soft, often older/feminine speech)", "meaning": "Wonders aloud to oneself, \"I wonder if ~\".", "sentence": {"jp_html": "<ruby>彼<rt>かれ</rt></ruby>はあした<ruby>来る<rt>くる</rt></ruby>かな。", "jp_plain": "彼はあした来るかな。", "en": "I wonder if he'll come tomorrow.", "source": "corpus"}}, {"pattern": "～はじめます", "category": "Aspect", "formation": "Verb stem + はじめます", "meaning": "Says an action starts happening, \"begin to ~\".", "sentence": {"jp_html": "<ruby>急<rt>きゅう</rt></ruby>に<ruby>雨<rt>あめ</rt></ruby>が<ruby>降り<rt>ふり</rt></ruby>はじめました。", "jp_plain": "急に雨が降りはじめました。", "en": "It suddenly started to rain.", "source": "original"}}, {"pattern": "～つづけます", "category": "Aspect", "formation": "Verb stem + つづけます", "meaning": "Says an action keeps happening without stopping, \"continue to ~\".", "sentence": {"jp_html": "<ruby>彼<rt>かれ</rt></ruby>は<ruby>三<rt>さん</rt></ruby><ruby>時間<rt>じかん</rt></ruby>も<ruby>話し<rt>はなし</rt></ruby>つづけました。", "jp_plain": "彼は三時間も話しつづけました。", "en": "He kept talking for as long as three hours.", "source": "original"}}, {"pattern": "～おわります", "category": "Aspect", "formation": "Verb stem + おわります", "meaning": "Says an action is completely finished, \"finish ~ing\".", "sentence": {"jp_html": "この<ruby>本<rt>ほん</rt></ruby>をやっと<ruby>読み<rt>よみ</rt></ruby>おわりました。", "jp_plain": "この本をやっと読みおわりました。", "en": "I finally finished reading this book.", "source": "original"}}, {"pattern": "～たばかりです", "category": "Aspect", "formation": "Verb た-form + ばかりです", "meaning": "Says an action just finished a short time ago, \"just did ~\".", "sentence": {"jp_html": "<ruby>今<rt>いま</rt></ruby>、<ruby>駅<rt>えき</rt></ruby>に<ruby>着い<rt>つい</rt></ruby>たばかりです。", "jp_plain": "今、駅に着いたばかりです。", "en": "I just arrived at the station.", "source": "original"}}, {"pattern": "～かどうか", "category": "Embedded Questions", "formation": "Plain form + かどうか", "meaning": "Embeds a yes/no question inside a larger sentence, \"whether or not ~\".", "sentence": {"jp_html": "<ruby>明日<rt>あす</rt></ruby><ruby>晴れる<rt>はれる</rt></ruby>かどうか<ruby>分かり<rt>わかり</rt></ruby>ません。", "jp_plain": "明日晴れるかどうか分かりません。", "en": "I don't know if it will be fine tomorrow.", "source": "corpus"}}, {"pattern": "疑問詞＋か＋わかりません", "category": "Embedded Questions", "formation": "Question word + Plain form + か + わかりません", "meaning": "Embeds an open question inside a larger sentence, \"(don't) know what/where/who ~\".", "sentence": {"jp_html": "<ruby>駅<rt>えき</rt></ruby>がどこにあるか<ruby>分かり<rt>わかり</rt></ruby>ません。", "jp_plain": "駅がどこにあるか分かりません。", "en": "I don't know where the station is.", "source": "original"}}, {"pattern": "疑問詞＋でも", "category": "Embedded Questions", "formation": "Question word + でも", "meaning": "Adds でも to a question word to mean \"any-\": 誰でも (anyone), 何でも (anything), どこでも (anywhere).", "sentence": {"jp_html": "<ruby>私<rt>わたくし</rt></ruby>は<ruby>何<rt>なん</rt></ruby>でも<ruby>食べ<rt>たべ</rt></ruby>ます。", "jp_plain": "私は何でも食べます。", "en": "I'll eat anything.", "source": "original"}}, {"pattern": "～かわりに", "category": "Purpose & Reason", "formation": "Verb dictionary form / Noun + の + かわりに", "meaning": "Says one thing happens or is used in place of another, \"instead of ~\".", "sentence": {"jp_html": "かわりに<ruby>君<rt>きみ</rt></ruby>にそこへ<ruby>行っ<rt>いっ</rt></ruby>て<ruby>欲しい<rt>ほしい</rt></ruby>。", "jp_plain": "かわりに君にそこへ行って欲しい。", "en": "I wish you to go there instead.", "source": "corpus"}}, {"pattern": "～ながら (逆接)", "category": "Conditionals+", "formation": "Verb stem / Noun + ながら(も)", "meaning": "A second use of ながら meaning \"even though / despite ~\", different from the N5 \"while ~ing\" use.", "sentence": {"jp_html": "<ruby>残念<rt>ざんねん</rt></ruby>ながらそのようです。", "jp_plain": "残念ながらそのようです。", "en": "I'm afraid so.", "source": "corpus"}}, {"pattern": "～てもかまいません", "category": "Negative Forms", "formation": "Verb て-form + もかまいません", "meaning": "A slightly more formal alternative to ～てもいいです for giving or asking permission.", "sentence": {"jp_html": "<ruby>窓<rt>まど</rt></ruby>をあけてもかまいませんか。", "jp_plain": "窓をあけてもかまいませんか。", "en": "Would you mind my opening the window?", "source": "corpus"}}, {"pattern": "お／ご～する", "category": "Honorifics", "formation": "お/ご + Verb stem/Noun + する", "meaning": "A humble construction that lowers the speaker's own action to show respect toward the listener.", "sentence": {"jp_html": "すぐにお<ruby>持ち<rt>もち</rt></ruby>します。", "jp_plain": "すぐにお持ちします。", "en": "I will bring it right away.", "source": "corpus"}}, {"pattern": "～なさい", "category": "Volitional & Command", "formation": "Verb stem + なさい", "meaning": "A mild command, softer than the plain imperative, typically used by parents or teachers to children/students.", "sentence": {"jp_html": "もう<ruby>遅い<rt>おそい</rt></ruby>から、<ruby>早く<rt>はやく</rt></ruby><ruby>寝<rt>ね</rt></ruby>なさい。", "jp_plain": "もう遅いから、早く寝なさい。", "en": "It's late already, so go to bed now.", "source": "original"}}, {"pattern": "～ほど", "category": "Comparison", "formation": "Noun/Plain form + ほど", "meaning": "Sets a degree or extent as a reference point, often in comparisons, \"to the extent of ~ / not as ~ as\".", "sentence": {"jp_html": "<ruby>今日<rt>きょう</rt></ruby>は<ruby>昨日<rt>きのう</rt></ruby>ほど<ruby>寒く<rt>さむく</rt></ruby>ない。", "jp_plain": "今日は昨日ほど寒くない。", "en": "It is less cold today than it was yesterday.", "source": "corpus"}}, {"pattern": "～において", "category": "Purpose & Reason", "formation": "Noun + において", "meaning": "A formal way to mark the place, time, or field something happens in, \"in/at ~\" (written/formal speech).", "sentence": {"jp_html": "この<ruby>会議<rt>かいぎ</rt></ruby><ruby>室<rt>しつ</rt></ruby>において、<ruby>会議<rt>かいぎ</rt></ruby>を<ruby>行い<rt>おこない</rt></ruby>ます。", "jp_plain": "この会議室において、会議を行います。", "en": "The meeting will be held in this conference room.", "source": "original"}}];
+var CAT_COLORS = {"Particles": "#BE185D", "Verb Forms": "#2563EB", "Te-form": "#0891B2", "Obligation": "#B91C1C", "Ability": "#059669", "Time": "#7C3AED", "Comparison": "#D97706", "Conjecture": "#4338CA", "Conditionals": "#0D9488", "Existence": "#65A30D", "Adjectives": "#DB2777", "Requests": "#EA580C", "Expressions": "#78716C", "Passive/Causative": "#DC2626", "Change & Decision": "#2563EB", "Purpose & Reason": "#059669", "Conditionals+": "#0D9488", "Honorifics": "#7C3AED", "Wishes & Requests": "#DB2777", "Negative Forms": "#B91C1C", "Volitional & Command": "#EA580C", "Casual Speech": "#d62828", "Aspect": "#0891B2", "Embedded Questions": "#4338CA"};
+var STORAGE_KEY = 'n4grammarstudy_learned';
+
+function safeGet(key){ try{ return JSON.parse(localStorage.getItem(key) || '{}'); }catch(e){ return {}; } }
+function safeSet(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+function wid(w){ return w.pattern; }
+var learned = safeGet(STORAGE_KEY);
+
+function speakJP(text){
+  if (!text) return;
+  if (!('speechSynthesis' in window)){ alert('Text-to-speech is not supported in this browser.'); return; }
+  window.speechSynthesis.cancel();
+  var u = new SpeechSynthesisUtterance(text.replace(/[~～]/g,''));
+  u.lang = 'ja-JP'; u.rate = 0.85;
+  window.speechSynthesis.speak(u);
+}
+
+/* ---------- Tabs ---------- */
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.view').forEach(function(v){ v.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('view-' + btn.dataset.view).classList.add('active');
+  });
+});
+document.querySelectorAll('.ptab').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.ptab').forEach(function(b){ b.classList.remove('active'); });
+    document.querySelectorAll('.ppanel').forEach(function(p){ p.classList.remove('active'); });
+    btn.classList.add('active');
+    document.getElementById('ppanel-' + btn.dataset.ptab).classList.add('active');
+  });
+});
+
+/* ---------- Progress ---------- */
+function updateProgress(){
+  var total = DATA.length;
+  var n = Object.keys(learned).filter(function(k){ return learned[k]; }).length;
+  var pct = total ? Math.round(n/total*100) : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-label').textContent = n + ' / ' + total + ' learned';
+}
+
+/* ---------- Category filter chips ---------- */
+var catSet = {};
+DATA.forEach(function(w){ if (w.category) catSet[w.category] = true; });
+var catList = Object.keys(catSet).sort();
+var currentCat = 'all';
+var catFilterWrap = document.getElementById('cat-filters');
+var allChip = document.createElement('button');
+allChip.className = 'cat-chip active'; allChip.textContent = 'All categories'; allChip.dataset.cat = 'all';
+allChip.style.background = 'var(--ink)'; allChip.style.color = '#fff';
+catFilterWrap.appendChild(allChip);
+catList.forEach(function(p){
+  var chip = document.createElement('button');
+  chip.className = 'cat-chip';
+  chip.textContent = p;
+  chip.dataset.cat = p;
+  chip.style.borderColor = CAT_COLORS[p] || '#999';
+  catFilterWrap.appendChild(chip);
+});
+catFilterWrap.addEventListener('click', function(e){
+  var chip = e.target.closest('.cat-chip');
+  if (!chip) return;
+  currentCat = chip.dataset.cat;
+  document.querySelectorAll('.cat-chip').forEach(function(c){
+    c.classList.remove('active');
+    c.style.background = '#fff'; c.style.color = 'var(--muted)';
+  });
+  chip.classList.add('active');
+  var color = currentCat === 'all' ? 'var(--ink)' : (CAT_COLORS[currentCat] || '#999');
+  chip.style.background = color; chip.style.color = '#fff';
+  renderTable();
+});
+
+/* ---------- Table ---------- */
+var currentFilter = 'all';
+var currentSearch = '';
+
+function matchesSearch(w, q){
+  if (!q) return true;
+  q = q.toLowerCase();
+  if (w.pattern.toLowerCase().indexOf(q) !== -1) return true;
+  if (w.meaning.toLowerCase().indexOf(q) !== -1) return true;
+  if (w.category.toLowerCase().indexOf(q) !== -1) return true;
+  if (w.formation.toLowerCase().indexOf(q) !== -1) return true;
+  return false;
+}
+
+function renderTable(){
+  var tbody = document.getElementById('grammar-tbody');
+  tbody.innerHTML = '';
+  var items = DATA.filter(function(w){
+    var id = wid(w);
+    if (currentFilter === 'learned' && !learned[id]) return false;
+    if (currentFilter === 'unlearned' && learned[id]) return false;
+    if (currentCat !== 'all' && w.category !== currentCat) return false;
+    return matchesSearch(w, currentSearch);
+  });
+  document.getElementById('result-count').textContent = items.length + ' pattern' + (items.length===1?'':'s');
+  if (!items.length){
+    tbody.innerHTML = '<tr><td colspan="6"><div class="empty-msg">No grammar points match your search/filter.</div></td></tr>';
+    return;
+  }
+  var frag = document.createDocumentFragment();
+  items.forEach(function(w){
+    var id = wid(w);
+    var tr = document.createElement('tr');
+    tr.className = learned[id] ? 'learned' : '';
+    tr.dataset.id = id;
+
+    var catColor = CAT_COLORS[w.category] || '#6B7280';
+    var catBadge = '<span class="cat-badge" style="background:' + catColor + '">' + w.category + '</span>';
+
+    tr.innerHTML =
+      '<td class="col-check"><input type="checkbox" class="learn-check"' + (learned[id] ? ' checked' : '') + '></td>' +
+      '<td class="col-pattern"><div class="pattern-cell"><button class="spk" data-speak="' + w.pattern.replace(/"/g,'&quot;') + '">🔊</button>' + w.pattern + '</div></td>' +
+      '<td>' + catBadge + '</td>' +
+      '<td class="col-meaning">' + w.meaning + '</td>' +
+      '<td class="col-formation">' + w.formation + '</td>' +
+      '<td class="col-sentence">' + (w.sentence ? (
+        '<div class="sent-row"><button data-speak="' + w.sentence.jp_plain.replace(/"/g,'&quot;') + '">🔊</button>' +
+        '<div><div class="sent-jp jp">' + w.sentence.jp_html + '</div><div class="sent-en">' + w.sentence.en + '</div></div></div>'
+      ) : '') + '</td>';
+    frag.appendChild(tr);
+  });
+  tbody.appendChild(frag);
+}
+
+document.getElementById('search').addEventListener('input', function(e){
+  currentSearch = e.target.value.trim();
+  renderTable();
+});
+document.querySelectorAll('.filter-chip').forEach(function(chip){
+  chip.addEventListener('click', function(){
+    document.querySelectorAll('.filter-chip').forEach(function(c){ c.classList.remove('active'); });
+    chip.classList.add('active');
+    currentFilter = chip.dataset.filter;
+    renderTable();
+  });
+});
+
+document.getElementById('grammar-tbody').addEventListener('click', function(e){
+  var spk = e.target.closest('[data-speak]');
+  if (spk){ speakJP(spk.getAttribute('data-speak')); return; }
+  var check = e.target.closest('.learn-check');
+  if (check){
+    var tr = check.closest('tr');
+    var id = tr.dataset.id;
+    learned[id] = check.checked;
+    safeSet(STORAGE_KEY, learned);
+    tr.classList.toggle('learned', check.checked);
+    updateProgress();
+  }
+});
+
+/* ---------- Flashcards ---------- */
+var flashOrder = DATA.map(function(_, i){ return i; });
+var flashIdx = 0, flashFlipped = false;
+
+function renderFlash(){
+  var w = DATA[flashOrder[flashIdx]];
+  flashFlipped = false;
+  document.getElementById('flash-front').style.display = 'block';
+  document.getElementById('flash-back').style.display = 'none';
+  document.getElementById('flash-badge').textContent = (flashIdx + 1) + ' / ' + DATA.length;
+  var catColor = CAT_COLORS[w.category] || '#6B7280';
+  document.getElementById('flash-cat').innerHTML = '<span class="cat-badge" style="background:' + catColor + '">' + w.category + '</span>';
+  document.getElementById('flash-main').textContent = w.pattern;
+  document.getElementById('flash-formation').textContent = w.formation;
+  document.getElementById('flash-meaning').textContent = w.meaning;
+  document.getElementById('flash-sentence').innerHTML = w.sentence ? w.sentence.jp_html : '';
+  document.getElementById('flash-sentence-en').textContent = w.sentence ? w.sentence.en : '';
+  document.getElementById('flash-progress').textContent = (flashIdx + 1) + ' / ' + DATA.length;
+}
+document.getElementById('flashcard').addEventListener('click', function(){
+  flashFlipped = !flashFlipped;
+  document.getElementById('flash-front').style.display = flashFlipped ? 'none' : 'block';
+  document.getElementById('flash-back').style.display = flashFlipped ? 'block' : 'none';
+});
+document.getElementById('flash-next').addEventListener('click', function(){
+  flashIdx = (flashIdx + 1) % DATA.length; renderFlash();
+});
+document.getElementById('flash-prev').addEventListener('click', function(){
+  flashIdx = (flashIdx - 1 + DATA.length) % DATA.length; renderFlash();
+});
+document.getElementById('flash-shuffle').addEventListener('click', function(){
+  for (var i = flashOrder.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = flashOrder[i]; flashOrder[i] = flashOrder[j]; flashOrder[j] = tmp;
+  }
+  flashIdx = 0; renderFlash();
+});
+renderFlash();
+
+/* ---------- MCQ Quiz ---------- */
+var mcqScore = 0;
+function buildQuiz(){
+  var pool = DATA.slice();
+  for (var i = pool.length - 1; i > 0; i--){
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+  }
+  var qCount = Math.min(20, DATA.length);
+  var questions = pool.slice(0, qCount);
+  mcqScore = 0;
+  document.getElementById('mcq-score').textContent = 0;
+  document.getElementById('mcq-total-inline').textContent = qCount;
+  var list = document.getElementById('mcq-list');
+  list.innerHTML = '';
+  questions.forEach(function(w){
+    var correct = w.meaning;
+    var distractors = [];
+    var others = DATA.filter(function(d){ return d.meaning !== w.meaning; });
+    for (var i = others.length - 1; i > 0 && distractors.length < 40; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = others[i]; others[i] = others[j]; others[j] = tmp;
+    }
+    var seen = {}; seen[correct.toLowerCase()] = true;
+    for (var k = 0; k < others.length && distractors.length < 3; k++){
+      var m = others[k].meaning;
+      if (m && !seen[m.toLowerCase()]){ distractors.push(m); seen[m.toLowerCase()] = true; }
+    }
+    var opts = distractors.concat([correct]);
+    for (var i = opts.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = opts[i]; opts[i] = opts[j]; opts[j] = tmp;
+    }
+    var card = document.createElement('div');
+    card.className = 'q-card';
+    card.dataset.correct = correct;
+    var optsHtml = opts.map(function(o){
+      return '<div class="q-opt" data-val="' + o.replace(/"/g,'&quot;') + '">' + o + '</div>';
+    }).join('');
+    card.innerHTML =
+      '<div class="q-word jp">' + w.pattern + '</div>' +
+      '<div class="q-sub">' + w.category + ' · ' + w.formation + '</div>' +
+      '<div class="q-opts">' + optsHtml + '</div>';
+    list.appendChild(card);
+  });
+}
+document.getElementById('mcq-new').addEventListener('click', buildQuiz);
+document.getElementById('mcq-list').addEventListener('click', function(e){
+  var opt = e.target.closest('.q-opt');
+  if (!opt) return;
+  var card = opt.closest('.q-card');
+  if (card.classList.contains('answered')) return;
+  var chosen = opt.dataset.val;
+  var correct = card.dataset.correct;
+  card.classList.add('answered');
+  card.querySelectorAll('.q-opt').forEach(function(o){
+    if (o.dataset.val === correct) o.classList.add('correct');
+    else if (o.dataset.val === chosen) o.classList.add('wrong');
+  });
+  if (chosen === correct){ mcqScore++; document.getElementById('mcq-score').textContent = mcqScore; }
+});
+buildQuiz();
+
+renderTable();
+updateProgress();
+</script>
+</body>
+</html>
