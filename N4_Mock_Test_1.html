@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>N4 Mock Test 1 | JLPT Mock Exam</title>
+<style>
+:root{
+  --primary:#0F3D5C; --primary-dark:#082A40; --accent:#C8961E;
+  --accent-light:#F1E4C3; --bg:#F4F7FA; --card:#FFFFFF; --ink:#1B2733;
+  --pass:#15803D; --fail:#B91C1C; --badge:#D97706;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:"Hiragino Sans","Yu Gothic",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:var(--bg);color:var(--ink);}
+h1,h2,h3{margin:0 0 8px;}
+button{font-family:inherit;cursor:pointer;}
+.hidden{display:none !important;}
+.wrap{max-width:960px;margin:0 auto;padding:20px 16px 60px;}
+.topbar{background:var(--primary);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:12px;
+  position:sticky;top:0;z-index:50;box-shadow:0 2px 8px rgba(0,0,0,.15);}
+.logo-badge{width:40px;height:40px;border-radius:10px;background:var(--accent);color:var(--primary-dark);
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px;flex-shrink:0;}
+.level-pill{background:var(--badge);color:#fff;font-weight:700;font-size:12px;padding:3px 10px;border-radius:20px;}
+.topbar .title-block{flex:1;min-width:0;}
+.topbar .title-block .t1{font-weight:700;font-size:15px;}
+.topbar .title-block .t2{font-size:12px;opacity:.85;}
+.timer{font-variant-numeric:tabular-nums;font-size:22px;font-weight:800;background:rgba(255,255,255,.12);
+  padding:6px 14px;border-radius:10px;letter-spacing:1px;}
+.timer.warn{background:#fff;color:var(--fail);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.55}}
+
+/* Start screen */
+.start-card{background:var(--card);border-radius:16px;padding:28px;box-shadow:0 4px 20px rgba(0,0,0,.06);margin-top:24px;}
+.start-hero{display:flex;align-items:center;gap:16px;margin-bottom:18px;}
+.start-hero .logo-badge{width:56px;height:56px;font-size:20px;border-radius:14px;}
+.start-hero h1{font-size:24px;}
+.start-hero .sub{color:#5b6b78;font-size:14px;margin-top:2px;}
+.struct-table{width:100%;border-collapse:collapse;margin:14px 0 20px;font-size:13.5px;}
+.struct-table th{background:var(--bg);text-align:left;padding:8px 10px;border-bottom:2px solid #e1e8ee;}
+.struct-table td{padding:7px 10px;border-bottom:1px solid #edf1f4;}
+.struct-table tr.sec-head td{font-weight:700;background:var(--accent-light);}
+.notice-box{background:var(--bg);border-left:4px solid var(--accent);padding:12px 16px;border-radius:6px;
+  font-size:13.5px;line-height:1.6;margin-bottom:18px;}
+.notice-box ul{margin:6px 0 0;padding-left:20px;}
+.btn{background:var(--primary);color:#fff;border:none;border-radius:10px;padding:13px 26px;font-size:15px;
+  font-weight:700;transition:.15s;}
+.btn:hover{background:var(--primary-dark);}
+.btn.big{width:100%;padding:16px;font-size:17px;}
+.btn.secondary{background:#fff;color:var(--primary);border:2px solid var(--primary);}
+.btn.accent{background:var(--accent);color:var(--primary-dark);}
+.btn:disabled{opacity:.45;cursor:not-allowed;}
+
+/* Exam layout */
+.exam-layout{display:flex;gap:18px;align-items:flex-start;margin-top:18px;}
+.nav-panel{width:190px;flex-shrink:0;background:var(--card);border-radius:12px;padding:14px;
+  position:sticky;top:78px;max-height:75vh;overflow:auto;}
+.nav-panel h3{font-size:12px;text-transform:uppercase;letter-spacing:.5px;color:#6b7a87;margin-bottom:10px;}
+.nav-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+.nav-btn{width:100%;aspect-ratio:1;border:1px solid #dbe3ea;background:#fff;border-radius:6px;font-size:11px;
+  font-weight:700;color:#5b6b78;display:flex;align-items:center;justify-content:center;}
+.nav-btn.answered{background:var(--accent-light);border-color:var(--accent);color:var(--primary-dark);}
+.nav-btn.current{outline:2px solid var(--primary);outline-offset:1px;}
+.main-panel{flex:1;min-width:0;}
+.part-card{background:var(--card);border-radius:14px;padding:20px;margin-bottom:16px;box-shadow:0 2px 10px rgba(0,0,0,.05);}
+.part-head{display:flex;align-items:baseline;gap:10px;margin-bottom:10px;padding-bottom:10px;border-bottom:2px solid var(--bg);}
+.part-head .mondai-num{background:var(--primary);color:#fff;font-weight:800;font-size:13px;padding:4px 10px;border-radius:8px;}
+.part-head .mondai-type{font-size:13px;color:#5b6b78;}
+.instructions{font-size:14px;line-height:1.7;color:#33424f;margin-bottom:14px;}
+.instructions .jp{font-size:15px;margin-bottom:2px;}
+.passage-box{background:var(--bg);border-radius:10px;padding:16px;margin-bottom:14px;font-size:16px;line-height:2;}
+.passage-box table{border-collapse:collapse;width:100%;font-size:14px;}
+.passage-box td,.passage-box th{border:1px solid #cfd9e0;padding:6px 10px;}
+.q-block{padding:16px 0;border-bottom:1px solid #eef2f5;}
+.q-block:last-child{border-bottom:none;}
+.q-num{font-weight:800;color:var(--primary);margin-right:6px;}
+.q-prompt{font-size:16.5px;margin-bottom:12px;line-height:1.8;}
+.q-prompt u{text-decoration:none;border-bottom:2px solid var(--accent);font-weight:700;}
+.opt-list{display:flex;flex-direction:column;gap:8px;}
+.opt{display:flex;align-items:center;gap:10px;padding:11px 14px;border:1.5px solid #dfe6ec;border-radius:10px;
+  background:#fff;font-size:15px;text-align:left;}
+.opt .opt-label{width:22px;height:22px;border-radius:50%;background:var(--bg);color:#5b6b78;font-size:12px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.opt:hover{border-color:var(--primary);}
+.opt.selected{border-color:var(--primary);background:var(--accent-light);}
+.opt.selected .opt-label{background:var(--primary);color:#fff;}
+.opt.locked{pointer-events:none;}
+.opt.correct-reveal{border-color:var(--pass);background:#eafaf0;}
+.opt.wrong-reveal{border-color:var(--fail);background:#fdecec;}
+.comp-blank-row{font-size:18px;line-height:2.3;margin-bottom:14px;background:var(--bg);padding:14px;border-radius:10px;}
+.comp-slot{display:inline-block;min-width:44px;border-bottom:2px solid var(--primary);text-align:center;margin:0 2px;}
+.comp-star{color:var(--fail);font-weight:800;}
+.scene-wrap{background:var(--bg);border-radius:12px;padding:10px;margin-bottom:14px;max-width:280px;}
+.scene-svg{width:100%;height:auto;display:block;border-radius:8px;}
+.play-row{display:flex;align-items:center;gap:10px;margin:10px 0 16px;flex-wrap:wrap;}
+.play-count{font-size:12px;color:#6b7a87;}
+.listening-card{max-width:640px;margin:0 auto;}
+.section-footer{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px;flex-wrap:wrap;}
+.toast{position:fixed;top:90px;left:50%;transform:translateX(-50%);background:var(--primary-dark);color:#fff;
+  padding:14px 22px;border-radius:10px;font-size:14px;font-weight:600;box-shadow:0 6px 24px rgba(0,0,0,.25);z-index:200;
+  opacity:0;transition:opacity .3s;}
+.toast.show{opacity:1;}
+
+/* Results */
+.result-banner{border-radius:16px;padding:28px;text-align:center;color:#fff;margin-top:20px;}
+.result-banner.pass{background:linear-gradient(135deg,var(--pass),#1e9e56);}
+.result-banner.fail{background:linear-gradient(135deg,var(--fail),#8f1414);}
+.result-banner .big-verdict{font-size:34px;font-weight:900;letter-spacing:1px;}
+.result-banner .sub{opacity:.9;margin-top:4px;font-size:14px;}
+.score-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:20px 0;}
+.score-card{background:var(--card);border-radius:12px;padding:16px;text-align:center;}
+.score-card .label{font-size:12px;color:#6b7a87;text-transform:uppercase;letter-spacing:.4px;}
+.score-card .val{font-size:28px;font-weight:800;margin:6px 0 2px;}
+.score-card .thresh{font-size:12px;color:#6b7a87;}
+.score-card.ok .val{color:var(--pass);}
+.score-card.bad .val{color:var(--fail);}
+.mondai-breakdown{background:var(--card);border-radius:12px;padding:16px;margin-bottom:18px;}
+.mb-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eef2f5;font-size:13.5px;}
+.mb-row:last-child{border-bottom:none;}
+.mb-bar{flex:1;margin:0 12px;height:8px;background:#eef2f5;border-radius:4px;overflow:hidden;}
+.mb-bar-fill{height:100%;background:var(--primary);}
+.review-item{background:var(--card);border-radius:10px;padding:14px 16px;margin-bottom:10px;font-size:14px;}
+.review-item .rj{margin-bottom:8px;line-height:1.8;}
+.review-item .r-your{color:var(--fail);}
+.review-item .r-correct{color:var(--pass);}
+.review-item.ok{border-left:4px solid var(--pass);}
+.review-item.no{border-left:4px solid var(--fail);}
+footer{text-align:center;font-size:12px;color:#8494a1;margin-top:40px;padding-top:16px;border-top:1px solid #e1e8ee;}
+@media (max-width:720px){
+  .exam-layout{flex-direction:column;}
+  .nav-panel{width:100%;position:static;max-height:none;}
+  .nav-grid{grid-template-columns:repeat(8,1fr);}
+}
+</style>
+</head>
+<body>
+
+<div id="topbar" class="topbar hidden">
+  <div class="logo-badge">模試</div>
+  <div class="title-block">
+    <div class="t1" id="tb-title">N4 Mock Test 1</div>
+    <div class="t2" id="tb-section">—</div>
+  </div>
+  <span class="level-pill">N4 #1</span>
+  <div class="timer" id="timer">--:--</div>
+</div>
+
+<div class="wrap">
+
+  <div id="start-screen">
+    <div class="start-card">
+      <div class="start-hero">
+        <div class="logo-badge">模試</div>
+        <div>
+          <h1>N4 Mock Test 1 <span class="level-pill" style="margin-left:6px;">N4</span></h1>
+          <div class="sub">Full-length JLPT-format practice exam — real section timing &amp; scoring rules</div>
+        </div>
+      </div>
+      <table class="struct-table" id="struct-table"></table>
+      <div class="notice-box">
+        <b>How this exam works</b>
+        <ul>
+          <li>Each section has its own countdown timer, exactly matching the real JLPT N4 timing. When a section's time runs out, it locks automatically and the exam moves on — just like the real test.</li>
+          <li>In the Vocabulary and Grammar/Reading sections you may move freely between questions using the question map on the left.</li>
+          <li>In the Listening section, questions play one at a time using your browser's built-in Japanese text-to-speech. In the real exam audio plays only <b>once</b> — for realistic practice, try to answer after the first play before using Replay.</li>
+          <li>Scoring mirrors the official two-part JLPT scale: Language Knowledge/Reading out of 120, Listening out of 60 (180 total). Passing requires the overall total <b>and</b> both section minimums to be met — falling short on just one section fails the exam even with a high total.</li>
+        </ul>
+      </div>
+      <button class="btn big" id="start-btn">Begin Exam</button>
+    </div>
+  </div>
+
+  <div id="exam-screen" class="hidden">
+    <div class="exam-layout">
+      <div class="nav-panel hidden" id="nav-panel">
+        <h3>Questions</h3>
+        <div class="nav-grid" id="nav-grid"></div>
+      </div>
+      <div class="main-panel" id="main-panel"></div>
+    </div>
+    <div class="section-footer">
+      <button class="btn secondary" id="submit-section-btn">Submit Section Now</button>
+      <div style="font-size:12px;color:#8494a1;">Section auto-submits when the timer reaches 0:00.</div>
+    </div>
+  </div>
+
+  <div id="results-screen" class="hidden"></div>
+
+  <footer>Japanese with Raza Sensei — original practice content · stroke/scene art hand-drawn for this app ·
+  speech via your browser's Web Speech API · not affiliated with the Japan Foundation / JEES, the official
+  administrators of the JLPT.</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA = {"level": "N4", "test_number": 1, "title": "N4 Mock Test 1", "sections": [{"id": "vocab", "title_jp": "言語知識（文字・語彙）", "title_en": "Language Knowledge (Vocabulary)", "time_minutes": 25, "parts": [{"mondai": 1, "type": "kanji_reading", "instructions_jp": "＿＿＿の　ことばは　ひらがなで　どう　かきますか。１・２・３・４から　いちばん　いい　ものを　ひとつ　えらんでください。", "instructions_en": "How is the underlined word written in hiragana? Choose the best answer from 1, 2, 3, 4.", "questions": [{"id": "v1-1", "prompt_jp": "私は毎週土曜日に<u>図書館</u>で本を読みます。", "options": ["としょうかん", "としょかん", "どしょかん", "としょうがん"], "answer": 1}, {"id": "v1-2", "prompt_jp": "今日は<u>宿題</u>がたくさんあります。", "options": ["しゅくだい", "しゅうだい", "しゅくたい", "じゅくだい"], "answer": 0}, {"id": "v1-3", "prompt_jp": "私の<u>友達</u>は絵が上手です。", "options": ["ともたち", "どもだち", "ともだち", "ゆうだち"], "answer": 2}, {"id": "v1-4", "prompt_jp": "毎日ピアノの<u>練習</u>をしています。", "options": ["れんしゅう", "れんしゅ", "れんじゅう", "れいしゅう"], "answer": 0}, {"id": "v1-5", "prompt_jp": "来週、英語の<u>試験</u>があります。", "options": ["じけん", "しけん", "しげん", "しいけん"], "answer": 1}, {"id": "v1-6", "prompt_jp": "兄はギターで<u>音楽</u>を演奏します。", "options": ["おんかく", "おんがく", "おんらく", "おんがくう"], "answer": 1}, {"id": "v1-7", "prompt_jp": "健康のために毎朝<u>運動</u>をします。", "options": ["うんとう", "うんどく", "うんどう", "うんそう"], "answer": 2}, {"id": "v1-8", "prompt_jp": "先生は<u>教室</u>で本を読んでいます。", "options": ["きょうしゅつ", "きょうしつ", "きょうじつ", "ぎょうしつ"], "answer": 1}, {"id": "v1-9", "prompt_jp": "<u>週末</u>は友達と映画を見に行きます。", "options": ["しゅうばつ", "しゅまつ", "じゅうまつ", "しゅうまつ"], "answer": 3}]}, {"mondai": 2, "type": "orthography", "instructions_jp": "＿＿＿の　ことばは　かんじで　どう　かきますか。１・２・３・４から　いちばん　いい　ものを　ひとつ　えらんでください。", "instructions_en": "How is the underlined word written in kanji? Choose the best answer from 1, 2, 3, 4.", "questions": [{"id": "v2-1", "prompt_jp": "友達と英語で<u>かいわ</u>の練習をします。", "options": ["開話", "会話", "会和", "回話"], "answer": 1}, {"id": "v2-2", "prompt_jp": "分からないことがあったら、先生に<u>しつもん</u>してください。", "options": ["室問", "質門", "質問", "質聞"], "answer": 2}, {"id": "v2-3", "prompt_jp": "毎日<u>どりょく</u>すれば、上手になります。", "options": ["努力", "怒力", "努録", "努刀"], "answer": 0}, {"id": "v2-4", "prompt_jp": "留学の<u>けいけん</u>はとても楽しかったです。", "options": ["経検", "経験", "軽験", "経険"], "answer": 1}, {"id": "v2-5", "prompt_jp": "図書館で面白い<u>しょうせつ</u>を借りました。", "options": ["少説", "小節", "小説", "小談"], "answer": 2}, {"id": "v2-6", "prompt_jp": "今日は<u>たいいく</u>の授業でサッカーをしました。", "options": ["対育", "体育", "体行", "体足"], "answer": 1}]}, {"mondai": 3, "type": "contextual", "instructions_jp": "＿＿＿に　なにを　いれますか。１・２・３・４から　いちばん　いい　ものを　ひとつ　えらんでください。", "instructions_en": "What word best fits the blank? Choose the best answer from 1, 2, 3, 4.", "questions": [{"id": "v3-1", "prompt_jp": "明日は大事な＿＿＿があるので、今夜は早く寝ます。", "options": ["試験", "景色", "会議", "贈り物"], "answer": 0}, {"id": "v3-2", "prompt_jp": "週末、クラスメートと一緒に＿＿＿へ行って、サッカーの練習をします。", "options": ["病院", "公園", "銀行", "美術館"], "answer": 1}, {"id": "v3-3", "prompt_jp": "図書館の中では＿＿＿にしてください。", "options": ["にぎやか", "元気", "静か", "便利"], "answer": 2}, {"id": "v3-4", "prompt_jp": "彼はサッカー部で毎日＿＿＿しています。", "options": ["予習", "出席", "注意", "練習"], "answer": 3}, {"id": "v3-5", "prompt_jp": "私は音楽が好きなので、＿＿＿でギターを習っています。", "options": ["趣味", "仕事", "規則", "意見"], "answer": 0}, {"id": "v3-6", "prompt_jp": "明日の授業のために、今晩＿＿＿します。", "options": ["出席", "予習", "心配", "意見"], "answer": 1}, {"id": "v3-7", "prompt_jp": "友達が風邪をひいたと聞いて、とても＿＿＿しました。", "options": ["注意", "関係", "心配", "経験"], "answer": 2}, {"id": "v3-8", "prompt_jp": "クラブの先輩はとても＿＿＿ので、みんな練習の時に緊張しています。", "options": ["柔らかい", "苦い", "浅い", "厳しい"], "answer": 3}, {"id": "v3-9", "prompt_jp": "今度の日曜日、＿＿＿があれば、一緒に映画を見に行きませんか。", "options": ["規則", "経験", "機会", "意見"], "answer": 2}, {"id": "v3-10", "prompt_jp": "この学校の＿＿＿では、休み時間に食堂を使ってはいけません。", "options": ["機会", "人口", "規則", "意見"], "answer": 2}]}, {"mondai": 4, "type": "paraphrase", "instructions_jp": "＿＿＿の　ぶんと　だいたい　おなじ　いみの　ぶんが　あります。１・２・３・４から　いちばん　いい　ものを　ひとつ　えらんでください。", "instructions_en": "Choose the option closest in meaning to the underlined part.", "questions": [{"id": "v4-1", "prompt_jp": "彼はいつも<u>一生懸命</u>勉強します。", "options": ["のんびり", "がんばって", "たまに", "簡単に"], "answer": 1}, {"id": "v4-2", "prompt_jp": "この問題は<u>簡単</u>です。", "options": ["むずかしい", "やさしい", "たいへん", "ふくざつ"], "answer": 1}, {"id": "v4-3", "prompt_jp": "今週は<u>とても忙しい</u>です。", "options": ["お金がありません", "時間があまりありません", "元気じゃありません", "友達がいません"], "answer": 1}, {"id": "v4-4", "prompt_jp": "彼は<u>すぐに</u>返事をくれました。", "options": ["ゆっくり", "たぶん", "早く", "あとで"], "answer": 2}, {"id": "v4-5", "prompt_jp": "この小説は<u>面白くない</u>です。", "options": ["楽しい", "つまらない", "やさしい", "難しい"], "answer": 1}]}, {"mondai": 5, "type": "usage", "instructions_jp": "つぎの　ことばの　つかいかたで　いちばん　いい　ものを　１・２・３・４から　ひとつ　えらんでください。", "instructions_en": "Choose the sentence that uses the given word most correctly.", "questions": [{"id": "v5-1", "prompt_jp": "一生懸命", "options": ["彼は一生懸命な本を読みました。", "今日は一生懸命が好きです。", "明日はテストがあるので、今晩は一生懸命勉強します。", "一生懸命はとても静かです。"], "answer": 2}, {"id": "v5-2", "prompt_jp": "厳しい", "options": ["彼は厳しいを食べました。", "今日は厳しいに行きます。", "私は厳しいで勉強します。", "部活の先輩はとても厳しいです。"], "answer": 3}, {"id": "v5-3", "prompt_jp": "楽しみ", "options": ["彼は楽しみを勉強します。", "楽しみに走ります。", "今度の旅行がとても楽しみです。", "この本は楽しみを読みました。"], "answer": 2}, {"id": "v5-4", "prompt_jp": "経験", "options": ["経験をとても走ります。", "彼は経験でギターを弾きます。", "海外で働いた経験があります。", "この経験はおいしいです。"], "answer": 2}, {"id": "v5-5", "prompt_jp": "上手", "options": ["彼は上手で公園に行きます。", "彼女は上手を食べます。", "上手に本があります。", "彼女はピアノが上手です。"], "answer": 3}]}]}, {"id": "grammar_reading", "title_jp": "言語知識（文法）・読解", "title_en": "Language Knowledge (Grammar) / Reading", "time_minutes": 55, "parts": [{"mondai": 1, "type": "grammar_form", "instructions_jp": "＿＿＿に　なにを　いれますか。１・２・３・４から　いちばん　いい　ものを　ひとつ　えらんでください。", "instructions_en": "What best fits the blank? Choose the best answer from 1, 2, 3, 4.", "questions": [{"id": "g1-1", "prompt_jp": "空が暗いです。今にも雨が＿＿＿。", "options": ["降ったようです", "降るらしいです", "降りそうです", "降るはずでした"], "answer": 2}, {"id": "g1-2", "prompt_jp": "友達の話によると、来週テストがある＿＿＿。", "options": ["ようです", "そうです", "らしいそうです", "そうにです"], "answer": 1}, {"id": "g1-3", "prompt_jp": "教室の電気が消えています。もうみんな帰った＿＿＿。", "options": ["そうです", "らしいです", "ようです", "はずです"], "answer": 2}, {"id": "g1-4", "prompt_jp": "（友達との会話で）あれ、山田君、今日は元気がない＿＿＿。どうしたのかな。", "options": ["はずです", "そうです", "みたいです", "らしいです"], "answer": 2}, {"id": "g1-5", "prompt_jp": "クラスメートの話では、田中さんは来月引っ越す＿＿＿。", "options": ["そうです", "ようです", "はずです", "らしいです"], "answer": 3}, {"id": "g1-6", "prompt_jp": "山田さんはいつも早く来ますから、もうすぐ着く＿＿＿。", "options": ["らしいです", "みたいです", "はずです", "そうです"], "answer": 2}, {"id": "g1-7", "prompt_jp": "テストで満点を取るなんて、彼はよく勉強した＿＿＿。", "options": ["かもしれません", "に違いありません", "わけがありません", "ようがありません"], "answer": 1}, {"id": "g1-8", "prompt_jp": "毎日3時間も日本語を勉強しているから、上手になる＿＿＿。", "options": ["わけです", "わけではありません", "わけがありません", "はずがありません"], "answer": 0}, {"id": "g1-9", "prompt_jp": "勉強が好きだからといって、いつも成績がいい＿＿＿。", "options": ["わけです", "わけではありません", "に違いありません", "はずです"], "answer": 1}, {"id": "g1-10", "prompt_jp": "全然練習していないのに、試合に勝てる＿＿＿。", "options": ["わけです", "はずです", "わけがありません", "そうです"], "answer": 2}, {"id": "g1-11", "prompt_jp": "昨日、宿題を忘れて、先生に＿＿＿。", "options": ["しかりました", "しからせました", "しかられました", "しかれました"], "answer": 2}, {"id": "g1-12", "prompt_jp": "先生は学生に毎日漢字を＿＿＿。", "options": ["書きます", "書かれます", "書かせます", "書けます"], "answer": 2}, {"id": "g1-13", "prompt_jp": "私は先生に難しい漢字をたくさん＿＿＿、テストの前はとても大変でした。", "options": ["覚えられて", "覚えさせて", "覚えさせられて", "覚えて"], "answer": 2}, {"id": "g1-14", "prompt_jp": "私は漢字を500こぐらい＿＿＿。", "options": ["読みます", "読まれます", "読ませます", "読めます"], "answer": 3}, {"id": "g1-15", "prompt_jp": "来月、クラスで京都に旅行に行く＿＿＿。", "options": ["ことにします", "ことになります", "ようになります", "ようにします"], "answer": 1}]}, {"mondai": 2, "type": "sentence_composition", "instructions_jp": "★　に　はいる　ことばを　１・２・３・４から　ひとつ　えらんでください。", "instructions_en": "Choose the option that goes in the ★ blank.", "questions": [{"id": "g2-1", "before": "今年から、", "after": "ことにします。", "pieces": ["毎日", "30分ずつ", "本を", "読む"], "star_index": 2, "answer_piece": "本を"}, {"id": "g2-2", "before": "遅刻をしないように、", "after": "ようにしています。", "pieces": ["毎朝", "早めに", "家を", "出る"], "star_index": 1, "answer_piece": "早めに"}, {"id": "g2-3", "before": "毎日練習した結果、", "after": "ようになりました。", "pieces": ["ピアノで", "難しい", "曲が", "弾ける"], "star_index": 3, "answer_piece": "弾ける"}, {"id": "g2-4", "before": "", "after": "遅くまで勉強しています。", "pieces": ["大学に", "合格する", "ために", "毎晩"], "star_index": 2, "answer_piece": "ために"}, {"id": "g2-5", "before": "", "after": "教室の前の席に座りました。", "pieces": ["先生の", "話が", "よく聞こえる", "ように"], "star_index": 3, "answer_piece": "ように"}]}, {"mondai": 3, "type": "text_grammar", "instructions_jp": "つぎの　ぶんしょうを　よんで、【1】から【5】に　なにを　いれますか。１・２・３・４から　いちばん　いい　ものを　ひとつ　えらんでください。", "instructions_en": "Read the passage. Choose the best word for each blank 【1】 through 【5】.", "passage_jp": "今日は学校でテニス部の練習が【1】。朝は少し寒かったですが、走っているうちに体が温かく【2】。練習ではサーブの練習をたくさんしたので、腕が少し痛くなりました。練習の後、みんなでジュースを飲みながら学校の食堂で話しました。友達の田中さんは最近元気がないので、きっと何か心配なことがある【3】。今度会った時に、理由を聞いて【4】と思います。田中さんは疲れている【5】、いつも笑顔で頑張っていて、すごいと思います。私も見習いたいです。", "questions": [{"id": "tg-1", "blank": 1, "options": ["あります", "ありました", "あるらしいです", "あるはずです"], "answer": 1}, {"id": "tg-2", "blank": 2, "options": ["なります", "なりました", "なるでしょう", "なりそうです"], "answer": 1}, {"id": "tg-3", "blank": 3, "options": ["に違いありません", "わけではありません", "わけがありません", "というものです"], "answer": 0}, {"id": "tg-4", "blank": 4, "options": ["みよう", "みます", "みた", "みられる"], "answer": 0}, {"id": "tg-5", "blank": 5, "options": ["のに", "ので", "から", "ばかり"], "answer": 0}]}, {"mondai": 4, "type": "reading_short", "instructions_jp": "つぎの　ぶんしょうを　よんで、しつもんに　こたえてください。", "instructions_en": "Read each short passage and answer the question.", "passages": [{"passage_jp": "ゆいさんへ　貸してくれた小説、とても面白かったです。ありがとう。今度、私が好きな漫画を貸しますね。今週の土曜日、図書館の前で会えますか。返事を待っています。　まりより", "questions": [{"id": "rs-1", "prompt_jp": "まりさんは何をするつもりですか。", "options": ["ゆいさんに漫画を貸すつもりです。", "ゆいさんに小説を返すつもりです。", "図書館で本を借りるつもりです。", "ゆいさんに手紙を書くつもりです。"], "answer": 0}]}, {"passage_jp": "来週の日曜日、クラスの友達5人で山田さんの家に集まって、一緒に映画を見る約束をしました。山田さんのお姉さんが新しいテレビを買ったので、大きい画面で映画が見られるそうです。みんなとても楽しみにしています。", "questions": [{"id": "rs-2", "prompt_jp": "どうして山田さんの家に集まりますか。", "options": ["山田さんの誕生日だから", "大きい画面で映画が見られるから", "宿題を一緒にするから", "新しい漫画を読むから"], "answer": 1}]}, {"passage_jp": "3年2組のみなさんへ　昨日、教室に黒いかさが忘れてありました。名前は書いてありません。心当たりがある人は、職員室の先生まで取りに来てください。土曜日までに取りに来ない場合は、事務室に届けます。", "questions": [{"id": "rs-3", "prompt_jp": "かさを忘れた人はどうしますか。", "options": ["土曜日までに職員室へ取りに行く。", "事務室でかさを買う。", "先生に新しいかさをもらう。", "教室でかさを探す。"], "answer": 0}]}, {"passage_jp": "けんたへ　明日のサッカー部の練習ですが、雨が降りそうなので、体育館で行うことになりました。時間はいつもと同じ午後4時からです。忘れずに体育館用の靴を持ってきてください。　コーチより", "questions": [{"id": "rs-4", "prompt_jp": "明日の練習について、正しいものはどれですか。", "options": ["練習は中止になった。", "練習の場所が変わった。", "練習の時間が変わった。", "体育館用の靴はいらない。"], "answer": 1}]}]}, {"mondai": 5, "type": "reading_mid", "instructions_jp": "つぎの　ぶんしょうを　よんで、しつもんに　こたえてください。", "instructions_en": "Read each passage and answer the two questions about it.", "passages": [{"passage_jp": "私は小さいころから本を読むのが好きでした。高校に入ってから、友達に誘われて図書委員会に入りました。最初は少し緊張しましたが、同じように本が好きな友達がたくさんできて、毎週楽しく活動しています。今度、みんなでおすすめの本を紹介するイベントを開くことになりました。私はまだ読んだことがない作家の本を紹介しようと思っています。どの本を選ぶか、図書館で何度も迷いましたが、やっと面白そうな一冊を見つけました。準備は大変ですが、とても楽しみです。", "questions": [{"id": "rm-1", "prompt_jp": "この人はどうして図書委員会に入りましたか。", "options": ["先生に頼まれたから", "友達に誘われたから", "本を安く買いたいから", "成績を上げたいから"], "answer": 1}, {"id": "rm-2", "prompt_jp": "今度、図書委員会で何をしますか。", "options": ["本を売るイベントをする", "おすすめの本を紹介するイベントをする", "作家に手紙を書く", "新しい図書館を作る"], "answer": 1}]}, {"passage_jp": "僕は中学生の時からギターを弾いています。今は友達3人とバンドを組んでいて、週末はいつもスタジオで練習しています。最初はうまく弾けなくて、何度も練習曲を止めてしまいましたが、みんなで少しずつ上手になりました。来月、学校の文化祭で初めてお客さんの前で演奏することになりました。演奏する曲はみんなで話し合って、明るくて楽しい曲に決めました。緊張しますが、練習の成果を見せられるように、これからも毎日練習を続けたいです。", "questions": [{"id": "rm-3", "prompt_jp": "来月、何がありますか。", "options": ["ギターのテストがある", "文化祭で演奏する", "新しいバンドに入る", "スタジオを借りる"], "answer": 1}, {"id": "rm-4", "prompt_jp": "この人は最初どうでしたか。", "options": ["すぐに上手に弾けた", "何度も演奏を止めてしまった", "バンドをやめたかった", "毎日練習しなかった"], "answer": 1}]}]}, {"mondai": 6, "type": "info_retrieval", "instructions_jp": "つぎの　おしらせを　よんで、しつもんに　こたえてください。", "instructions_en": "Read the notice and answer the questions.", "passage_html": "<h4>さくら中学校　クラブ活動　今週のスケジュール</h4><table><tr><th>曜日</th><th>クラブ</th><th>時間</th><th>場所</th></tr><tr><td>月曜日</td><td>テニス部</td><td>15:30～17:00</td><td>グラウンド</td></tr><tr><td>火曜日</td><td>合唱部</td><td>16:00～17:30</td><td>音楽室</td></tr><tr><td>水曜日</td><td>テニス部</td><td>15:30～17:00</td><td>体育館（雨の日）</td></tr><tr><td>木曜日</td><td>美術部</td><td>16:00～17:00</td><td>美術室</td></tr><tr><td>金曜日</td><td>合唱部</td><td>16:00～18:00</td><td>音楽室</td></tr></table><p>※テニス部は雨の日、体育館で練習します。<br>※美術部は毎月最後の金曜日はお休みです。</p>", "questions": [{"id": "ir-1", "prompt_jp": "テニス部は雨の日、どこで練習しますか。", "options": ["グラウンド", "音楽室", "体育館", "美術室"], "answer": 2}, {"id": "ir-2", "prompt_jp": "合唱部の練習が一番長いのはいつですか。", "options": ["月曜日", "火曜日", "木曜日", "金曜日"], "answer": 3}]}]}, {"id": "listening", "title_jp": "聴解", "title_en": "Listening", "time_minutes": 35, "parts": [{"mondai": 1, "type": "task_comprehension", "instructions_jp": "はなしを　きいて、それから　しつもんを　きいてください。それから、いちばん　いい　ものを　１・２・３・４から　ひとつ　えらんでください。", "instructions_en": "Listen to the conversation and the question, then choose the best answer from 1, 2, 3, 4.", "questions": [{"id": "l1-1", "scene": "classroom", "situation_jp": "学校で、先生が学生に話しています。「今日の宿題は、教科書の15ページの問題を全部解いてください。それから、ノートに新しい漢字を10回ずつ書いてください。」", "question_jp": "学生は今日の宿題で何をしなければなりませんか。", "options": ["教科書を読むだけでいい。", "問題を解いて、漢字を書く。", "新しい教科書を買う。", "先生に電話をする。"], "answer": 1}, {"id": "l1-2", "scene": "phone", "situation_jp": "女の子が友達に電話しています。「もしもし、明日の映画だけど、私、少し遅れそうなの。先に映画館の前で待っていてくれる？チケットは私が買っておくから。」", "question_jp": "友達は明日、何をしますか。", "options": ["先に映画館の前で待つ。", "チケットを買っておく。", "映画を見ないで帰る。", "女の子の家に行く。"], "answer": 0}, {"id": "l1-3", "scene": "classroom", "situation_jp": "クラブの先輩が新しい部員に話しています。「練習が始まる前に、まずグラウンドを走ってください。そのあとで、ボールを使う練習をします。今日はボールの練習はお休みです。」", "question_jp": "新しい部員は最初に何をしますか。", "options": ["ボールの練習をする。", "グラウンドを走る。", "先輩と話す。", "家に帰る。"], "answer": 1}, {"id": "l1-4", "scene": "shop", "situation_jp": "本屋で、店員が客に話しています。「その漫画は今、人気があって、こちらの棚にはもうありません。新しいものは来週の月曜日に届く予定です。それまでにご予約いただければ、届いたらすぐにお渡しできます。」", "question_jp": "客が今日、漫画をすぐにほしい場合、どうすればいいですか。", "options": ["来週の月曜日にまた来る。", "今すぐ予約する。", "他の本屋に電話する。", "漫画を買うのをやめる。"], "answer": 1}, {"id": "l1-5", "scene": "station", "situation_jp": "駅で、友達同士が話しています。「今日は電車が遅れているから、次の電車を待つより、バスで行ったほうが早いと思うよ。」", "question_jp": "二人はこれからどうしますか。", "options": ["次の電車を待つ。", "歩いて行く。", "バスに乗る。", "タクシーを呼ぶ。"], "answer": 2}, {"id": "l1-6", "scene": "classroom", "situation_jp": "先生が学生に話しています。「今度の文化祭で発表するグループを決めます。音楽が好きな人は3階の音楽室に、絵を描くのが好きな人は美術室に集まってください。」", "question_jp": "絵を描くのが好きな学生はどこに行きますか。", "options": ["音楽室", "美術室", "体育館", "図書館"], "answer": 1}, {"id": "l1-7", "scene": "home", "situation_jp": "家で、母親が息子に話しています。「今日は友達が遊びに来る前に、自分の部屋を片付けてね。それから、宿題も終わらせてしまいなさい。」", "question_jp": "息子は友達が来る前に、何をしなければなりませんか。", "options": ["部屋の掃除と宿題", "買い物と料理", "友達に電話", "漫画を読むこと"], "answer": 0}, {"id": "l1-8", "scene": "park", "situation_jp": "公園で、友達同士が話しています。「今度の日曜日、みんなでバドミントンをしない？雨が降ったら、近くの体育館を借りる予定なんだ。」", "question_jp": "雨が降ったら、どうしますか。", "options": ["バドミントンをやめる。", "近くの体育館でする。", "公園でそのまま続ける。", "家でゲームをする。"], "answer": 1}]}, {"mondai": 2, "type": "point_comprehension", "instructions_jp": "はなしを　きいて、それから　しつもんを　きいてください。それから、いちばん　いい　ものを　１・２・３・４から　ひとつ　えらんでください。", "instructions_en": "Listen to the conversation and the question, then choose the best answer from 1, 2, 3, 4.", "questions": [{"id": "l2-1", "scene": "classroom", "situation_jp": "男の子と女の子が話しています。男の子「明日のテスト、緊張する？」女の子「うん、実は数学があまり得意じゃなくて、心配なんだ。でも英語は好きだから、そっちは大丈夫だと思う。」", "question_jp": "女の子はどうして心配していますか。", "options": ["英語のテストがあるから", "数学が得意じゃないから", "テストの日を忘れたから", "友達が休むから"], "answer": 1}, {"id": "l2-2", "scene": "home", "situation_jp": "兄と妹が話しています。妹「お兄ちゃん、今度の休み、どこか行く？」兄「うん、山に登りに行こうと思ってるんだ。最近、運動不足だから。」", "question_jp": "兄はどうして山に登りに行きますか。", "options": ["景色が好きだから", "運動不足だから", "友達に誘われたから", "宿題がないから"], "answer": 1}, {"id": "l2-3", "scene": "classroom", "situation_jp": "先生が生徒に話しています。「今日のクラブ活動は、体育館の床を修理しているので、教室で軽い運動をします。来週からは、また体育館が使えるようになります。」", "question_jp": "どうして今日、体育館が使えませんか。", "options": ["雨が降っているから", "床を修理しているから", "他のクラブが使っているから", "電気が消えているから"], "answer": 1}, {"id": "l2-4", "scene": "restaurant", "situation_jp": "レストランで、友達同士が話しています。「今日、注文したパスタ、いつもよりおいしいね。」「うん、聞いたら、新しいシェフが来たんだって。」", "question_jp": "パスタがいつもよりおいしいのはどうしてですか。", "options": ["安くなったから", "量が多いから", "新しいシェフが来たから", "メニューが変わったから"], "answer": 2}, {"id": "l2-5", "scene": "classroom", "situation_jp": "女の子二人が話しています。「今度の合唱コンクール、どの歌を歌うか決まった？」「うん、クラスのみんなで話し合って、明るい歌に決めたよ。悲しい歌より、みんなで楽しく歌えるほうがいいって。」", "question_jp": "クラスはどんな歌を選びましたか。", "options": ["悲しい歌", "明るい歌", "有名な歌", "難しい歌"], "answer": 1}, {"id": "l2-6", "scene": "phone", "situation_jp": "電話で、友達同士が話しています。「今度の週末、遊びに行けなくなっちゃった。ごめんね。」「どうしたの？」「実は、おばあちゃんの家に家族で行くことになったんだ。」", "question_jp": "どうして週末、遊びに行けませんか。", "options": ["用事があるから", "病気だから", "宿題が多いから", "お金がないから"], "answer": 0}, {"id": "l2-7", "scene": "classroom", "situation_jp": "男の子が先生に話しています。「先生、今日の部活を休んでもいいですか。実は、歯医者の予約があるんです。」", "question_jp": "男の子はどうして部活を休みますか。", "options": ["体調が悪いから", "歯医者に行くから", "家族と出かけるから", "宿題があるから"], "answer": 1}]}, {"mondai": 3, "type": "verbal_expression", "instructions_jp": "えを　みて、ただしい　いいかたを　１・２・３から　ひとつ　えらんでください。", "instructions_en": "Look at the picture/situation and choose the correct thing to say from 1, 2, 3.", "questions": [{"id": "l3-1", "scene": "classroom", "prompt_jp": "友達が消しゴムを忘れて困っています。貸してあげたい時、何と言いますか。", "options": ["これ、返してくれる？", "これ、貸してあげようか？", "それ、もらってもいい？"], "answer": 1}, {"id": "l3-2", "scene": "classroom", "prompt_jp": "授業中、先生の話がよく聞こえませんでした。もう一度説明してほしい時、何と言いますか。", "options": ["すみません、もう帰ってもいいですか。", "すみません、もう一度説明していただけますか。", "すみません、静かにしてください。"], "answer": 1}, {"id": "l3-3", "scene": "park", "prompt_jp": "公園で、友達と一緒に写真を撮りたい時、何と言いますか。", "options": ["写真を見せてくれない？", "一緒に写真を撮ってもいい？", "写真を撮らないでね。"], "answer": 1}, {"id": "l3-4", "scene": "shop", "prompt_jp": "店で、探している本が見つからない時、店員に何と言いますか。", "options": ["すみません、これをください。", "すみません、レジはどこですか。", "すみません、この本を探しているんですが。"], "answer": 2}, {"id": "l3-5", "scene": "phone", "prompt_jp": "友達に電話をして、明日の約束の時間を変えたい時、何と言いますか。", "options": ["もう電話しないでね。", "明日の時間、変えてもらえない？", "明日は行かないでください。"], "answer": 1}]}, {"mondai": 4, "type": "quick_response", "instructions_jp": "みじかい　はなしを　きいて、いちばん　いい　へんじを　１・２・３から　ひとつ　えらんでください。", "instructions_en": "Listen to the short line and choose the best reply from 1, 2, 3.", "questions": [{"id": "l4-1", "utterance_jp": "今度の日曜日、一緒に映画を見に行かない？", "options": ["ごめん、まだ食べていないんだ。", "うん、いいよ。何時に会う？", "うん、それはおいしそうだね。"], "answer": 1}, {"id": "l4-2", "utterance_jp": "宿題、もう終わった？", "options": ["うん、あそこにあるよ。", "ごめん、電車が遅れているんだ。", "ううん、まだ半分しかできていないよ。"], "answer": 2}, {"id": "l4-3", "utterance_jp": "今日の部活の練習、何時からだっけ？", "options": ["うん、とても楽しかったよ。", "たしか4時からだったと思うよ。", "それは知らない人だよ。"], "answer": 1}, {"id": "l4-4", "utterance_jp": "このマンガ、面白いから読んでみて。", "options": ["ごめん、それはできないよ。", "うん、もう食べたよ。", "ありがとう、今度読んでみるね。"], "answer": 2}, {"id": "l4-5", "utterance_jp": "テストの点数、どうだった？", "options": ["駅の近くにあるよ。", "思ったよりよかったよ。", "明日は晴れるらしいよ。"], "answer": 1}, {"id": "l4-6", "utterance_jp": "週末、天気がいいらしいよ。", "options": ["それは残念だね。", "じゃあ、公園に行かない？", "じゃあ、傘を持って行こう。"], "answer": 1}, {"id": "l4-7", "utterance_jp": "先輩、この漢字の読み方を教えてもらえますか。", "options": ["それは知らない場所だね。", "もう終わったから大丈夫だよ。", "いいよ、一緒に見てみようか。"], "answer": 2}, {"id": "l4-8", "utterance_jp": "遅くなってごめんね。ずっと待った？", "options": ["うん、とても面白かったよ。", "ううん、そんなに待ってないよ。大丈夫。", "それはいい考えだね。"], "answer": 1}]}]}]};
+const SCENES = {"station": "<svg viewBox=\"0 0 200 140\" xmlns=\"http://www.w3.org/2000/svg\" class=\"scene-svg\">\n      <rect x=\"0\" y=\"0\" width=\"200\" height=\"140\" fill=\"#F1E4C3\"/>\n      <rect x=\"0\" y=\"100\" width=\"200\" height=\"10\" fill=\"#082A40\"/>\n      <rect x=\"0\" y=\"112\" width=\"200\" height=\"6\" fill=\"#082A40\" opacity=\"0.4\"/>\n      <rect x=\"30\" y=\"45\" width=\"120\" height=\"55\" rx=\"10\" fill=\"#C8961E\"/>\n      <rect x=\"30\" y=\"45\" width=\"120\" height=\"18\" rx=\"8\" fill=\"#082A40\"/>\n      <circle cx=\"55\" cy=\"72\" r=\"10\" fill=\"white\"/><circle cx=\"90\" cy=\"72\" r=\"10\" fill=\"white\"/>\n      <circle cx=\"125\" cy=\"72\" r=\"10\" fill=\"white\"/>\n      <rect x=\"20\" y=\"95\" width=\"14\" height=\"14\" rx=\"3\" fill=\"#082A40\"/>\n      <rect x=\"146\" y=\"95\" width=\"14\" height=\"14\" rx=\"3\" fill=\"#082A40\"/>\n      <rect x=\"160\" y=\"20\" width=\"8\" height=\"80\" fill=\"#082A40\"/>\n      <rect x=\"150\" y=\"14\" width=\"28\" height=\"10\" rx=\"2\" fill=\"#C8961E\"/>\n    </svg>", "classroom": "<svg viewBox=\"0 0 200 140\" xmlns=\"http://www.w3.org/2000/svg\" class=\"scene-svg\">\n      <rect x=\"0\" y=\"0\" width=\"200\" height=\"140\" fill=\"#F1E4C3\"/>\n      <rect x=\"20\" y=\"20\" width=\"110\" height=\"55\" rx=\"4\" fill=\"#082A40\"/>\n      <line x1=\"35\" y1=\"40\" x2=\"90\" y2=\"40\" stroke=\"white\" stroke-width=\"3\"/>\n      <line x1=\"35\" y1=\"52\" x2=\"75\" y2=\"52\" stroke=\"white\" stroke-width=\"3\"/>\n      <rect x=\"40\" y=\"95\" width=\"35\" height=\"8\" fill=\"#C8961E\"/>\n      <rect x=\"45\" y=\"82\" width=\"25\" height=\"16\" fill=\"#C8961E\"/>\n      <rect x=\"100\" y=\"95\" width=\"35\" height=\"8\" fill=\"#C8961E\"/>\n      <rect x=\"105\" y=\"82\" width=\"25\" height=\"16\" fill=\"#C8961E\"/>\n      <circle cx=\"165\" cy=\"60\" r=\"14\" fill=\"#C8961E\"/>\n      <rect x=\"153\" y=\"76\" width=\"24\" height=\"30\" rx=\"8\" fill=\"#C8961E\"/>\n    </svg>", "restaurant": "<svg viewBox=\"0 0 200 140\" xmlns=\"http://www.w3.org/2000/svg\" class=\"scene-svg\">\n      <rect x=\"0\" y=\"0\" width=\"200\" height=\"140\" fill=\"#F1E4C3\"/>\n      <ellipse cx=\"100\" cy=\"90\" rx=\"70\" ry=\"14\" fill=\"#C8961E\"/>\n      <rect x=\"97\" y=\"90\" width=\"6\" height=\"30\" fill=\"#082A40\"/>\n      <circle cx=\"75\" cy=\"82\" r=\"16\" fill=\"white\" stroke=\"#082A40\" stroke-width=\"3\"/>\n      <circle cx=\"75\" cy=\"82\" r=\"6\" fill=\"#C8961E\"/>\n      <rect x=\"118\" y=\"68\" width=\"4\" height=\"26\" fill=\"#082A40\"/>\n      <rect x=\"126\" y=\"68\" width=\"4\" height=\"26\" fill=\"#082A40\"/>\n      <path d=\"M143 68 v14 a5 5 0 0 0 5 5 a5 5 0 0 0 5 -5 v-14\" fill=\"none\" stroke=\"#082A40\" stroke-width=\"3\"/>\n      <line x1=\"150\" y1=\"87\" x2=\"150\" y2=\"98\" stroke=\"#082A40\" stroke-width=\"3\"/>\n    </svg>", "home": "<svg viewBox=\"0 0 200 140\" xmlns=\"http://www.w3.org/2000/svg\" class=\"scene-svg\">\n      <rect x=\"0\" y=\"0\" width=\"200\" height=\"140\" fill=\"#F1E4C3\"/>\n      <polygon points=\"100,30 165,78 35,78\" fill=\"#082A40\"/>\n      <rect x=\"48\" y=\"78\" width=\"104\" height=\"40\" fill=\"#C8961E\"/>\n      <rect x=\"90\" y=\"90\" width=\"20\" height=\"28\" fill=\"#082A40\"/>\n      <rect x=\"60\" y=\"90\" width=\"16\" height=\"16\" fill=\"white\" stroke=\"#082A40\" stroke-width=\"2\"/>\n      <rect x=\"124\" y=\"90\" width=\"16\" height=\"16\" fill=\"white\" stroke=\"#082A40\" stroke-width=\"2\"/>\n    </svg>", "shop": "<svg viewBox=\"0 0 200 140\" xmlns=\"http://www.w3.org/2000/svg\" class=\"scene-svg\">\n      <rect x=\"0\" y=\"0\" width=\"200\" height=\"140\" fill=\"#F1E4C3\"/>\n      <rect x=\"35\" y=\"55\" width=\"130\" height=\"60\" fill=\"#C8961E\"/>\n      <path d=\"M30 55 L45 30 H155 L170 55 Z\" fill=\"#082A40\"/>\n      <rect x=\"35\" y=\"55\" width=\"130\" height=\"10\" fill=\"white\" opacity=\"0.5\"/>\n      <rect x=\"90\" y=\"85\" width=\"24\" height=\"30\" fill=\"#082A40\"/>\n      <rect x=\"45\" y=\"70\" width=\"24\" height=\"20\" fill=\"white\" stroke=\"#082A40\" stroke-width=\"2\"/>\n      <rect x=\"130\" y=\"70\" width=\"24\" height=\"20\" fill=\"white\" stroke=\"#082A40\" stroke-width=\"2\"/>\n    </svg>", "office": "<svg viewBox=\"0 0 200 140\" xmlns=\"http://www.w3.org/2000/svg\" class=\"scene-svg\">\n      <rect x=\"0\" y=\"0\" width=\"200\" height=\"140\" fill=\"#F1E4C3\"/>\n      <rect x=\"30\" y=\"80\" width=\"140\" height=\"10\" fill=\"#082A40\"/>\n      <rect x=\"40\" y=\"90\" width=\"8\" height=\"20\" fill=\"#082A40\"/>\n      <rect x=\"150\" y=\"90\" width=\"8\" height=\"20\" fill=\"#082A40\"/>\n      <rect x=\"80\" y=\"45\" width=\"40\" height=\"30\" rx=\"2\" fill=\"#C8961E\"/>\n      <rect x=\"95\" y=\"75\" width=\"10\" height=\"6\" fill=\"#C8961E\"/>\n      <rect x=\"60\" y=\"55\" width=\"18\" height=\"24\" fill=\"#C8961E\" opacity=\"0.7\"/>\n      <circle cx=\"140\" cy=\"58\" r=\"10\" fill=\"#C8961E\" opacity=\"0.7\"/>\n    </svg>", "park": "<svg viewBox=\"0 0 200 140\" xmlns=\"http://www.w3.org/2000/svg\" class=\"scene-svg\">\n      <rect x=\"0\" y=\"0\" width=\"200\" height=\"140\" fill=\"#F1E4C3\"/>\n      <circle cx=\"150\" cy=\"30\" r=\"14\" fill=\"#C8961E\"/>\n      <rect x=\"45\" y=\"70\" width=\"10\" height=\"35\" fill=\"#082A40\"/>\n      <circle cx=\"50\" cy=\"55\" r=\"28\" fill=\"#C8961E\"/>\n      <rect x=\"110\" y=\"95\" width=\"60\" height=\"6\" fill=\"#082A40\"/>\n      <rect x=\"115\" y=\"101\" width=\"6\" height=\"14\" fill=\"#082A40\"/>\n      <rect x=\"160\" y=\"101\" width=\"6\" height=\"14\" fill=\"#082A40\"/>\n    </svg>", "hospital": "<svg viewBox=\"0 0 200 140\" xmlns=\"http://www.w3.org/2000/svg\" class=\"scene-svg\">\n      <rect x=\"0\" y=\"0\" width=\"200\" height=\"140\" fill=\"#F1E4C3\"/>\n      <rect x=\"55\" y=\"35\" width=\"90\" height=\"80\" fill=\"#C8961E\"/>\n      <rect x=\"85\" y=\"52\" width=\"30\" height=\"10\" fill=\"white\"/>\n      <rect x=\"94\" y=\"43\" width=\"12\" height=\"28\" fill=\"white\"/>\n      <rect x=\"65\" y=\"85\" width=\"16\" height=\"16\" fill=\"white\" stroke=\"#082A40\" stroke-width=\"2\"/>\n      <rect x=\"119\" y=\"85\" width=\"16\" height=\"16\" fill=\"white\" stroke=\"#082A40\" stroke-width=\"2\"/>\n      <rect x=\"90\" y=\"95\" width=\"20\" height=\"20\" fill=\"#082A40\"/>\n    </svg>", "street": "<svg viewBox=\"0 0 200 140\" xmlns=\"http://www.w3.org/2000/svg\" class=\"scene-svg\">\n      <rect x=\"0\" y=\"0\" width=\"200\" height=\"140\" fill=\"#F1E4C3\"/>\n      <rect x=\"0\" y=\"90\" width=\"200\" height=\"30\" fill=\"#082A40\" opacity=\"0.85\"/>\n      <rect x=\"0\" y=\"103\" width=\"30\" height=\"4\" fill=\"white\"/>\n      <rect x=\"50\" y=\"103\" width=\"30\" height=\"4\" fill=\"white\"/>\n      <rect x=\"100\" y=\"103\" width=\"30\" height=\"4\" fill=\"white\"/>\n      <rect x=\"150\" y=\"103\" width=\"30\" height=\"4\" fill=\"white\"/>\n      <rect x=\"20\" y=\"40\" width=\"35\" height=\"50\" fill=\"#C8961E\"/>\n      <rect x=\"65\" y=\"25\" width=\"35\" height=\"65\" fill=\"#C8961E\" opacity=\"0.8\"/>\n      <rect x=\"150\" y=\"45\" width=\"30\" height=\"45\" fill=\"#C8961E\"/>\n      <rect x=\"130\" y=\"60\" width=\"8\" height=\"30\" fill=\"#082A40\"/>\n      <circle cx=\"134\" cy=\"58\" r=\"6\" fill=\"#e11d48\"/>\n    </svg>", "kitchen": "<svg viewBox=\"0 0 200 140\" xmlns=\"http://www.w3.org/2000/svg\" class=\"scene-svg\">\n      <rect x=\"0\" y=\"0\" width=\"200\" height=\"140\" fill=\"#F1E4C3\"/>\n      <rect x=\"45\" y=\"70\" width=\"110\" height=\"35\" fill=\"#C8961E\"/>\n      <circle cx=\"75\" cy=\"70\" r=\"9\" fill=\"#082A40\"/><circle cx=\"105\" cy=\"70\" r=\"9\" fill=\"#082A40\"/>\n      <circle cx=\"135\" cy=\"70\" r=\"9\" fill=\"#082A40\"/>\n      <ellipse cx=\"105\" cy=\"55\" rx=\"16\" ry=\"8\" fill=\"#082A40\"/>\n      <rect x=\"93\" y=\"45\" width=\"24\" height=\"14\" fill=\"#082A40\"/>\n      <rect x=\"45\" y=\"105\" width=\"110\" height=\"8\" fill=\"#082A40\"/>\n    </svg>", "phone": "<svg viewBox=\"0 0 200 140\" xmlns=\"http://www.w3.org/2000/svg\" class=\"scene-svg\">\n      <rect x=\"0\" y=\"0\" width=\"200\" height=\"140\" fill=\"#F1E4C3\"/>\n      <rect x=\"75\" y=\"25\" width=\"50\" height=\"90\" rx=\"10\" fill=\"#C8961E\"/>\n      <rect x=\"82\" y=\"35\" width=\"36\" height=\"60\" fill=\"white\"/>\n      <circle cx=\"100\" cy=\"105\" r=\"4\" fill=\"#082A40\"/>\n      <path d=\"M40 55 q10 -15 25 -8\" fill=\"none\" stroke=\"#082A40\" stroke-width=\"3\"/>\n      <path d=\"M35 65 q18 -25 40 -15\" fill=\"none\" stroke=\"#082A40\" stroke-width=\"3\" opacity=\"0.6\"/>\n    </svg>", "weather": "<svg viewBox=\"0 0 200 140\" xmlns=\"http://www.w3.org/2000/svg\" class=\"scene-svg\">\n      <rect x=\"0\" y=\"0\" width=\"200\" height=\"140\" fill=\"#F1E4C3\"/>\n      <circle cx=\"65\" cy=\"50\" r=\"24\" fill=\"#C8961E\"/>\n      <g stroke=\"#C8961E\" stroke-width=\"3\">\n        <line x1=\"65\" y1=\"10\" x2=\"65\" y2=\"18\"/><line x1=\"30\" y1=\"50\" x2=\"38\" y2=\"50\"/>\n        <line x1=\"40\" y1=\"25\" x2=\"46\" y2=\"31\"/>\n      </g>\n      <ellipse cx=\"120\" cy=\"75\" rx=\"40\" ry=\"22\" fill=\"white\" stroke=\"#082A40\" stroke-width=\"3\"/>\n      <ellipse cx=\"95\" cy=\"65\" rx=\"22\" ry=\"16\" fill=\"white\" stroke=\"#082A40\" stroke-width=\"3\"/>\n    </svg>"};
+const TYPE_LABEL = {"kanji_reading": "漢字読み", "orthography": "表記", "contextual": "文脈規定", "paraphrase": "言い換え類義", "usage": "用法", "grammar_form": "文法形式の判断", "sentence_composition": "文の組み立て", "text_grammar": "文章の文法", "reading_short": "内容理解（短文）", "reading_mid": "内容理解（中文）", "info_retrieval": "情報検索", "task_comprehension": "課題理解", "point_comprehension": "ポイント理解", "verbal_expression": "発話表現", "quick_response": "即時応答"};
+const LEVEL = "N4";
+const OVERALL_PASS = 90;
+const LANGREAD_MIN = 38;
+const LISTEN_MIN = 19;
+const LANGREAD_TOTAL = 70;
+const LISTEN_TOTAL = 28;
+const STORAGE_KEY = "jlptmock_n4_1";
+
+const MCQ_TYPES = new Set(["kanji_reading","orthography","contextual","paraphrase","usage","grammar_form"]);
+const SEQ_LISTEN_TYPES = new Set(["task_comprehension","point_comprehension","verbal_expression","quick_response"]);
+
+let state = {
+  sectionIdx: 0,
+  answers: {},          // qid -> chosen index
+  registry: {},         // qid -> {correctIndex, optionsText, promptText, sectionId, mondaiLabel, kind}
+  order: {},            // sectionId -> [qid,...] in display order
+  timerHandle: null,
+  timeLeft: 0,
+  listenQueueIdx: 0,
+  listenQueue: [],
+  playCounts: {},       // qid -> plays used
+  locked: {},           // sectionId -> bool
+};
+
+function el(tag, attrs, ...children){
+  const e = document.createElement(tag);
+  if(attrs) for(const k in attrs){
+    if(k === 'class') e.className = attrs[k];
+    else if(k === 'html') e.innerHTML = attrs[k];
+    else e.setAttribute(k, attrs[k]);
+  }
+  children.forEach(c => { if(c!=null) e.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+  return e;
+}
+
+function speak(text){
+  try{
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'ja-JP'; u.rate = 0.92;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+function showToast(msg, ms){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), ms || 2600);
+}
+
+// ---------------- Start screen: structure table ----------------
+function renderStructTable(){
+  const tbl = document.getElementById('struct-table');
+  let html = '<tr><th>Section</th><th>Mondai</th><th>Type</th><th># Q</th><th>Time</th></tr>';
+  DATA.sections.forEach(sec=>{
+    html += `<tr class="sec-head"><td colspan="3">${sec.title_jp} — ${sec.title_en}</td><td></td><td>${sec.time_minutes} min</td></tr>`;
+    sec.parts.forEach(p=>{
+      const n = countPartQuestions(p);
+      html += `<tr><td></td><td>問${p.mondai}</td><td>${TYPE_LABEL[p.type]||p.type}</td><td>${n}</td><td></td></tr>`;
+    });
+  });
+  tbl.innerHTML = html;
+}
+function countPartQuestions(p){
+  if(p.passages) return p.passages.reduce((a,ps)=>a+ps.questions.length,0);
+  return p.questions.length;
+}
+
+// ---------------- Exam flow ----------------
+document.getElementById('start-btn').addEventListener('click', startExam);
+document.getElementById('submit-section-btn').addEventListener('click', ()=>{
+  if(confirm("Submit this section now? You won't be able to return to it.")) endSection(false);
+});
+
+function startExam(){
+  document.getElementById('start-screen').classList.add('hidden');
+  document.getElementById('exam-screen').classList.remove('hidden');
+  document.getElementById('topbar').classList.remove('hidden');
+  state.sectionIdx = 0;
+  goToSection(0);
+}
+
+function goToSection(idx){
+  if(idx >= DATA.sections.length){ finishExam(); return; }
+  state.sectionIdx = idx;
+  const sec = DATA.sections[idx];
+  document.getElementById('tb-section').textContent = `${sec.title_jp} (${sec.title_en}) — Section ${idx+1} of ${DATA.sections.length}`;
+  state.timeLeft = sec.time_minutes * 60;
+  updateTimerDisplay();
+  if(state.timerHandle) clearInterval(state.timerHandle);
+  state.timerHandle = setInterval(tick, 1000);
+
+  if(sec.id === 'listening'){
+    document.getElementById('nav-panel').classList.add('hidden');
+    buildListenQueue(sec);
+    renderListenQuestion();
+  } else {
+    document.getElementById('nav-panel').classList.remove('hidden');
+    renderStaticSection(sec);
+  }
+}
+
+function tick(){
+  state.timeLeft--;
+  updateTimerDisplay();
+  if(state.timeLeft <= 0){
+    clearInterval(state.timerHandle);
+    endSection(true);
+  }
+}
+function updateTimerDisplay(){
+  const t = document.getElementById('timer');
+  const m = Math.max(0, Math.floor(state.timeLeft/60));
+  const s = Math.max(0, state.timeLeft % 60);
+  t.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  t.classList.toggle('warn', state.timeLeft <= 60);
+}
+
+function endSection(byTimeout){
+  window.speechSynthesis.cancel();
+  const sec = DATA.sections[state.sectionIdx];
+  state.locked[sec.id] = true;
+  if(byTimeout){
+    showToast(`Time's up for ${sec.title_en} — moving to the next section...`, 3200);
+    setTimeout(()=>goToSection(state.sectionIdx+1), 1600);
+  } else {
+    goToSection(state.sectionIdx+1);
+  }
+}
+
+// ---------------- Static sections (vocab / grammar_reading) ----------------
+function renderStaticSection(sec){
+  const main = document.getElementById('main-panel');
+  main.innerHTML = '';
+  state.order[sec.id] = [];
+  sec.parts.forEach(part => main.appendChild(renderPart(sec, part)));
+  buildNavGrid(sec);
+}
+
+function buildNavGrid(sec){
+  const grid = document.getElementById('nav-grid');
+  grid.innerHTML = '';
+  state.order[sec.id].forEach((qid, i) => {
+    const b = el('button', {class:'nav-btn', 'data-qid':qid}, String(i+1));
+    b.addEventListener('click', ()=>{
+      const target = document.querySelector(`[data-qblock="${qid}"]`);
+      if(target) target.scrollIntoView({behavior:'smooth', block:'center'});
+    });
+    grid.appendChild(b);
+  });
+}
+function refreshNav(){
+  document.querySelectorAll('.nav-btn').forEach(b=>{
+    const qid = b.getAttribute('data-qid');
+    b.classList.toggle('answered', state.answers[qid] !== undefined);
+  });
+}
+
+function partHeader(part){
+  return el('div', {class:'part-head'},
+    el('span', {class:'mondai-num'}, `問題 ${part.mondai}`),
+    el('span', {class:'mondai-type'}, TYPE_LABEL[part.type] || part.type));
+}
+function instructionsBlock(part){
+  return el('div', {class:'instructions'},
+    el('div', {class:'jp'}, part.instructions_jp || ''),
+    el('div', {}, part.instructions_en || ''));
+}
+
+function renderPart(sec, part){
+  const card = el('div', {class:'part-card'});
+  card.appendChild(partHeader(part));
+  card.appendChild(instructionsBlock(part));
+
+  if(MCQ_TYPES.has(part.type)){
+    part.questions.forEach((q, i) => card.appendChild(renderMcqBlock(sec, part, q, i)));
+  } else if(part.type === 'sentence_composition'){
+    part.questions.forEach((q, i) => card.appendChild(renderCompositionBlock(sec, part, q, i)));
+  } else if(part.type === 'text_grammar'){
+    card.appendChild(el('div', {class:'passage-box', html: passageWithBlanks(part)}));
+    part.questions.forEach((q, i) => card.appendChild(renderTextGrammarBlock(sec, part, q, i)));
+  } else if(part.type === 'reading_short' || part.type === 'reading_mid'){
+    part.passages.forEach((ps, pi) => {
+      card.appendChild(el('div', {class:'passage-box', html: ps.passage_jp}));
+      ps.questions.forEach((q, i) => card.appendChild(renderMcqBlock(sec, part, q, i, pi)));
+    });
+  } else if(part.type === 'info_retrieval'){
+    card.appendChild(el('div', {class:'passage-box', html: part.passage_html}));
+    part.questions.forEach((q, i) => card.appendChild(renderMcqBlock(sec, part, q, i)));
+  }
+  return card;
+}
+
+function passageWithBlanks(part){
+  let html = part.passage_jp;
+  part.questions.forEach(q=>{
+    html = html.split(`【${q.blank}】`).join(`<b style="color:var(--primary);border:1px solid var(--primary);border-radius:4px;padding:1px 6px;">${q.blank}</b>`);
+  });
+  return html;
+}
+
+function registerQ(sec, qid, correctIndex, optionsText, promptText, mondaiLabel, kind){
+  state.registry[qid] = {sectionId: sec.id, correctIndex, optionsText, promptText, mondaiLabel, kind};
+  state.order[sec.id].push(qid);
+}
+
+function renderMcqBlock(sec, part, q, i, passageIdx){
+  registerQ(sec, q.id, q.answer, q.options, q.prompt_jp, `問${part.mondai} (${TYPE_LABEL[part.type]||part.type})`, 'mcq');
+  const block = el('div', {class:'q-block', 'data-qblock': q.id});
+  const displayNum = (state.order[sec.id].length);
+  block.appendChild(el('div', {class:'q-prompt'}, el('span',{class:'q-num'}, `${displayNum}.`), el('span',{html:q.prompt_jp})));
+  const list = el('div', {class:'opt-list'});
+  q.options.forEach((opt, oi)=>{
+    const label = String.fromCharCode(49+oi); // "1","2","3","4"
+    const b = el('button', {class:'opt', type:'button'}, el('span',{class:'opt-label'}, label), el('span',{html:opt}));
+    b.addEventListener('click', ()=> selectAnswer(sec, q.id, oi, list));
+    list.appendChild(b);
+  });
+  block.appendChild(list);
+  return block;
+}
+
+function selectAnswer(sec, qid, idx, listEl){
+  if(state.locked[sec.id]) return;
+  state.answers[qid] = idx;
+  [...listEl.children].forEach((c,i)=>c.classList.toggle('selected', i===idx));
+  refreshNav();
+}
+
+function renderCompositionBlock(sec, part, q, i){
+  // shuffle pieces once, keep stable via a seeded-ish deterministic shuffle based on qid
+  const shuffled = q.pieces.map((p, idx)=>({p, idx})).sort((a,b)=> hashStr(q.id+a.idx) - hashStr(q.id+b.idx));
+  const correctShuffledIndex = shuffled.findIndex(s => s.idx === q.star_index);
+  registerQ(sec, q.id, correctShuffledIndex, shuffled.map(s=>s.p), `${q.before}____${q.after}`,
+    `問${part.mondai} (${TYPE_LABEL[part.type]||part.type})`, 'mcq');
+
+  const block = el('div', {class:'q-block', 'data-qblock': q.id});
+  const displayNum = state.order[sec.id].length;
+  const slots = q.pieces.map((_, idx) => idx === q.star_index ? `<span class="comp-slot comp-star">★</span>` : `<span class="comp-slot">___</span>`).join('');
+  block.appendChild(el('div', {class:'q-prompt'}, el('span',{class:'q-num'}, `${displayNum}.`), `Arrange the 4 pieces below into the blank. Which piece goes at the ★ position?`));
+  block.appendChild(el('div', {class:'comp-blank-row', html: `${q.before}${slots}${q.after}`}));
+  const list = el('div', {class:'opt-list'});
+  shuffled.forEach((s, oi)=>{
+    const label = String.fromCharCode(49+oi);
+    const b = el('button', {class:'opt', type:'button'}, el('span',{class:'opt-label'}, label), el('span',{html:s.p}));
+    b.addEventListener('click', ()=> selectAnswer(sec, q.id, oi, list));
+    list.appendChild(b);
+  });
+  block.appendChild(list);
+  return block;
+}
+function hashStr(s){ let h=0; for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))>>>0;} return h; }
+
+function renderTextGrammarBlock(sec, part, q, i){
+  registerQ(sec, q.id, q.answer, q.options, `【${q.blank}】`, `問${part.mondai} (${TYPE_LABEL[part.type]||part.type})`, 'mcq');
+  const block = el('div', {class:'q-block', 'data-qblock': q.id});
+  const displayNum = state.order[sec.id].length;
+  block.appendChild(el('div', {class:'q-prompt'}, el('span',{class:'q-num'}, `${displayNum}.`), `Blank 【${q.blank}】`));
+  const list = el('div', {class:'opt-list'});
+  q.options.forEach((opt, oi)=>{
+    const label = String.fromCharCode(49+oi);
+    const b = el('button', {class:'opt', type:'button'}, el('span',{class:'opt-label'}, label), el('span',{html:opt}));
+    b.addEventListener('click', ()=> selectAnswer(sec, q.id, oi, list));
+    list.appendChild(b);
+  });
+  block.appendChild(list);
+  return block;
+}
+
+// ---------------- Listening (sequential, no going back) ----------------
+function buildListenQueue(sec){
+  state.listenQueue = [];
+  state.order[sec.id] = [];
+  sec.parts.forEach(part => {
+    part.questions.forEach((q, i) => state.listenQueue.push({part, q}));
+  });
+  state.listenQueueIdx = 0;
+  // pre-register in original order so review works even if user is mid-section on timeout
+  state.listenQueue.forEach(({part, q})=>{
+    let kind = 'mcq', correctIndex = q.answer, promptText = q.question_jp || q.prompt_jp || q.utterance_jp;
+    registerQ(sec, q.id, correctIndex, q.options, promptText, `問${part.mondai} (${TYPE_LABEL[part.type]||part.type})`, kind);
+  });
+}
+
+function renderListenQuestion(){
+  const main = document.getElementById('main-panel');
+  main.innerHTML = '';
+  if(state.listenQueueIdx >= state.listenQueue.length){
+    main.appendChild(el('div', {class:'part-card'}, 'All listening questions complete. Waiting for section time to finish, or submit the section now.'));
+    return;
+  }
+  const {part, q} = state.listenQueue[state.listenQueueIdx];
+  const card = el('div', {class:'part-card listening-card'});
+  card.appendChild(partHeader(part));
+  if(state.listenQueueIdx === 0 || state.listenQueue[state.listenQueueIdx-1].part !== part){
+    card.appendChild(instructionsBlock(part));
+  }
+  card.appendChild(el('div', {style:'font-size:12px;color:#8494a1;margin-bottom:8px;'},
+    `Question ${state.listenQueueIdx+1} of ${state.listenQueue.length}`));
+
+  if(q.scene){
+    card.appendChild(el('div', {class:'scene-wrap', html: SCENES[q.scene] || ''}));
+  }
+
+  let spoken = '';
+  if(part.type === 'task_comprehension' || part.type === 'point_comprehension'){
+    spoken = (q.situation_jp||'') + '。' + (q.question_jp||'');
+    card.appendChild(el('div', {class:'q-prompt'}, 'Listen to the situation and question, then choose the best answer.'));
+  } else if(part.type === 'verbal_expression'){
+    spoken = q.prompt_jp;
+    card.appendChild(el('div', {class:'q-prompt'}, 'Look at the picture and listen. Choose what you should say.'));
+  } else if(part.type === 'quick_response'){
+    spoken = q.utterance_jp;
+    card.appendChild(el('div', {class:'q-prompt'}, 'Listen to the short line, then choose the best reply.'));
+  }
+
+  const playRow = el('div', {class:'play-row'});
+  const playBtn = el('button', {class:'btn accent'}, '▶ Play Audio');
+  const replayBtn = el('button', {class:'btn secondary'}, '↻ Replay');
+  const countLbl = el('span', {class:'play-count'}, 'Plays: 0');
+  state.playCounts[q.id] = 0;
+  function doPlay(){
+    speak(spoken);
+    state.playCounts[q.id]++;
+    countLbl.textContent = `Plays: ${state.playCounts[q.id]}`;
+  }
+  playBtn.addEventListener('click', doPlay);
+  replayBtn.addEventListener('click', doPlay);
+  playRow.appendChild(playBtn); playRow.appendChild(replayBtn); playRow.appendChild(countLbl);
+  card.appendChild(playRow);
+  card.appendChild(el('div', {style:'font-size:12px;color:#8494a1;margin-bottom:10px;'},
+    'Real exam: audio plays once. Try answering before replaying, for realistic practice.'));
+
+  const list = el('div', {class:'opt-list'});
+  q.options.forEach((opt, oi)=>{
+    const label = String.fromCharCode(49+oi);
+    const b = el('button', {class:'opt', type:'button'}, el('span',{class:'opt-label'}, label), el('span',{html:opt}));
+    b.addEventListener('click', ()=>{
+      state.answers[q.id] = oi;
+      [...list.children].forEach((c,i)=>c.classList.toggle('selected', i===oi));
+      nextBtn.disabled = false;
+    });
+    list.appendChild(b);
+  });
+  card.appendChild(list);
+
+  const nextBtn = el('button', {class:'btn next-btn', style:'margin-top:16px;'},
+    state.listenQueueIdx === state.listenQueue.length-1 ? 'Finish Listening Section' : 'Next Question →');
+  nextBtn.disabled = state.answers[q.id] === undefined;
+  nextBtn.addEventListener('click', ()=>{
+    window.speechSynthesis.cancel();
+    state.listenQueueIdx++;
+    if(state.listenQueueIdx >= state.listenQueue.length){
+      endSection(false);
+    } else {
+      renderListenQuestion();
+    }
+  });
+  card.appendChild(nextBtn);
+  main.appendChild(card);
+
+  // autoplay once when the question appears
+  setTimeout(doPlay, 400);
+}
+
+// ---------------- Scoring & results ----------------
+function finishExam(){
+  clearInterval(state.timerHandle);
+  window.speechSynthesis.cancel();
+  document.getElementById('exam-screen').classList.add('hidden');
+  document.getElementById('topbar').classList.add('hidden');
+
+  let langReadCorrect = 0, listenCorrect = 0;
+  const byMondai = {};
+  Object.keys(state.registry).forEach(qid=>{
+    const r = state.registry[qid];
+    const chosen = state.answers[qid];
+    const correct = chosen === r.correctIndex;
+    if(!byMondai[r.mondaiLabel]) byMondai[r.mondaiLabel] = {correct:0, total:0, sectionId:r.sectionId};
+    byMondai[r.mondaiLabel].total++;
+    if(correct) byMondai[r.mondaiLabel].correct++;
+    if(r.sectionId === 'listening'){ if(correct) listenCorrect++; }
+    else { if(correct) langReadCorrect++; }
+  });
+
+  const scaledLangRead = Math.round((langReadCorrect/LANGREAD_TOTAL)*120);
+  const scaledListen = Math.round((listenCorrect/LISTEN_TOTAL)*60);
+  const total = scaledLangRead + scaledListen;
+  const passLangRead = scaledLangRead >= LANGREAD_MIN;
+  const passListen = scaledListen >= LISTEN_MIN;
+  const passOverall = total >= OVERALL_PASS;
+  const pass = passLangRead && passListen && passOverall;
+
+  try{
+    const hist = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+    hist.push({date: new Date().toISOString(), total, scaledLangRead, scaledListen, pass});
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(hist.slice(-20)));
+  }catch(e){}
+
+  renderResults({scaledLangRead, scaledListen, total, passLangRead, passListen, passOverall, pass, byMondai});
+}
+
+function renderResults(r){
+  const root = document.getElementById('results-screen');
+  root.classList.remove('hidden');
+  root.innerHTML = '';
+
+  const banner = el('div', {class:`result-banner ${r.pass?'pass':'fail'}`},
+    el('div', {class:'big-verdict'}, r.pass ? 'PASS 合格' : 'NOT PASSING 不合格'),
+    el('div', {class:'sub'}, `${LEVEL} Mock Exam — Total ${r.total} / 180 (need ${OVERALL_PASS}+, plus both section minimums)`));
+  root.appendChild(banner);
+
+  const grid = el('div', {class:'score-grid'});
+  grid.appendChild(el('div', {class:`score-card ${r.passLangRead?'ok':'bad'}`},
+    el('div',{class:'label'}, 'Language Knowledge / Reading'),
+    el('div',{class:'val'}, `${r.scaledLangRead} / 120`),
+    el('div',{class:'thresh'}, `Needs ≥ ${LANGREAD_MIN}`)));
+  grid.appendChild(el('div', {class:`score-card ${r.passListen?'ok':'bad'}`},
+    el('div',{class:'label'}, 'Listening'),
+    el('div',{class:'val'}, `${r.scaledListen} / 60`),
+    el('div',{class:'thresh'}, `Needs ≥ ${LISTEN_MIN}`)));
+  root.appendChild(grid);
+
+  const overallCard = el('div', {class:`score-card ${r.passOverall?'ok':'bad'}`, style:'margin-bottom:18px;'},
+    el('div',{class:'label'}, 'Overall Total'),
+    el('div',{class:'val'}, `${r.total} / 180`),
+    el('div',{class:'thresh'}, `Needs ≥ ${OVERALL_PASS}`));
+  root.appendChild(overallCard);
+
+  const bd = el('div', {class:'mondai-breakdown'});
+  bd.appendChild(el('h3', {}, 'Breakdown by Question Type'));
+  Object.keys(r.byMondai).forEach(label=>{
+    const m = r.byMondai[label];
+    const pct = Math.round((m.correct/m.total)*100);
+    const row = el('div', {class:'mb-row'},
+      el('span', {style:'flex:0 0 220px;'}, label),
+      el('div', {class:'mb-bar'}, el('div',{class:'mb-bar-fill', style:`width:${pct}%`})),
+      el('span', {style:'flex:0 0 50px;text-align:right;'}, `${m.correct}/${m.total}`));
+    bd.appendChild(row);
+  });
+  root.appendChild(bd);
+
+  const reviewToggle = el('button', {class:'btn secondary big', style:'margin-bottom:14px;'}, 'Show Answer Review');
+  const reviewWrap = el('div', {class:'hidden'});
+  reviewToggle.addEventListener('click', ()=>{
+    reviewWrap.classList.toggle('hidden');
+    reviewToggle.textContent = reviewWrap.classList.contains('hidden') ? 'Show Answer Review' : 'Hide Answer Review';
+  });
+  Object.keys(state.registry).forEach(qid=>{
+    const reg = state.registry[qid];
+    const chosen = state.answers[qid];
+    const ok = chosen === reg.correctIndex;
+    const yourText = chosen !== undefined ? reg.optionsText[chosen] : '(no answer)';
+    const correctText = reg.optionsText[reg.correctIndex];
+    reviewWrap.appendChild(el('div', {class:`review-item ${ok?'ok':'no'}`},
+      el('div', {class:'rj', html:`<b>${reg.mondaiLabel}</b> — ${reg.promptText||''}`}),
+      el('div', {class: ok? 'r-correct':'r-your'}, `Your answer: ${yourText}`),
+      ok ? null : el('div', {class:'r-correct'}, `Correct answer: ${correctText}`)
+    ));
+  });
+  root.appendChild(reviewToggle);
+  root.appendChild(reviewWrap);
+
+  const retake = el('button', {class:'btn big', style:'margin-top:10px;'}, 'Retake This Test');
+  retake.addEventListener('click', ()=> location.reload());
+  root.appendChild(retake);
+
+  root.scrollIntoView({behavior:'smooth'});
+}
+
+renderStructTable();
+</script>
+</body>
+</html>
